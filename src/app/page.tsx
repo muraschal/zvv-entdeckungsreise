@@ -263,10 +263,6 @@ export default function Home() {
           {isLoading ? 'Wird verarbeitet...' : 'Anmeldung absenden'}
         </button>
       </form>
-      
-      <div className="mt-4 text-center text-sm text-gray-500">
-        ZVV Entdeckungsreise Ticketcode-Validierung
-      </div>
     </div>
   );
 } 
