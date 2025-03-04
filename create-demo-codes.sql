@@ -7,6 +7,7 @@
 
 -- Füge Demo-Codes in die Datenbank ein
 -- Format: (code, expires_at)
+-- Die ON CONFLICT-Klausel verhindert Fehler bei bereits existierenden Codes
 INSERT INTO codes (code, expires_at) 
 VALUES 
   -- Test-Codes für Entwicklung
@@ -37,7 +38,9 @@ VALUES
   ('USTER01', now() + interval '3 years'),
   ('WETZIKON01', now() + interval '3 years'),
   ('DIETIKON01', now() + interval '3 years'),
-  ('HORGEN01', now() + interval '3 years');
+  ('HORGEN01', now() + interval '3 years')
+ON CONFLICT (code) DO UPDATE 
+SET expires_at = EXCLUDED.expires_at;
 
 -- Zeige alle eingefügten Codes an
 SELECT * FROM codes WHERE code LIKE 'DEMO%' OR code LIKE 'TEST%' OR code LIKE 'ZVV%' OR code LIKE 'SCHULE%' OR code LIKE '%01' OR code LIKE '%02';
