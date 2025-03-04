@@ -1,8 +1,4 @@
 @tailwind base;
-
-@plugin "tailwindcss-animate";
-
-@custom-variant dark (&:is(.dark *));
 @tailwind components;
 @tailwind utilities;
 
@@ -98,7 +94,8 @@
 
 /* Bestehende Stile beibehalten */
 body {
-  background: rgb(var(--background-rgb));
+  color: rgb(var(--foreground-rgb));
+  background-color: rgb(var(--background-rgb));
 }
 
 :root {
