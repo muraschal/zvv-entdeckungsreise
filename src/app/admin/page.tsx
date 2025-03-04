@@ -3,6 +3,17 @@
 import { useState, useEffect } from 'react';
 import { createBrowserClient } from '@supabase/ssr';
 import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 // Typdefinition für eine Registrierung
 interface Registration {
@@ -80,62 +91,88 @@ export default function AdminPage() {
     fetchRegistrations();
   }, []);
 
-  return (
-    <div className="max-w-6xl mx-auto p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">ZVV-Entdeckungsreise Anmeldungen</h1>
-        <button
-          onClick={handleLogout}
-          className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded"
-        >
-          Abmelden
-        </button>
+  // Skeleton-Loader für die Tabelle
+  const TableSkeleton = () => (
+    <div className="space-y-2">
+      <div className="flex items-center space-x-4">
+        <Skeleton className="h-12 w-full" />
       </div>
-      
-      {loading ? (
-        <p>Daten werden geladen...</p>
-      ) : error ? (
-        <div className="p-3 bg-red-100 text-red-700 rounded">
-          {error}
+      {[...Array(5)].map((_, i) => (
+        <div key={i} className="flex items-center space-x-4">
+          <Skeleton className="h-10 w-full" />
         </div>
-      ) : registrations.length === 0 ? (
-        <p>Keine Anmeldungen gefunden.</p>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="py-2 px-4 border text-left">Datum</th>
-                <th className="py-2 px-4 border text-left">Code</th>
-                <th className="py-2 px-4 border text-left">Schule</th>
-                <th className="py-2 px-4 border text-left">Kontaktperson</th>
-                <th className="py-2 px-4 border text-left">E-Mail</th>
-                <th className="py-2 px-4 border text-left">Telefon</th>
-                <th className="py-2 px-4 border text-left">Klasse</th>
-                <th className="py-2 px-4 border text-left">Schüler</th>
-                <th className="py-2 px-4 border text-left">Begleiter</th>
-                <th className="py-2 px-4 border text-left">Reisedatum</th>
-              </tr>
-            </thead>
-            <tbody>
-              {registrations.map((reg) => (
-                <tr key={reg.id} className="hover:bg-gray-50">
-                  <td className="py-2 px-4 border">{formatDate(reg.created_at)}</td>
-                  <td className="py-2 px-4 border">{reg.code}</td>
-                  <td className="py-2 px-4 border">{reg.school}</td>
-                  <td className="py-2 px-4 border">{reg.contact_person}</td>
-                  <td className="py-2 px-4 border">{reg.email}</td>
-                  <td className="py-2 px-4 border">{reg.phone_number}</td>
-                  <td className="py-2 px-4 border">{reg.class}</td>
-                  <td className="py-2 px-4 border">{reg.student_count}</td>
-                  <td className="py-2 px-4 border">{reg.accompanist_count}</td>
-                  <td className="py-2 px-4 border">{new Date(reg.travel_date).toLocaleDateString('de-CH')}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      ))}
+    </div>
+  );
+
+  return (
+    <div className="container mx-auto py-6 space-y-6">
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <div>
+            <CardTitle className="text-2xl font-bold">ZVV-Entdeckungsreise Anmeldungen</CardTitle>
+            <CardDescription>
+              Übersicht aller eingegangenen Anmeldungen für die ZVV-Entdeckungsreise
+            </CardDescription>
+          </div>
+          <div className="flex space-x-2">
+            <Button variant="outline" onClick={fetchRegistrations} disabled={loading}>
+              Aktualisieren
+            </Button>
+            <Button variant="outline" onClick={handleLogout}>
+              Abmelden
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {loading ? (
+            <TableSkeleton />
+          ) : error ? (
+            <div className="p-4 bg-destructive/10 text-destructive rounded-md">
+              {error}
+            </div>
+          ) : registrations.length === 0 ? (
+            <div className="p-4 text-center">
+              <p>Keine Anmeldungen gefunden.</p>
+            </div>
+          ) : (
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Datum</TableHead>
+                    <TableHead>Code</TableHead>
+                    <TableHead>Schule</TableHead>
+                    <TableHead>Kontaktperson</TableHead>
+                    <TableHead>E-Mail</TableHead>
+                    <TableHead>Telefon</TableHead>
+                    <TableHead>Klasse</TableHead>
+                    <TableHead className="text-right">Schüler</TableHead>
+                    <TableHead className="text-right">Begleiter</TableHead>
+                    <TableHead>Reisedatum</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {registrations.map((reg) => (
+                    <TableRow key={reg.id}>
+                      <TableCell className="font-medium">{formatDate(reg.created_at)}</TableCell>
+                      <TableCell>{reg.code}</TableCell>
+                      <TableCell>{reg.school}</TableCell>
+                      <TableCell>{reg.contact_person}</TableCell>
+                      <TableCell>{reg.email}</TableCell>
+                      <TableCell>{reg.phone_number}</TableCell>
+                      <TableCell>{reg.class}</TableCell>
+                      <TableCell className="text-right">{reg.student_count}</TableCell>
+                      <TableCell className="text-right">{reg.accompanist_count}</TableCell>
+                      <TableCell>{new Date(reg.travel_date).toLocaleDateString('de-CH')}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 } 
