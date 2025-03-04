@@ -4,7 +4,7 @@
 Dieses hochskalierbare Full-Stack-Microservice implementiert ein React-basiertes Anmeldeformular für die ZVV-Entdeckungsreise mit serverless Backend-Architektur. Die Lösung nutzt eine event-driven Datenverarbeitungspipeline mit PostgreSQL als persistente Speicherschicht via **Supabase** und einer **Next.js-Anwendung** mit Server-Side Rendering für optimale Performance und SEO-Metriken.
 
 ## Ziel
-Implementierung einer Cloud-nativen, horizontal skalierbaren Lösung zur Verwaltung und Validierung von Ticketcodes mit **Supabase** als Backend-as-a-Service und einer **Next.js-Anwendung** auf **Vercel** als Edge-Computing-Plattform. Die Infrastruktur ist für hohe Verfügbarkeit und Ausfallsicherheit konzipiert und unterstützt die Verarbeitung von jährlich ca. **650 neuen Codes** mit einer Datenretention von **drei Jahren** unter Einhaltung strenger SLAs.
+Implementierung einer Cloud-nativen, horizontal skalierbaren Lösung zur Verwaltung und Validierung von Ticketcodes mit **Supabase** als Backend-as-a-Service und einer **Next.js-Anwendung** auf **Vercel** als Edge-Computing-Plattform. Die Infrastruktur ist für hohe Verfügbarkeit und Ausfallsicherheit konzipiert und unterstützt die Verarbeitung von jährlich ca. **650 neuen Codes** mit einer Datenretention von **drei Jahren**.
 
 ## Architektur
 - **Supabase (PostgreSQL)** als **zentrale Datenbank** für Codes und Anmeldungen 📊
