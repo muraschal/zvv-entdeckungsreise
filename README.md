@@ -1,23 +1,23 @@
 # ZVV Ticketcode-Validierung mit Supabase & Next.js
 
-## 💡 Problemstellung
+## Problemstellung
 Aktuell wird die Bestellcode-Verwaltung für die ZVV-Entdeckungsreise über Google Sheets gehandhabt. Google Sheets hat jedoch eine **500-Zeilen-Grenze**, was langfristig zu Skalierungsproblemen führt. Jährlich werden ca. **650 neue Codes generiert** und diese bleiben **drei Jahre gültig**. Das bestehende Modell ist nicht nachhaltig.
 
-## 🚀 Ziel
+## Ziel
 Eine skalierbare, performante Lösung zur Verwaltung und Validierung von Ticketcodes unter Nutzung von **Supabase** als zentrale Datenbank und einer **Next.js-Anwendung** auf **Vercel** für die Benutzeroberfläche und API-Funktionalität.
 
-## 💪 Architektur
+## Architektur
 - **Supabase (PostgreSQL)** als **zentrale Datenbank** für Codes und Anmeldungen.
 - **Vercel (Next.js)** für die Benutzeroberfläche und API-Endpunkte.
 - **Resend** für den E-Mail-Versand von Bestätigungen und Benachrichtigungen.
 
-## 🔧 Technologie-Stack
+## Technologie-Stack
 - **Supabase (PostgreSQL)** für Speicherung & Validierung der Codes.
 - **Next.js** für Frontend und API-Routes.
 - **Vercel** für Hosting und Serverless-Funktionen.
 - **Resend** für transaktionale E-Mails.
 
-## 🎯 Datenbank-Struktur (Supabase)
+## Datenbank-Struktur (Supabase)
 ### Tabelle: `codes`
 ```sql
 CREATE TABLE codes (
@@ -51,7 +51,7 @@ CREATE TABLE registrations (
 - `additional_notes`: Zusätzliche Anmerkungen.
 - `email`: E-Mail-Adresse für die Bestätigung.
 
-## 🛠️ Funktionalitäten
+## Funktionalitäten
 ### **1. Code-Validierung**
 - API-Endpunkt: `POST /api/validate`
 - Überprüft, ob ein Ticketcode gültig ist.
@@ -71,20 +71,20 @@ CREATE TABLE registrations (
 - **Bestätigungs-E-Mail** an den Benutzer nach erfolgreicher Anmeldung.
 - **Benachrichtigungs-E-Mail** an den Administrator mit den Anmeldedetails.
 
-## 🚨 Best Practices
+## Best Practices
 - **Supabase Row-Level Security (RLS)** aktivieren, um Datenzugriff abzusichern.
 - **Serverless-Funktionen** für optimale Skalierbarkeit.
 - **Formularvalidierung** sowohl client- als auch serverseitig.
 - **Transaktionale E-Mails** für Bestätigungen und Benachrichtigungen.
 
-## 🏁 Implementierte Funktionen
-1. ✅ **Anmeldeformular erstellt** mit allen erforderlichen Feldern.
-2. ✅ **Datenbank-Tabellen in Supabase eingerichtet** für Codes und Anmeldungen.
-3. ✅ **API-Endpunkte implementiert** für Validierung und Einlösung von Codes.
-4. ✅ **E-Mail-Funktionalität integriert** für Bestätigungen und Benachrichtigungen.
-5. ✅ **Bestätigungsseite nach erfolgreicher Anmeldung erstellt**.
+## Implementierte Funktionen
+1. **Anmeldeformular erstellt** mit allen erforderlichen Feldern.
+2. **Datenbank-Tabellen in Supabase eingerichtet** für Codes und Anmeldungen.
+3. **API-Endpunkte implementiert** für Validierung und Einlösung von Codes.
+4. **E-Mail-Funktionalität integriert** für Bestätigungen und Benachrichtigungen.
+5. **Bestätigungsseite nach erfolgreicher Anmeldung erstellt**.
 
-## 🚀 Erste Schritte
+## Erste Schritte
 1. Klone das Repository:
    ```bash
    git clone https://github.com/dein-username/zvv-entdeckungsreise.git
@@ -109,7 +109,7 @@ CREATE TABLE registrations (
    npm run dev
    ```
 
-## 🎉 Fazit
+## Fazit
 Diese Lösung macht den Bestellprozess **skalierbar, sicher und benutzerfreundlich**. Durch die direkte Integration des Anmeldeformulars in die Next.js-Anwendung wird der Prozess vereinfacht und die Abhängigkeit von Drittanbietern wie Typeform und Zapier eliminiert. Die E-Mail-Funktionalität sorgt für eine nahtlose Kommunikation mit den Benutzern und Administratoren.
 
 ## Datenbank-Setup
