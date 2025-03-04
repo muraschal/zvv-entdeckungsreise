@@ -1,4 +1,7 @@
-# ZVV Ticketcode-Validierung mit Supabase & Next.js
+# Entdeckungsreise Widget für zvv.ch 🚆 🧭 🎒
+
+## Über das Projekt 
+Dieses Projekt bietet ein integriertes Anmeldeformular für die ZVV-Entdeckungsreise, das direkt in die zvv.ch Website eingebunden werden kann. Es ermöglicht die effiziente Verwaltung und Validierung von Ticketcodes mit einer skalierbaren Datenbanklösung auf Basis von **Supabase** und einer modernen **Next.js-Anwendung**.
 
 ## Problemstellung
 Aktuell wird die Bestellcode-Verwaltung für die ZVV-Entdeckungsreise über Google Sheets gehandhabt. Google Sheets hat jedoch eine **500-Zeilen-Grenze**, was langfristig zu Skalierungsproblemen führt. Jährlich werden ca. **650 neue Codes generiert** und diese bleiben **drei Jahre gültig**. Das bestehende Modell ist nicht nachhaltig.
@@ -7,15 +10,15 @@ Aktuell wird die Bestellcode-Verwaltung für die ZVV-Entdeckungsreise über Goog
 Eine skalierbare, performante Lösung zur Verwaltung und Validierung von Ticketcodes unter Nutzung von **Supabase** als zentrale Datenbank und einer **Next.js-Anwendung** auf **Vercel** für die Benutzeroberfläche und API-Funktionalität.
 
 ## Architektur
-- **Supabase (PostgreSQL)** als **zentrale Datenbank** für Codes und Anmeldungen.
-- **Vercel (Next.js)** für die Benutzeroberfläche und API-Endpunkte.
-- **Resend** für den E-Mail-Versand von Bestätigungen und Benachrichtigungen.
+- **Supabase (PostgreSQL)** als **zentrale Datenbank** für Codes und Anmeldungen 📊
+- **Vercel (Next.js)** für die Benutzeroberfläche und API-Endpunkte 🖥️
+- **Resend** für den E-Mail-Versand von Bestätigungen und Benachrichtigungen 📧
 
 ## Technologie-Stack
-- **Supabase (PostgreSQL)** für Speicherung & Validierung der Codes.
-- **Next.js** für Frontend und API-Routes.
-- **Vercel** für Hosting und Serverless-Funktionen.
-- **Resend** für transaktionale E-Mails.
+- **Supabase (PostgreSQL)** für Speicherung & Validierung der Codes 🗄️
+- **Next.js** für Frontend und API-Routes 🚀
+- **Vercel** für Hosting und Serverless-Funktionen ☁️
+- **Resend** für transaktionale E-Mails 📨
 
 ## Datenbank-Struktur (Supabase)
 
@@ -117,11 +120,11 @@ CREATE TABLE registrations (
 - Eine Anmeldung (`registrations`) gehört genau zu einem Code (`codes`) (1:1)
 
 ## Funktionalitäten
-### **1. Code-Validierung**
+### **1. Code-Validierung** ✅
 - API-Endpunkt: `POST /api/validate`
 - Überprüft, ob ein Ticketcode gültig ist.
 
-### **2. Code-Einlösung mit Anmeldeformular**
+### **2. Code-Einlösung mit Anmeldeformular** 📝
 - Einfaches Formular mit folgenden Feldern:
   - Code
   - Schule
@@ -137,30 +140,30 @@ CREATE TABLE registrations (
 - API-Endpunkt: `POST /api/redeem`
 - Validiert den Code und speichert die Anmeldedaten.
 
-### **3. E-Mail-Benachrichtigungen**
+### **3. E-Mail-Benachrichtigungen** 📬
 - **Bestätigungs-E-Mail** an den Benutzer nach erfolgreicher Anmeldung.
 - **Benachrichtigungs-E-Mail** an den Administrator mit den Anmeldedetails.
 
-### **4. Widget-Integration**
+### **4. Widget-Integration** 🔌
 - **Standalone JavaScript-Widget** für die Integration in externe Websites.
 - **Keine iframe-Einbindung** erforderlich, sondern direkte Integration als React-Komponente.
 - **Konfigurierbare API-Basis-URL** für flexible Deployment-Szenarien.
 
 ## Best Practices
-- **Supabase Row-Level Security (RLS)** aktivieren, um Datenzugriff abzusichern.
-- **Serverless-Funktionen** für optimale Skalierbarkeit.
-- **Formularvalidierung** sowohl client- als auch serverseitig.
-- **Transaktionale E-Mails** für Bestätigungen und Benachrichtigungen.
+- **Supabase Row-Level Security (RLS)** aktivieren, um Datenzugriff abzusichern 🔒
+- **Serverless-Funktionen** für optimale Skalierbarkeit 📈
+- **Formularvalidierung** sowohl client- als auch serverseitig ✓
+- **Transaktionale E-Mails** für Bestätigungen und Benachrichtigungen 📩
 
 ## Implementierte Funktionen
-1. **Anmeldeformular erstellt** mit allen erforderlichen Feldern.
-2. **Datenbank-Tabellen in Supabase eingerichtet** für Codes und Anmeldungen.
-3. **API-Endpunkte implementiert** für Validierung und Einlösung von Codes.
-4. **E-Mail-Funktionalität integriert** für Bestätigungen und Benachrichtigungen.
-5. **Bestätigungsseite nach erfolgreicher Anmeldung erstellt**.
-6. **Widget-Integration** für externe Websites implementiert.
+1. **Anmeldeformular** mit allen erforderlichen Feldern und Validierung ✅
+2. **Datenbank-Struktur** in Supabase für Codes und Anmeldungen ✅
+3. **API-Endpunkte** für Validierung und Einlösung von Codes ✅
+4. **E-Mail-System** für Bestätigungen und Benachrichtigungen ✅
+5. **Bestätigungsseite** nach erfolgreicher Anmeldung ✅
+6. **Widget-Integration** für nahtlose Einbindung in zvv.ch ✅
 
-## Erste Schritte
+## Erste Schritte 🚀
 1. Klone das Repository:
    ```bash
    git clone https://github.com/dein-username/zvv-entdeckungsreise.git
@@ -190,7 +193,7 @@ CREATE TABLE registrations (
    npm run dev
    ```
 
-## Widget-Integration
+## Widget-Integration 🔌
 
 ### Standalone JavaScript-Widget bauen
 
@@ -247,7 +250,7 @@ Das Widget akzeptiert folgende Konfigurationsoptionen:
 Ein vollständiges Beispiel für die Integration findest du in der Datei `examples/widget-integration.html`.
 
 ## Fazit
-Diese Lösung macht den Bestellprozess **skalierbar, sicher und benutzerfreundlich**. Durch die direkte Integration des Anmeldeformulars in die Next.js-Anwendung wird der Prozess vereinfacht und die Abhängigkeit von Drittanbietern wie Typeform und Zapier eliminiert. Die E-Mail-Funktionalität sorgt für eine nahtlose Kommunikation mit den Benutzern und Administratoren.
+Diese Lösung macht den Anmeldeprozess für die ZVV-Entdeckungsreise **skalierbar, sicher und benutzerfreundlich** 🎯. Durch die direkte Integration des Anmeldeformulars als Widget wird der Prozess vereinfacht und die Benutzererfahrung verbessert. Die E-Mail-Funktionalität sorgt für eine nahtlose Kommunikation mit den Benutzern und Administratoren.
 
 Die Widget-Integration ermöglicht eine flexible Einbindung des Anmeldeformulars in externe Websites, ohne auf iframes zurückgreifen zu müssen. Dies verbessert die Benutzererfahrung und erleichtert die Integration in bestehende Webseiten.
 
