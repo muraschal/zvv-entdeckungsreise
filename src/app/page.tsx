@@ -15,7 +15,8 @@ const formatTimeForDisplay = (timeString: string) => {
   return timeString;
 };
 
-export default function Home() {
+// Exportierbare Komponente für die Integration in externe Websites
+export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: string }) {
   const [formData, setFormData] = useState({
     code: '',
     school: '',
@@ -61,7 +62,7 @@ export default function Home() {
 
     try {
       // Zuerst den Code validieren
-      const validateResponse = await fetch('/api/validate', {
+      const validateResponse = await fetch(`${apiBaseUrl}/api/validate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code: formData.code }),
@@ -76,7 +77,7 @@ export default function Home() {
       }
 
       // Wenn der Code gültig ist, das Formular einreichen
-      const response = await fetch('/api/redeem', {
+      const response = await fetch(`${apiBaseUrl}/api/redeem`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -111,26 +112,26 @@ export default function Home() {
 
   if (success) {
     return (
-      <div className="max-w-md mx-auto mt-10 p-4">
-        <h1 className="text-xl font-bold text-green-600 mb-2">Anmeldung erfolgreich!</h1>
-        <p>Vielen Dank für deine Anmeldung zur ZVV-Entdeckungsreise.</p>
-        <p className="mb-4">Wir haben eine Bestätigungs-E-Mail an dich gesendet.</p>
+      <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+        <h1 className="text-2xl font-bold text-green-600 mb-4">Anmeldung erfolgreich!</h1>
+        <p className="mb-4">Vielen Dank für deine Anmeldung zur ZVV-Entdeckungsreise.</p>
+        <p className="mb-4">Wir haben deine Anfrage erhalten und eine Bestätigungs-E-Mail an dich gesendet.</p>
         <button
           onClick={() => setSuccess(false)}
-          className="bg-blue-500 text-white py-2 px-4 rounded"
+          className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors"
         >
-          Neue Anmeldung
+          Zurück zum Formular
         </button>
       </div>
     );
   }
 
   return (
-    <div className="max-w-md mx-auto p-4">
-      <h1 className="text-xl font-bold mb-4">ZVV-Entdeckungsreise Anmeldung</h1>
+    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+      <h1 className="text-2xl font-bold text-center mb-6">ZVV-Entdeckungsreise Anmeldung</h1>
       
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 p-2 mb-4">
+        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
           {error}
         </div>
       )}
@@ -305,4 +306,9 @@ export default function Home() {
       </form>
     </div>
   );
+}
+
+// Standard-Export für Next.js-Seite
+export default function Home() {
+  return <ZVVEntdeckungsreiseForm />;
 } 

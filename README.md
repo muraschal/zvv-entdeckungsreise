@@ -141,6 +141,11 @@ CREATE TABLE registrations (
 - **Bestätigungs-E-Mail** an den Benutzer nach erfolgreicher Anmeldung.
 - **Benachrichtigungs-E-Mail** an den Administrator mit den Anmeldedetails.
 
+### **4. Widget-Integration**
+- **Standalone JavaScript-Widget** für die Integration in externe Websites.
+- **Keine iframe-Einbindung** erforderlich, sondern direkte Integration als React-Komponente.
+- **Konfigurierbare API-Basis-URL** für flexible Deployment-Szenarien.
+
 ## Best Practices
 - **Supabase Row-Level Security (RLS)** aktivieren, um Datenzugriff abzusichern.
 - **Serverless-Funktionen** für optimale Skalierbarkeit.
@@ -153,6 +158,7 @@ CREATE TABLE registrations (
 3. **API-Endpunkte implementiert** für Validierung und Einlösung von Codes.
 4. **E-Mail-Funktionalität integriert** für Bestätigungen und Benachrichtigungen.
 5. **Bestätigungsseite nach erfolgreicher Anmeldung erstellt**.
+6. **Widget-Integration** für externe Websites implementiert.
 
 ## Erste Schritte
 1. Klone das Repository:
@@ -184,8 +190,66 @@ CREATE TABLE registrations (
    npm run dev
    ```
 
+## Widget-Integration
+
+### Standalone JavaScript-Widget bauen
+
+Um das Widget als Standalone-JavaScript-Datei zu bauen, führe folgenden Befehl aus:
+
+```bash
+npm run build:standalone
+```
+
+Dies erstellt eine Datei `dist/zvv-entdeckungsreise-widget.js`, die in externe Websites eingebunden werden kann.
+
+### Widget in eine Website einbinden
+
+1. **Erforderliche Skripte einbinden:**
+
+```html
+<!-- React und ReactDOM einbinden (von CDN) -->
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+
+<!-- ZVV Entdeckungsreise Widget einbinden -->
+<script src="https://entdeckungsreise.zvv.ch/zvv-entdeckungsreise-widget.js"></script>
+```
+
+2. **Container für das Widget erstellen:**
+
+```html
+<div id="zvv-entdeckungsreise-widget"></div>
+```
+
+3. **Widget initialisieren:**
+
+```html
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Widget initialisieren
+    window.initZVVEntdeckungsreiseWidget('zvv-entdeckungsreise-widget', {
+      apiBaseUrl: 'https://entdeckungsreise.zvv.ch' // Optional: API-Basis-URL anpassen
+    });
+  });
+</script>
+```
+
+### Konfigurationsoptionen
+
+Das Widget akzeptiert folgende Konfigurationsoptionen:
+
+| Option | Typ | Standard | Beschreibung |
+|--------|-----|----------|-------------|
+| apiBaseUrl | String | 'https://entdeckungsreise.zvv.ch' | Die Basis-URL für API-Anfragen |
+
+### Beispiel
+
+Ein vollständiges Beispiel für die Integration findest du in der Datei `examples/widget-integration.html`.
+
 ## Fazit
 Diese Lösung macht den Bestellprozess **skalierbar, sicher und benutzerfreundlich**. Durch die direkte Integration des Anmeldeformulars in die Next.js-Anwendung wird der Prozess vereinfacht und die Abhängigkeit von Drittanbietern wie Typeform und Zapier eliminiert. Die E-Mail-Funktionalität sorgt für eine nahtlose Kommunikation mit den Benutzern und Administratoren.
+
+Die Widget-Integration ermöglicht eine flexible Einbindung des Anmeldeformulars in externe Websites, ohne auf iframes zurückgreifen zu müssen. Dies verbessert die Benutzererfahrung und erleichtert die Integration in bestehende Webseiten.
 
 ## Datenbank-Setup
 
