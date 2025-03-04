@@ -1,15 +1,28 @@
 import { NextResponse } from 'next/server';
 import supabase from '../../../lib/supabase';
+import { sendConfirmationEmail, sendAdminNotificationEmail } from '../../../lib/email';
+
+// Admin-E-Mail-Adresse
+const ADMIN_EMAIL = 'admin@zvv-entdeckungsreise.ch'; // Ersetze dies mit der tatsächlichen Admin-E-Mail
 
 export async function POST(request: Request) {
   try {
     // Extrahiere die Daten aus dem Request-Body
-    const { code, school, studentCount, travelDate, additionalNotes } = await request.json();
+    const { code, school, studentCount, travelDate, additionalNotes, email } = await request.json();
 
     // Überprüfe, ob alle erforderlichen Felder vorhanden sind
-    if (!code || !school || !studentCount || !travelDate) {
+    if (!code || !school || !studentCount || !travelDate || !email) {
       return NextResponse.json(
         { success: false, message: 'Alle Pflichtfelder müssen ausgefüllt sein.' },
+        { status: 400 }
+      );
+    }
+
+    // Validiere die E-Mail-Adresse
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json(
+        { success: false, message: 'Bitte gib eine gültige E-Mail-Adresse ein.' },
         { status: 400 }
       );
     }
@@ -100,6 +113,35 @@ export async function POST(request: Request) {
       );
     }
 
+    // 3. Sende Bestätigungs-E-Mail an den Benutzer
+    const { success: emailSuccess, error: emailError } = await sendConfirmationEmail({
+      to: email,
+      school,
+      studentCount,
+      travelDate,
+      code
+    });
+
+    if (!emailSuccess) {
+      console.error('Fehler beim Senden der Bestätigungs-E-Mail:', emailError);
+      // Wir setzen den Vorgang trotzdem fort, da die Anmeldung erfolgreich war
+    }
+
+    // 4. Sende Benachrichtigungs-E-Mail an den Administrator
+    const { success: adminEmailSuccess, error: adminEmailError } = await sendAdminNotificationEmail({
+      adminEmail: ADMIN_EMAIL,
+      school,
+      studentCount,
+      travelDate,
+      code,
+      additionalNotes
+    });
+
+    if (!adminEmailSuccess) {
+      console.error('Fehler beim Senden der Admin-Benachrichtigung:', adminEmailError);
+      // Wir setzen den Vorgang trotzdem fort, da die Anmeldung erfolgreich war
+    }
+
     // Code erfolgreich eingelöst und Anmeldung gespeichert
     return NextResponse.json(
       { 
@@ -108,7 +150,8 @@ export async function POST(request: Request) {
         data: {
           registrationId: registrationData[0].id,
           school: school,
-          travelDate: travelDate
+          travelDate: travelDate,
+          emailSent: emailSuccess
         }
       },
       { status: 200 }

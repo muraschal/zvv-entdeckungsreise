@@ -10,7 +10,8 @@ export default function RegisterPage() {
     school: '',
     studentCount: '',
     travelDate: '',
-    additionalNotes: ''
+    additionalNotes: '',
+    email: ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -55,7 +56,8 @@ export default function RegisterPage() {
           school: formData.school,
           studentCount: parseInt(formData.studentCount),
           travelDate: formData.travelDate,
-          additionalNotes: formData.additionalNotes
+          additionalNotes: formData.additionalNotes,
+          email: formData.email
         }),
       });
 
@@ -81,7 +83,7 @@ export default function RegisterPage() {
       <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
         <h1 className="text-2xl font-bold text-green-600 mb-4">Anmeldung erfolgreich!</h1>
         <p className="mb-4">Vielen Dank für deine Anmeldung zur ZVV-Entdeckungsreise.</p>
-        <p className="mb-4">Wir haben deine Anfrage erhalten und werden uns in Kürze bei dir melden.</p>
+        <p className="mb-4">Wir haben deine Anfrage erhalten und eine Bestätigungs-E-Mail an dich gesendet.</p>
         <button
           onClick={() => router.push('/')}
           className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors"
@@ -133,6 +135,25 @@ export default function RegisterPage() {
             className="w-full px-3 py-2 border border-gray-300 rounded-md"
             placeholder="Name der Schule"
           />
+        </div>
+        
+        <div className="mb-4">
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            E-Mail-Adresse*
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            placeholder="beispiel@schule.ch"
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            Wir senden eine Bestätigungs-E-Mail an diese Adresse.
+          </p>
         </div>
         
         <div className="mb-4">
