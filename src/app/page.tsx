@@ -2,6 +2,19 @@
 
 import { useState } from 'react';
 
+// Hilfsfunktion zur Formatierung des Datums für die Anzeige
+const formatDateForDisplay = (dateString: string) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('de-CH');
+};
+
+// Hilfsfunktion zur Formatierung der Zeit für die Anzeige
+const formatTimeForDisplay = (timeString: string) => {
+  if (!timeString) return '';
+  return timeString;
+};
+
 export default function Home() {
   const [formData, setFormData] = useState({
     code: '',
@@ -25,10 +38,26 @@ export default function Home() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  // Hilfsfunktion zur Validierung des Datums
+  const validateDate = (date: string) => {
+    const selectedDate = new Date(date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    return selectedDate >= today;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
+
+    // Validiere das Datum
+    if (formData.travelDate && !validateDate(formData.travelDate)) {
+      setError('Das Reisedatum muss in der Zukunft liegen.');
+      setIsLoading(false);
+      return;
+    }
 
     try {
       // Zuerst den Code validieren
@@ -219,28 +248,39 @@ export default function Home() {
         
         <div className="mb-3">
           <label htmlFor="travelDate" className="block mb-1">Gewünschtes Reisedatum*</label>
-          <input
-            type="date"
-            id="travelDate"
-            name="travelDate"
-            value={formData.travelDate}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border"
-          />
+          <div className="relative">
+            <input
+              type="date"
+              id="travelDate"
+              name="travelDate"
+              value={formData.travelDate}
+              onChange={handleChange}
+              required
+              min={new Date().toISOString().split('T')[0]}
+              className="w-full p-2 border"
+            />
+            <div className="text-xs text-gray-500 mt-1">
+              Bitte wählen Sie ein Datum in der Zukunft
+            </div>
+          </div>
         </div>
         
         <div className="mb-3">
           <label htmlFor="arrivalTime" className="block mb-1">Ankunftszeit*</label>
-          <input
-            type="time"
-            id="arrivalTime"
-            name="arrivalTime"
-            value={formData.arrivalTime}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border"
-          />
+          <div className="relative">
+            <input
+              type="time"
+              id="arrivalTime"
+              name="arrivalTime"
+              value={formData.arrivalTime}
+              onChange={handleChange}
+              required
+              className="w-full p-2 border"
+            />
+            <div className="text-xs text-gray-500 mt-1">
+              Format: HH:MM (z.B. 09:30)
+            </div>
+          </div>
         </div>
         
         <div className="mb-4">
