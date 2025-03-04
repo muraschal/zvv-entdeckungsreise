@@ -45,7 +45,7 @@ export async function sendConfirmationEmail({
     const { data, error } = await resend.emails.send({
       from: FROM_EMAIL,
       to: [to],
-      reply_to: ADMIN_EMAIL,
+      replyTo: ADMIN_EMAIL,
       subject: `Bestätigung deiner Anmeldung zur ZVV-Entdeckungsreise`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
