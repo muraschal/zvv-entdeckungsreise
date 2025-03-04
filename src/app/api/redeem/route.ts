@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import supabase from '../../../lib/supabase';
-import { sendConfirmationEmail, sendAdminNotificationEmail } from '../../../lib/email';
+import supabase from '@/lib/supabase';
+import { sendConfirmationEmail, sendAdminNotificationEmail } from '@/lib/email';
 
 // Admin-E-Mail-Adresse aus Umgebungsvariablen oder Fallback
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@zvv-entdeckungsreise.ch';

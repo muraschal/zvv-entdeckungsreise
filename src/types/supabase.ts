@@ -11,21 +11,18 @@ export interface Database {
     Tables: {
       codes: {
         Row: {
-          id: string
           code: string
           status: string
           created_at: string
           expires_at: string | null
         }
         Insert: {
-          id?: string
           code: string
           status?: string
           created_at?: string
           expires_at?: string | null
         }
         Update: {
-          id?: string
           code?: string
           status?: string
           created_at?: string
@@ -41,6 +38,12 @@ export interface Database {
           student_count: number
           travel_date: string
           additional_notes: string | null
+          email: string
+          contact_person: string
+          phone_number: string
+          class: string
+          accompanist_count: number
+          arrival_time: string
           created_at: string
         }
         Insert: {
@@ -50,6 +53,12 @@ export interface Database {
           student_count: number
           travel_date: string
           additional_notes?: string | null
+          email: string
+          contact_person: string
+          phone_number: string
+          class: string
+          accompanist_count: number
+          arrival_time: string
           created_at?: string
         }
         Update: {
@@ -59,6 +68,12 @@ export interface Database {
           student_count?: number
           travel_date?: string
           additional_notes?: string | null
+          email?: string
+          contact_person?: string
+          phone_number?: string
+          class?: string
+          accompanist_count?: number
+          arrival_time?: string
           created_at?: string
         }
         Relationships: [
