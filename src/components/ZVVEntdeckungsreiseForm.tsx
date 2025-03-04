@@ -118,7 +118,7 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
         <p className="mb-4">Wir haben deine Anfrage erhalten und eine Bestätigungs-E-Mail an dich gesendet.</p>
         <button
           onClick={() => setSuccess(false)}
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors"
+          className="inline-flex items-center justify-center whitespace-nowrap rounded-lg min-w-[160px] bg-[#0479cc] hover:bg-[#035999] text-white font-bold tracking-[0.2px] h-10 px-4 py-2 focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)]"
         >
           Zurück zum Formular
         </button>
@@ -135,8 +135,8 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
       )}
       
       <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label htmlFor="code" className="block mb-1">Ticketcode*</label>
+        <div className="mb-6">
+          <h4 id="code" className="mb-1 flex text-h4 font-bold text-black">Ticketcode <span className="ml-1 text-grey">*</span></h4>
           <input
             type="text"
             id="code"
@@ -144,12 +144,13 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
             value={formData.code}
             onChange={handleChange}
             required
-            className="w-full p-2 border"
+            className="flex h-10 w-full rounded-[4px] border-2 border-grey bg-white px-3 py-2 pt-[10px] font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)] focus:ring-[3px] focus:ring-[#0479cc] mb-[1.2rem] text-p text-black"
+            aria-labelledby="code"
           />
         </div>
         
-        <div className="mb-3">
-          <label htmlFor="school" className="block mb-1">Schule*</label>
+        <div className="mb-6">
+          <h4 id="school" className="mb-1 flex text-h4 font-bold text-black">Schule <span className="ml-1 text-grey">*</span></h4>
           <input
             type="text"
             id="school"
@@ -157,12 +158,13 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
             value={formData.school}
             onChange={handleChange}
             required
-            className="w-full p-2 border"
+            className="flex h-10 w-full rounded-[4px] border-2 border-grey bg-white px-3 py-2 pt-[10px] font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)] focus:ring-[3px] focus:ring-[#0479cc] mb-[1.2rem] text-p text-black"
+            aria-labelledby="school"
           />
         </div>
         
-        <div className="mb-3">
-          <label htmlFor="contactPerson" className="block mb-1">Kontaktperson*</label>
+        <div className="mb-6">
+          <h4 id="contactPerson" className="mb-1 flex text-h4 font-bold text-black">Kontaktperson <span className="ml-1 text-grey">*</span></h4>
           <input
             type="text"
             id="contactPerson"
@@ -170,12 +172,13 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
             value={formData.contactPerson}
             onChange={handleChange}
             required
-            className="w-full p-2 border"
+            className="flex h-10 w-full rounded-[4px] border-2 border-grey bg-white px-3 py-2 pt-[10px] font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)] focus:ring-[3px] focus:ring-[#0479cc] mb-[1.2rem] text-p text-black"
+            aria-labelledby="contactPerson"
           />
         </div>
         
-        <div className="mb-3">
-          <label htmlFor="email" className="block mb-1">E-Mail-Adresse*</label>
+        <div className="mb-6">
+          <h4 id="email" className="mb-1 flex text-h4 font-bold text-black">E-Mail-Adresse <span className="ml-1 text-grey">*</span></h4>
           <input
             type="email"
             id="email"
@@ -183,12 +186,13 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
             value={formData.email}
             onChange={handleChange}
             required
-            className="w-full p-2 border"
+            className="flex h-10 w-full rounded-[4px] border-2 border-grey bg-white px-3 py-2 pt-[10px] font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)] focus:ring-[3px] focus:ring-[#0479cc] mb-[1.2rem] text-p text-black"
+            aria-labelledby="email"
           />
         </div>
         
-        <div className="mb-3">
-          <label htmlFor="phoneNumber" className="block mb-1">Telefonnummer*</label>
+        <div className="mb-6">
+          <h4 id="phoneNumber" className="mb-1 flex text-h4 font-bold text-black">Telefonnummer <span className="ml-1 text-grey">*</span></h4>
           <input
             type="tel"
             id="phoneNumber"
@@ -196,19 +200,21 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
             value={formData.phoneNumber}
             onChange={handleChange}
             required
-            className="w-full p-2 border"
+            className="flex h-10 w-full rounded-[4px] border-2 border-grey bg-white px-3 py-2 pt-[10px] font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)] focus:ring-[3px] focus:ring-[#0479cc] mb-[1.2rem] text-p text-black"
+            aria-labelledby="phoneNumber"
           />
         </div>
         
-        <div className="mb-3">
-          <label htmlFor="className" className="block mb-1">Klasse*</label>
+        <div className="mb-6">
+          <h4 id="className" className="mb-1 flex text-h4 font-bold text-black">Klasse <span className="ml-1 text-grey">*</span></h4>
           <select
             id="className"
             name="className"
             value={formData.className}
             onChange={handleChange}
             required
-            className="w-full p-2 border"
+            className="flex h-10 w-full rounded-[4px] border-2 border-grey bg-white px-3 py-2 pt-[10px] font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)] focus:ring-[3px] focus:ring-[#0479cc] mb-[1.2rem] text-p text-black"
+            aria-labelledby="className"
           >
             <option value="">Bitte wählen</option>
             <option value="4. Klasse">4. Klasse</option>
@@ -217,8 +223,8 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
           </select>
         </div>
         
-        <div className="mb-3">
-          <label htmlFor="studentCount" className="block mb-1">Anzahl Schüler*</label>
+        <div className="mb-6">
+          <h4 id="studentCount" className="mb-1 flex text-h4 font-bold text-black">Anzahl Schüler <span className="ml-1 text-grey">*</span></h4>
           <input
             type="number"
             id="studentCount"
@@ -227,12 +233,13 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
             onChange={handleChange}
             required
             min="1"
-            className="w-full p-2 border"
+            className="flex h-10 w-full rounded-[4px] border-2 border-grey bg-white px-3 py-2 pt-[10px] font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)] focus:ring-[3px] focus:ring-[#0479cc] mb-[1.2rem] text-p text-black"
+            aria-labelledby="studentCount"
           />
         </div>
         
-        <div className="mb-3">
-          <label htmlFor="accompanistCount" className="block mb-1">Anzahl Begleitpersonen*</label>
+        <div className="mb-6">
+          <h4 id="accompanistCount" className="mb-1 flex text-h4 font-bold text-black">Anzahl Begleitpersonen <span className="ml-1 text-grey">*</span></h4>
           <input
             type="number"
             id="accompanistCount"
@@ -241,12 +248,13 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
             onChange={handleChange}
             required
             min="1"
-            className="w-full p-2 border"
+            className="flex h-10 w-full rounded-[4px] border-2 border-grey bg-white px-3 py-2 pt-[10px] font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)] focus:ring-[3px] focus:ring-[#0479cc] mb-[1.2rem] text-p text-black"
+            aria-labelledby="accompanistCount"
           />
         </div>
         
-        <div className="mb-3">
-          <label htmlFor="travelDate" className="block mb-1">Gewünschtes Reisedatum*</label>
+        <div className="mb-6">
+          <h4 id="travelDate" className="mb-1 flex text-h4 font-bold text-black">Gewünschtes Reisedatum <span className="ml-1 text-grey">*</span></h4>
           <div className="relative">
             <input
               type="date"
@@ -256,7 +264,8 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
               onChange={handleChange}
               required
               min={new Date().toISOString().split('T')[0]}
-              className="w-full p-2 border"
+              className="flex h-10 w-full rounded-[4px] border-2 border-grey bg-white px-3 py-2 pt-[10px] font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)] focus:ring-[3px] focus:ring-[#0479cc] mb-[1.2rem] text-p text-black"
+              aria-labelledby="travelDate"
             />
             <div className="text-xs text-gray-500 mt-1">
               Bitte wählen Sie ein Datum in der Zukunft
@@ -264,8 +273,8 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
           </div>
         </div>
         
-        <div className="mb-3">
-          <label htmlFor="arrivalTime" className="block mb-1">Ankunftszeit*</label>
+        <div className="mb-6">
+          <h4 id="arrivalTime" className="mb-1 flex text-h4 font-bold text-black">Ankunftszeit <span className="ml-1 text-grey">*</span></h4>
           <div className="relative">
             <input
               type="time"
@@ -274,7 +283,8 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
               value={formData.arrivalTime}
               onChange={handleChange}
               required
-              className="w-full p-2 border"
+              className="flex h-10 w-full rounded-[4px] border-2 border-grey bg-white px-3 py-2 pt-[10px] font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)] focus:ring-[3px] focus:ring-[#0479cc] mb-[1.2rem] text-p text-black"
+              aria-labelledby="arrivalTime"
             />
             <div className="text-xs text-gray-500 mt-1">
               Format: HH:MM (z.B. 09:30)
@@ -282,25 +292,30 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
           </div>
         </div>
         
-        <div className="mb-4">
-          <label htmlFor="additionalNotes" className="block mb-1">Zusätzliche Anmerkungen</label>
+        <div className="mb-6">
+          <h4 id="additionalNotes" className="mb-1 flex text-h4 font-bold text-black">Zusätzliche Anmerkungen</h4>
           <textarea
             id="additionalNotes"
             name="additionalNotes"
             value={formData.additionalNotes}
             onChange={handleChange}
             rows={3}
-            className="w-full p-2 border"
+            className="flex w-full rounded-[4px] border-2 border-grey bg-white px-3 py-2 font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)] focus:ring-[3px] focus:ring-[#0479cc] mb-[1.2rem] text-p text-black"
+            aria-labelledby="additionalNotes"
           ></textarea>
         </div>
         
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="w-full p-2 bg-blue-500 text-white rounded"
-        >
-          {isLoading ? 'Wird verarbeitet...' : 'Anmeldung absenden'}
-        </button>
+        <div className="mt-8 text-p text-grey">* Diese Felder müssen ausgefüllt werden</div>
+        
+        <div className="mt-8 flex w-full items-end justify-end">
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="inline-flex items-center justify-center whitespace-nowrap rounded-lg min-w-[160px] bg-[#0479cc] hover:bg-[#035999] text-white font-bold tracking-[0.2px] h-10 px-4 py-2 focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)] disabled:opacity-50 disabled:hover:bg-[#0479cc]"
+          >
+            {isLoading ? 'Wird verarbeitet...' : 'Anmeldung absenden'}
+          </button>
+        </div>
       </form>
     </div>
   );
