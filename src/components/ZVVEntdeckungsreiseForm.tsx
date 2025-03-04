@@ -112,7 +112,7 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
 
   if (success) {
     return (
-      <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+      <div className="max-w-md mx-auto p-4 bg-white rounded-lg shadow-md">
         <h1 className="text-2xl font-bold text-green-600 mb-4">Anmeldung erfolgreich!</h1>
         <p className="mb-4">Vielen Dank für deine Anmeldung zur ZVV-Entdeckungsreise.</p>
         <p className="mb-4">Wir haben deine Anfrage erhalten und eine Bestätigungs-E-Mail an dich gesendet.</p>
@@ -127,7 +127,7 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
   }
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+    <div className="max-w-md mx-auto p-4 bg-white rounded-lg shadow-md">
       {error && (
         <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
           {error}
@@ -135,127 +135,119 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
       )}
       
       <form onSubmit={handleSubmit}>
-        <div className="mb-6">
-          <h4 id="code" className="mb-1 flex text-h4 font-bold text-black">Ticketcode <span className="ml-1 text-grey">*</span></h4>
-          <input
-            type="text"
-            id="code"
-            name="code"
-            value={formData.code}
-            onChange={handleChange}
-            required
-            className="flex h-10 w-full rounded-[4px] border-2 border-grey bg-white px-3 py-2 pt-[10px] font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)] focus:ring-[3px] focus:ring-[#0479cc] mb-[1.2rem] text-p text-black"
-            aria-labelledby="code"
-          />
-        </div>
-        
-        <div className="mb-6">
-          <h4 id="school" className="mb-1 flex text-h4 font-bold text-black">Schule <span className="ml-1 text-grey">*</span></h4>
-          <input
-            type="text"
-            id="school"
-            name="school"
-            value={formData.school}
-            onChange={handleChange}
-            required
-            className="flex h-10 w-full rounded-[4px] border-2 border-grey bg-white px-3 py-2 pt-[10px] font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)] focus:ring-[3px] focus:ring-[#0479cc] mb-[1.2rem] text-p text-black"
-            aria-labelledby="school"
-          />
-        </div>
-        
-        <div className="mb-6">
-          <h4 id="contactPerson" className="mb-1 flex text-h4 font-bold text-black">Kontaktperson <span className="ml-1 text-grey">*</span></h4>
-          <input
-            type="text"
-            id="contactPerson"
-            name="contactPerson"
-            value={formData.contactPerson}
-            onChange={handleChange}
-            required
-            className="flex h-10 w-full rounded-[4px] border-2 border-grey bg-white px-3 py-2 pt-[10px] font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)] focus:ring-[3px] focus:ring-[#0479cc] mb-[1.2rem] text-p text-black"
-            aria-labelledby="contactPerson"
-          />
-        </div>
-        
-        <div className="mb-6">
-          <h4 id="email" className="mb-1 flex text-h4 font-bold text-black">E-Mail-Adresse <span className="ml-1 text-grey">*</span></h4>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            className="flex h-10 w-full rounded-[4px] border-2 border-grey bg-white px-3 py-2 pt-[10px] font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)] focus:ring-[3px] focus:ring-[#0479cc] mb-[1.2rem] text-p text-black"
-            aria-labelledby="email"
-          />
-        </div>
-        
-        <div className="mb-6">
-          <h4 id="phoneNumber" className="mb-1 flex text-h4 font-bold text-black">Telefonnummer <span className="ml-1 text-grey">*</span></h4>
-          <input
-            type="tel"
-            id="phoneNumber"
-            name="phoneNumber"
-            value={formData.phoneNumber}
-            onChange={handleChange}
-            required
-            className="flex h-10 w-full rounded-[4px] border-2 border-grey bg-white px-3 py-2 pt-[10px] font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)] focus:ring-[3px] focus:ring-[#0479cc] mb-[1.2rem] text-p text-black"
-            aria-labelledby="phoneNumber"
-          />
-        </div>
-        
-        <div className="mb-6">
-          <h4 id="className" className="mb-1 flex text-h4 font-bold text-black">Klasse <span className="ml-1 text-grey">*</span></h4>
-          <select
-            id="className"
-            name="className"
-            value={formData.className}
-            onChange={handleChange}
-            required
-            className="flex h-10 w-full rounded-[4px] border-2 border-grey bg-white px-3 py-2 pt-[10px] font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)] focus:ring-[3px] focus:ring-[#0479cc] mb-[1.2rem] text-p text-black"
-            aria-labelledby="className"
-          >
-            <option value="">Bitte wählen</option>
-            <option value="4. Klasse">4. Klasse</option>
-            <option value="5. Klasse">5. Klasse</option>
-            <option value="6. Klasse">6. Klasse</option>
-          </select>
-        </div>
-        
-        <div className="mb-6">
-          <h4 id="studentCount" className="mb-1 flex text-h4 font-bold text-black">Anzahl Schüler <span className="ml-1 text-grey">*</span></h4>
-          <input
-            type="number"
-            id="studentCount"
-            name="studentCount"
-            value={formData.studentCount}
-            onChange={handleChange}
-            required
-            min="1"
-            className="flex h-10 w-full rounded-[4px] border-2 border-grey bg-white px-3 py-2 pt-[10px] font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)] focus:ring-[3px] focus:ring-[#0479cc] mb-[1.2rem] text-p text-black"
-            aria-labelledby="studentCount"
-          />
-        </div>
-        
-        <div className="mb-6">
-          <h4 id="accompanistCount" className="mb-1 flex text-h4 font-bold text-black">Anzahl Begleitpersonen <span className="ml-1 text-grey">*</span></h4>
-          <input
-            type="number"
-            id="accompanistCount"
-            name="accompanistCount"
-            value={formData.accompanistCount}
-            onChange={handleChange}
-            required
-            min="1"
-            className="flex h-10 w-full rounded-[4px] border-2 border-grey bg-white px-3 py-2 pt-[10px] font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)] focus:ring-[3px] focus:ring-[#0479cc] mb-[1.2rem] text-p text-black"
-            aria-labelledby="accompanistCount"
-          />
-        </div>
-        
-        <div className="mb-6">
-          <h4 id="travelDate" className="mb-1 flex text-h4 font-bold text-black">Gewünschtes Reisedatum <span className="ml-1 text-grey">*</span></h4>
-          <div className="relative">
+        <div className="grid grid-cols-3 gap-3 mb-4">
+          <label htmlFor="code" className="flex items-center font-bold text-black">Ticketcode <span className="ml-1 text-grey">*</span></label>
+          <div className="col-span-2">
+            <input
+              type="text"
+              id="code"
+              name="code"
+              value={formData.code}
+              onChange={handleChange}
+              required
+              className="w-full h-10 rounded-[4px] border-2 border-grey bg-white px-3 py-2 font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)]"
+            />
+          </div>
+          
+          <label htmlFor="school" className="flex items-center font-bold text-black">Schule <span className="ml-1 text-grey">*</span></label>
+          <div className="col-span-2">
+            <input
+              type="text"
+              id="school"
+              name="school"
+              value={formData.school}
+              onChange={handleChange}
+              required
+              className="w-full h-10 rounded-[4px] border-2 border-grey bg-white px-3 py-2 font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)]"
+            />
+          </div>
+          
+          <label htmlFor="contactPerson" className="flex items-center font-bold text-black">Kontaktperson <span className="ml-1 text-grey">*</span></label>
+          <div className="col-span-2">
+            <input
+              type="text"
+              id="contactPerson"
+              name="contactPerson"
+              value={formData.contactPerson}
+              onChange={handleChange}
+              required
+              className="w-full h-10 rounded-[4px] border-2 border-grey bg-white px-3 py-2 font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)]"
+            />
+          </div>
+          
+          <label htmlFor="email" className="flex items-center font-bold text-black">E-Mail <span className="ml-1 text-grey">*</span></label>
+          <div className="col-span-2">
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              className="w-full h-10 rounded-[4px] border-2 border-grey bg-white px-3 py-2 font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)]"
+            />
+          </div>
+          
+          <label htmlFor="phoneNumber" className="flex items-center font-bold text-black">Telefon <span className="ml-1 text-grey">*</span></label>
+          <div className="col-span-2">
+            <input
+              type="tel"
+              id="phoneNumber"
+              name="phoneNumber"
+              value={formData.phoneNumber}
+              onChange={handleChange}
+              required
+              className="w-full h-10 rounded-[4px] border-2 border-grey bg-white px-3 py-2 font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)]"
+            />
+          </div>
+          
+          <label htmlFor="className" className="flex items-center font-bold text-black">Klasse <span className="ml-1 text-grey">*</span></label>
+          <div className="col-span-2">
+            <select
+              id="className"
+              name="className"
+              value={formData.className}
+              onChange={handleChange}
+              required
+              className="w-full h-10 rounded-[4px] border-2 border-grey bg-white px-3 py-2 font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)]"
+            >
+              <option value="">Bitte wählen</option>
+              <option value="4. Klasse">4. Klasse</option>
+              <option value="5. Klasse">5. Klasse</option>
+              <option value="6. Klasse">6. Klasse</option>
+            </select>
+          </div>
+          
+          <label htmlFor="studentCount" className="flex items-center font-bold text-black">Anzahl Schüler <span className="ml-1 text-grey">*</span></label>
+          <div className="col-span-2">
+            <input
+              type="number"
+              id="studentCount"
+              name="studentCount"
+              value={formData.studentCount}
+              onChange={handleChange}
+              required
+              min="1"
+              className="w-full h-10 rounded-[4px] border-2 border-grey bg-white px-3 py-2 font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)]"
+            />
+          </div>
+          
+          <label htmlFor="accompanistCount" className="flex items-center font-bold text-black">Begleitpersonen <span className="ml-1 text-grey">*</span></label>
+          <div className="col-span-2">
+            <input
+              type="number"
+              id="accompanistCount"
+              name="accompanistCount"
+              value={formData.accompanistCount}
+              onChange={handleChange}
+              required
+              min="1"
+              className="w-full h-10 rounded-[4px] border-2 border-grey bg-white px-3 py-2 font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)]"
+            />
+          </div>
+          
+          <label htmlFor="travelDate" className="flex items-center font-bold text-black">Reisedatum <span className="ml-1 text-grey">*</span></label>
+          <div className="col-span-2">
             <input
               type="date"
               id="travelDate"
@@ -264,18 +256,12 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
               onChange={handleChange}
               required
               min={new Date().toISOString().split('T')[0]}
-              className="flex h-10 w-full rounded-[4px] border-2 border-grey bg-white px-3 py-2 pt-[10px] font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)] focus:ring-[3px] focus:ring-[#0479cc] mb-[1.2rem] text-p text-black"
-              aria-labelledby="travelDate"
+              className="w-full h-10 rounded-[4px] border-2 border-grey bg-white px-3 py-2 font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)]"
             />
-            <div className="text-xs text-gray-500 mt-1">
-              Bitte wählen Sie ein Datum in der Zukunft
-            </div>
           </div>
-        </div>
-        
-        <div className="mb-6">
-          <h4 id="arrivalTime" className="mb-1 flex text-h4 font-bold text-black">Ankunftszeit <span className="ml-1 text-grey">*</span></h4>
-          <div className="relative">
+          
+          <label htmlFor="arrivalTime" className="flex items-center font-bold text-black">Ankunftszeit <span className="ml-1 text-grey">*</span></label>
+          <div className="col-span-2">
             <input
               type="time"
               id="arrivalTime"
@@ -283,31 +269,26 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
               value={formData.arrivalTime}
               onChange={handleChange}
               required
-              className="flex h-10 w-full rounded-[4px] border-2 border-grey bg-white px-3 py-2 pt-[10px] font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)] focus:ring-[3px] focus:ring-[#0479cc] mb-[1.2rem] text-p text-black"
-              aria-labelledby="arrivalTime"
+              className="w-full h-10 rounded-[4px] border-2 border-grey bg-white px-3 py-2 font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)]"
             />
-            <div className="text-xs text-gray-500 mt-1">
-              Format: HH:MM (z.B. 09:30)
-            </div>
+          </div>
+          
+          <label htmlFor="additionalNotes" className="flex items-center font-bold text-black">Anmerkungen</label>
+          <div className="col-span-2">
+            <textarea
+              id="additionalNotes"
+              name="additionalNotes"
+              value={formData.additionalNotes}
+              onChange={handleChange}
+              rows={2}
+              className="w-full rounded-[4px] border-2 border-grey bg-white px-3 py-2 font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)]"
+            ></textarea>
           </div>
         </div>
         
-        <div className="mb-6">
-          <h4 id="additionalNotes" className="mb-1 flex text-h4 font-bold text-black">Zusätzliche Anmerkungen</h4>
-          <textarea
-            id="additionalNotes"
-            name="additionalNotes"
-            value={formData.additionalNotes}
-            onChange={handleChange}
-            rows={3}
-            className="flex w-full rounded-[4px] border-2 border-grey bg-white px-3 py-2 font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)] focus:ring-[3px] focus:ring-[#0479cc] mb-[1.2rem] text-p text-black"
-            aria-labelledby="additionalNotes"
-          ></textarea>
-        </div>
+        <div className="text-sm text-grey mb-4">* Diese Felder müssen ausgefüllt werden</div>
         
-        <div className="mt-8 text-p text-grey">* Diese Felder müssen ausgefüllt werden</div>
-        
-        <div className="mt-8 flex w-full items-end justify-end">
+        <div className="flex justify-end">
           <button
             type="submit"
             disabled={isLoading}
