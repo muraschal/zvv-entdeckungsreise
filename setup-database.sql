@@ -30,6 +30,11 @@ CREATE TABLE registrations (
     travel_date DATE NOT NULL,
     additional_notes TEXT,
     email TEXT NOT NULL,
+    contact_person TEXT NOT NULL,
+    phone_number TEXT NOT NULL,
+    class TEXT NOT NULL,
+    accompanist_count INTEGER NOT NULL,
+    arrival_time TIME NOT NULL,
     created_at TIMESTAMP DEFAULT now()
 );
 
@@ -45,6 +50,11 @@ COMMENT ON COLUMN registrations.student_count IS 'Anzahl der Schüler';
 COMMENT ON COLUMN registrations.travel_date IS 'Gewünschtes Reisedatum';
 COMMENT ON COLUMN registrations.additional_notes IS 'Zusätzliche Anmerkungen';
 COMMENT ON COLUMN registrations.email IS 'E-Mail-Adresse für die Bestätigung';
+COMMENT ON COLUMN registrations.contact_person IS 'Name der Kontaktperson';
+COMMENT ON COLUMN registrations.phone_number IS 'Telefonnummer der Kontaktperson';
+COMMENT ON COLUMN registrations.class IS 'Klassenstufe';
+COMMENT ON COLUMN registrations.accompanist_count IS 'Anzahl der Begleitpersonen';
+COMMENT ON COLUMN registrations.arrival_time IS 'Geplante Ankunftszeit';
 COMMENT ON COLUMN registrations.created_at IS 'Zeitpunkt der Anmeldung';
 
 -- 4. Demo-Codes einfügen

@@ -14,13 +14,23 @@ export async function sendConfirmationEmail({
   school,
   studentCount,
   travelDate,
-  code
+  code,
+  className,
+  contactPerson,
+  phoneNumber,
+  accompanistCount,
+  arrivalTime
 }: {
   to: string;
   school: string;
   studentCount: number;
   travelDate: string;
   code: string;
+  className: string;
+  contactPerson: string;
+  phoneNumber: string;
+  accompanistCount: number;
+  arrivalTime: string;
 }) {
   try {
     // Formatiere das Datum für die Anzeige
@@ -44,8 +54,13 @@ export async function sendConfirmationEmail({
             <h2 style="margin-top: 0;">Deine Anmeldedaten:</h2>
             <ul style="padding-left: 20px;">
               <li><strong>Schule:</strong> ${school}</li>
+              <li><strong>Kontaktperson:</strong> ${contactPerson}</li>
+              <li><strong>Telefonnummer:</strong> ${phoneNumber}</li>
+              <li><strong>Klasse:</strong> ${className}</li>
               <li><strong>Anzahl Schüler:</strong> ${studentCount}</li>
+              <li><strong>Anzahl Begleitpersonen:</strong> ${accompanistCount}</li>
               <li><strong>Gewünschtes Reisedatum:</strong> ${formattedDate}</li>
+              <li><strong>Ankunftszeit:</strong> ${arrivalTime} Uhr</li>
               <li><strong>Verwendeter Code:</strong> ${code}</li>
             </ul>
           </div>
@@ -87,7 +102,12 @@ export async function sendAdminNotificationEmail({
   studentCount,
   travelDate,
   code,
-  additionalNotes
+  additionalNotes,
+  className,
+  contactPerson,
+  phoneNumber,
+  accompanistCount,
+  arrivalTime
 }: {
   adminEmail: string;
   school: string;
@@ -95,6 +115,11 @@ export async function sendAdminNotificationEmail({
   travelDate: string;
   code: string;
   additionalNotes?: string;
+  className: string;
+  contactPerson: string;
+  phoneNumber: string;
+  accompanistCount: number;
+  arrivalTime: string;
 }) {
   try {
     // Formatiere das Datum für die Anzeige
@@ -118,8 +143,13 @@ export async function sendAdminNotificationEmail({
             <h2 style="margin-top: 0;">Anmeldedaten:</h2>
             <ul style="padding-left: 20px;">
               <li><strong>Schule:</strong> ${school}</li>
+              <li><strong>Kontaktperson:</strong> ${contactPerson}</li>
+              <li><strong>Telefonnummer:</strong> ${phoneNumber}</li>
+              <li><strong>Klasse:</strong> ${className}</li>
               <li><strong>Anzahl Schüler:</strong> ${studentCount}</li>
+              <li><strong>Anzahl Begleitpersonen:</strong> ${accompanistCount}</li>
               <li><strong>Gewünschtes Reisedatum:</strong> ${formattedDate}</li>
+              <li><strong>Ankunftszeit:</strong> ${arrivalTime} Uhr</li>
               <li><strong>Verwendeter Code:</strong> ${code}</li>
               ${additionalNotes ? `<li><strong>Zusätzliche Anmerkungen:</strong> ${additionalNotes}</li>` : ''}
             </ul>

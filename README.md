@@ -41,6 +41,11 @@ CREATE TABLE registrations (
     travel_date DATE NOT NULL,
     additional_notes TEXT,
     email TEXT NOT NULL,
+    contact_person TEXT NOT NULL,
+    phone_number TEXT NOT NULL,
+    class TEXT NOT NULL,
+    accompanist_count INTEGER NOT NULL,
+    arrival_time TIME NOT NULL,
     created_at TIMESTAMP DEFAULT now()
 );
 ```
@@ -50,6 +55,11 @@ CREATE TABLE registrations (
 - `travel_date`: Gewünschtes Reisedatum.
 - `additional_notes`: Zusätzliche Anmerkungen.
 - `email`: E-Mail-Adresse für die Bestätigung.
+- `contact_person`: Name der Kontaktperson.
+- `phone_number`: Telefonnummer der Kontaktperson.
+- `class`: Klassenstufe (z.B. "4. Klasse").
+- `accompanist_count`: Anzahl der Begleitpersonen.
+- `arrival_time`: Geplante Ankunftszeit.
 
 ## Funktionalitäten
 ### **1. Code-Validierung**
@@ -60,9 +70,14 @@ CREATE TABLE registrations (
 - Einfaches Formular mit folgenden Feldern:
   - Code
   - Schule
-  - Anzahl Schüler
-  - Gewünschtes Reisedatum
+  - Kontaktperson
   - E-Mail-Adresse
+  - Telefonnummer
+  - Klasse (Dropdown-Menü)
+  - Anzahl Schüler
+  - Anzahl Begleitpersonen
+  - Gewünschtes Reisedatum
+  - Ankunftszeit
   - Zusätzliche Anmerkung
 - API-Endpunkt: `POST /api/redeem`
 - Validiert den Code und speichert die Anmeldedaten.
@@ -134,6 +149,11 @@ CREATE TABLE registrations (
     travel_date DATE NOT NULL,
     additional_notes TEXT,
     email TEXT NOT NULL,
+    contact_person TEXT NOT NULL,
+    phone_number TEXT NOT NULL,
+    class TEXT NOT NULL,
+    accompanist_count INTEGER NOT NULL,
+    arrival_time TIME NOT NULL,
     created_at TIMESTAMP DEFAULT now()
 );
 ```

@@ -8,10 +8,22 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@zvv-entdeckungsreise.ch';
 export async function POST(request: Request) {
   try {
     // Extrahiere die Daten aus dem Request-Body
-    const { code, school, studentCount, travelDate, additionalNotes, email } = await request.json();
+    const { 
+      code, 
+      school, 
+      studentCount, 
+      travelDate, 
+      additionalNotes, 
+      email,
+      className,
+      contactPerson,
+      phoneNumber,
+      accompanistCount,
+      arrivalTime
+    } = await request.json();
 
     // Überprüfe, ob alle erforderlichen Felder vorhanden sind
-    if (!code || !school || !studentCount || !travelDate || !email) {
+    if (!code || !school || !studentCount || !travelDate || !email || !className || !contactPerson || !phoneNumber || !accompanistCount || !arrivalTime) {
       return NextResponse.json(
         { success: false, message: 'Alle Pflichtfelder müssen ausgefüllt sein.' },
         { status: 400 }
@@ -79,7 +91,12 @@ export async function POST(request: Request) {
         student_count: studentCount,
         travel_date: travelDate,
         additional_notes: additionalNotes || null,
-        email: email // E-Mail-Adresse hinzufügen
+        email: email,
+        class: className,
+        contact_person: contactPerson,
+        phone_number: phoneNumber,
+        accompanist_count: accompanistCount,
+        arrival_time: arrivalTime
       })
       .select();
 
@@ -121,7 +138,12 @@ export async function POST(request: Request) {
       school,
       studentCount,
       travelDate,
-      code
+      code,
+      className,
+      contactPerson,
+      phoneNumber,
+      accompanistCount,
+      arrivalTime
     });
 
     if (!emailSuccess) {
@@ -136,7 +158,12 @@ export async function POST(request: Request) {
       studentCount,
       travelDate,
       code,
-      additionalNotes
+      additionalNotes,
+      className,
+      contactPerson,
+      phoneNumber,
+      accompanistCount,
+      arrivalTime
     });
 
     if (!adminEmailSuccess) {

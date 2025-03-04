@@ -11,13 +11,18 @@ export default function RegisterPage() {
     studentCount: '',
     travelDate: '',
     additionalNotes: '',
-    email: ''
+    email: '',
+    className: '',
+    contactPerson: '',
+    phoneNumber: '',
+    accompanistCount: '',
+    arrivalTime: ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
@@ -57,7 +62,12 @@ export default function RegisterPage() {
           studentCount: parseInt(formData.studentCount),
           travelDate: formData.travelDate,
           additionalNotes: formData.additionalNotes,
-          email: formData.email
+          email: formData.email,
+          className: formData.className,
+          contactPerson: formData.contactPerson,
+          phoneNumber: formData.phoneNumber,
+          accompanistCount: parseInt(formData.accompanistCount || '0'),
+          arrivalTime: formData.arrivalTime
         }),
       });
 
@@ -138,6 +148,22 @@ export default function RegisterPage() {
         </div>
         
         <div className="mb-4">
+          <label htmlFor="contactPerson" className="block text-sm font-medium text-gray-700 mb-1">
+            Kontaktperson*
+          </label>
+          <input
+            type="text"
+            id="contactPerson"
+            name="contactPerson"
+            value={formData.contactPerson}
+            onChange={handleChange}
+            required
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            placeholder="Name der Kontaktperson"
+          />
+        </div>
+        
+        <div className="mb-4">
           <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
             E-Mail-Adresse*
           </label>
@@ -154,6 +180,41 @@ export default function RegisterPage() {
           <p className="text-xs text-gray-500 mt-1">
             Wir senden eine Bestätigungs-E-Mail an diese Adresse.
           </p>
+        </div>
+        
+        <div className="mb-4">
+          <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-1">
+            Telefonnummer*
+          </label>
+          <input
+            type="tel"
+            id="phoneNumber"
+            name="phoneNumber"
+            value={formData.phoneNumber}
+            onChange={handleChange}
+            required
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            placeholder="z.B. 044 123 45 67"
+          />
+        </div>
+        
+        <div className="mb-4">
+          <label htmlFor="className" className="block text-sm font-medium text-gray-700 mb-1">
+            Klasse*
+          </label>
+          <select
+            id="className"
+            name="className"
+            value={formData.className}
+            onChange={handleChange}
+            required
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+          >
+            <option value="">Bitte wählen</option>
+            <option value="4. Klasse">4. Klasse</option>
+            <option value="5. Klasse">5. Klasse</option>
+            <option value="6. Klasse">6. Klasse</option>
+          </select>
         </div>
         
         <div className="mb-4">
@@ -174,6 +235,23 @@ export default function RegisterPage() {
         </div>
         
         <div className="mb-4">
+          <label htmlFor="accompanistCount" className="block text-sm font-medium text-gray-700 mb-1">
+            Anzahl Begleitpersonen*
+          </label>
+          <input
+            type="number"
+            id="accompanistCount"
+            name="accompanistCount"
+            value={formData.accompanistCount}
+            onChange={handleChange}
+            required
+            min="1"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            placeholder="z.B. 2"
+          />
+        </div>
+        
+        <div className="mb-4">
           <label htmlFor="travelDate" className="block text-sm font-medium text-gray-700 mb-1">
             Gewünschtes Reisedatum*
           </label>
@@ -182,6 +260,21 @@ export default function RegisterPage() {
             id="travelDate"
             name="travelDate"
             value={formData.travelDate}
+            onChange={handleChange}
+            required
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+          />
+        </div>
+        
+        <div className="mb-4">
+          <label htmlFor="arrivalTime" className="block text-sm font-medium text-gray-700 mb-1">
+            Ankunftszeit*
+          </label>
+          <input
+            type="time"
+            id="arrivalTime"
+            name="arrivalTime"
+            value={formData.arrivalTime}
             onChange={handleChange}
             required
             className="w-full px-3 py-2 border border-gray-300 rounded-md"
