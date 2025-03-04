@@ -1,6 +1,6 @@
 import supabase from './supabase';
 import { generateRandomCode, calculateExpiryDate } from './utils';
-import { Code } from '../types';
+import { Code } from '../types/index';
 
 /**
  * Generiert einen neuen Ticketcode und speichert ihn in der Datenbank
