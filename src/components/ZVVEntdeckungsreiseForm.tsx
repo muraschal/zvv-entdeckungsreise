@@ -128,8 +128,6 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold text-center mb-6">ZVV-Entdeckungsreise Anmeldung</h1>
-      
       {error && (
         <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
           {error}
