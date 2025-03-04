@@ -36,8 +36,11 @@ export async function middleware(req: NextRequest) {
   
   // Wenn keine Sitzung vorhanden ist und die Route mit /admin beginnt, leite zur Login-Seite weiter
   if (!session && req.nextUrl.pathname.startsWith('/admin')) {
-    // Ausnahme für die Login-Seite selbst
-    if (req.nextUrl.pathname === '/admin/login') {
+    // Ausnahmen für die Login-Seite und Reset-Password-Seite
+    if (
+      req.nextUrl.pathname === '/admin/login' || 
+      req.nextUrl.pathname === '/admin/reset-password'
+    ) {
       return res;
     }
     
@@ -48,7 +51,7 @@ export async function middleware(req: NextRequest) {
   return res;
 }
 
-// Konfiguriere die Middleware, um nur für API-Routen zu gelten
+// Konfiguriere die Middleware, um nur für Admin-Routen zu gelten
 export const config = {
   matcher: ['/admin/:path*'],
 }; 
