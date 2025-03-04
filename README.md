@@ -138,6 +138,20 @@ CREATE TABLE registrations (
 );
 ```
 
+### Demo-Codes
+
+Das Setup-Skript fügt folgende Demo-Codes in die Datenbank ein:
+
+| Kategorie | Codes |
+|-----------|-------|
+| Test-Codes | `TEST123`, `TEST456`, `TEST789` |
+| Schul-Codes | `SCHULE2023`, `SCHULE2024`, `SCHULE2025` |
+| ZVV-Codes | `ZVV2023`, `ZVV2024`, `ZVV2025` |
+| Präsentations-Codes | `DEMO001`, `DEMO002`, `DEMO003` |
+| Regionale Codes | `ZUERICH01`, `ZUERICH02`, `WINTERTHUR01`, `WINTERTHUR02`, `USTER01`, `WETZIKON01`, `DIETIKON01`, `HORGEN01` |
+
+Alle Demo-Codes sind für 3 Jahre gültig und können für Testzwecke verwendet werden.
+
 ### Datenbank einrichten
 
 Um die Datenbank einzurichten und Demo-Codes einzufügen, verwende die Datei `setup-database.sql`:
