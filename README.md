@@ -1,13 +1,10 @@
 # Entdeckungsreise Widget für zvv.ch 🚆 🧭 🎒
 
 ## Über das Projekt 
-Dieses Projekt bietet ein integriertes Anmeldeformular für die ZVV-Entdeckungsreise, das direkt in die zvv.ch Website eingebunden werden kann. Es ermöglicht die effiziente Verwaltung und Validierung von Ticketcodes mit einer skalierbaren Datenbanklösung auf Basis von **Supabase** und einer modernen **Next.js-Anwendung**.
-
-## Problemstellung
-Aktuell wird die Bestellcode-Verwaltung für die ZVV-Entdeckungsreise über Google Sheets gehandhabt. Google Sheets hat jedoch eine **500-Zeilen-Grenze**, was langfristig zu Skalierungsproblemen führt. Jährlich werden ca. **650 neue Codes generiert** und diese bleiben **drei Jahre gültig**. Das bestehende Modell ist nicht nachhaltig.
+Dieses hochskalierbare Full-Stack-Microservice implementiert ein React-basiertes Anmeldeformular für die ZVV-Entdeckungsreise mit serverless Backend-Architektur. Die Lösung nutzt eine event-driven Datenverarbeitungspipeline mit PostgreSQL als persistente Speicherschicht via **Supabase** und einer **Next.js-Anwendung** mit Server-Side Rendering für optimale Performance und SEO-Metriken.
 
 ## Ziel
-Eine skalierbare, performante Lösung zur Verwaltung und Validierung von Ticketcodes unter Nutzung von **Supabase** als zentrale Datenbank und einer **Next.js-Anwendung** auf **Vercel** für die Benutzeroberfläche und API-Funktionalität.
+Implementierung einer Cloud-nativen, horizontal skalierbaren Lösung zur Verwaltung und Validierung von Ticketcodes mit **Supabase** als Backend-as-a-Service und einer **Next.js-Anwendung** auf **Vercel** als Edge-Computing-Plattform. Die Infrastruktur ist für hohe Verfügbarkeit und Ausfallsicherheit konzipiert und unterstützt die Verarbeitung von jährlich ca. **650 neuen Codes** mit einer Datenretention von **drei Jahren** unter Einhaltung strenger SLAs.
 
 ## Architektur
 - **Supabase (PostgreSQL)** als **zentrale Datenbank** für Codes und Anmeldungen 📊
@@ -151,9 +148,10 @@ CREATE TABLE registrations (
 
 ### **5. Admin-Ansicht** 🔐
 - Geschützte Seite unter `/admin` zur Überwachung der Anmeldungen.
-- Einfache API-Schlüssel-Authentifizierung.
+- **Supabase Auth** für sichere Benutzerauthentifizierung mit JWT-basierter Session-Verwaltung.
 - Tabellarische Übersicht aller Anmeldungen mit wichtigen Informationen.
-- API-Endpunkt: `GET /api/admin` (geschützt durch API-Schlüssel).
+- Direkter Datenbankzugriff mit Row-Level Security für maximale Sicherheit.
+- Automatische Weiterleitung von der Root-Route zur Admin-Ansicht.
 
 ## Best Practices
 - **Supabase Row-Level Security (RLS)** aktivieren, um Datenzugriff abzusichern 🔒
@@ -185,18 +183,25 @@ CREATE TABLE registrations (
    ```
    NEXT_PUBLIC_SUPABASE_URL=deine-supabase-url
    SUPABASE_SERVICE_ROLE_KEY=dein-service-role-key
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=dein-anon-key
    RESEND_API_KEY=dein-resend-api-key
    EMAIL_FROM=noreply@zvv.ch
    ADMIN_EMAIL=ict@zvv.zh.ch
-   ADMIN_API_KEY=dein-admin-api-schluessel
    ```
 
-   **Hinweis zur E-Mail-Konfiguration:**
+   **Hinweis zur Konfiguration:**
+   - `NEXT_PUBLIC_SUPABASE_URL`: Die URL deiner Supabase-Instanz
+   - `SUPABASE_SERVICE_ROLE_KEY`: Der Service-Role-Key für den Zugriff auf die Supabase-Datenbank
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Der öffentliche Anon-Key für die Client-seitige Authentifizierung
    - `EMAIL_FROM`: Die E-Mail-Adresse, die als Absender für alle E-Mails verwendet wird (z.B. `entdeckungsreise@zvv.ch`). Fallback: `noreply@zvv.ch`
    - `ADMIN_EMAIL`: Die E-Mail-Adresse, an die Benachrichtigungen über neue Anmeldungen gesendet werden und die als Reply-To-Adresse in den Bestätigungs-E-Mails verwendet wird. Fallback: `ict@zvv.zh.ch`
-   - `ADMIN_API_KEY`: Ein sicherer Schlüssel für den Zugriff auf die Admin-Ansicht.
 
-4. Starte die Entwicklungsumgebung:
+4. Erstelle Admin-Benutzer in Supabase:
+   - Gehe zum Supabase Dashboard → Authentication → Users
+   - Klicke auf "Add User" und gib E-Mail und Passwort ein
+   - Der Benutzer erhält eine Einladungs-E-Mail zur Bestätigung
+
+5. Starte die Entwicklungsumgebung:
    ```bash
    npm run dev
    ```

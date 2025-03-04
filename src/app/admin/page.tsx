@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createBrowserClient } from '@supabase/ssr';
+import { useRouter } from 'next/navigation';
 
 // Typdefinition für eine Registrierung
 interface Registration {
@@ -23,8 +25,13 @@ export default function AdminPage() {
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [apiKey, setApiKey] = useState('');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const router = useRouter();
+  
+  // Erstelle einen Supabase-Client für den Browser
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 
   // Funktion zum Formatieren des Datums
   const formatDate = (dateString: string) => {
@@ -38,69 +45,47 @@ export default function AdminPage() {
     setError('');
     
     try {
-      const response = await fetch(`/api/admin?key=${apiKey}`);
-      const data = await response.json();
+      // Prüfe, ob der Benutzer angemeldet ist
+      const { data: { session } } = await supabase.auth.getSession();
       
-      if (!response.ok) {
-        throw new Error(data.message || 'Fehler beim Abrufen der Daten');
+      if (!session) {
+        router.push('/admin/login');
+        return;
       }
       
-      setRegistrations(data.data);
-      setIsAuthenticated(true);
+      // Hole die Registrierungen direkt aus der Datenbank
+      const { data, error } = await supabase
+        .from('registrations')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      
+      setRegistrations(data || []);
     } catch (err) {
       setError('Fehler beim Laden der Daten: ' + (err instanceof Error ? err.message : 'Unbekannter Fehler'));
-      setIsAuthenticated(false);
     } finally {
       setLoading(false);
     }
   };
 
-  // Authentifizierung durchführen
-  const handleAuthenticate = (e: React.FormEvent) => {
-    e.preventDefault();
-    fetchRegistrations();
+  // Abmelden
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push('/admin/login');
   };
 
-  if (!isAuthenticated) {
-    return (
-      <div className="max-w-4xl mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-4">ZVV-Entdeckungsreise Admin</h1>
-        
-        {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
-            {error}
-          </div>
-        )}
-        
-        <form onSubmit={handleAuthenticate} className="mb-4">
-          <div className="mb-4">
-            <label htmlFor="apiKey" className="block font-bold mb-1">Admin-API-Schlüssel</label>
-            <input
-              type="password"
-              id="apiKey"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            className="inline-flex items-center justify-center whitespace-nowrap rounded-lg min-w-[160px] bg-[#0479cc] hover:bg-[#035999] text-white font-bold tracking-[0.2px] h-10 px-4 py-2 focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)]"
-          >
-            Anmelden
-          </button>
-        </form>
-      </div>
-    );
-  }
+  // Lade die Daten beim ersten Rendern
+  useEffect(() => {
+    fetchRegistrations();
+  }, []);
 
   return (
     <div className="max-w-6xl mx-auto p-4">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">ZVV-Entdeckungsreise Anmeldungen</h1>
         <button
-          onClick={() => setIsAuthenticated(false)}
+          onClick={handleLogout}
           className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded"
         >
           Abmelden

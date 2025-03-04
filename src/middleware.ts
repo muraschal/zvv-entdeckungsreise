@@ -1,29 +1,54 @@
+import { createServerClient } from '@supabase/ssr';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 // Diese Middleware wird für alle API-Routen ausgeführt
-export function middleware(request: NextRequest) {
-  // Überprüfe, ob die Anfrage an die API gerichtet ist
-  if (request.nextUrl.pathname.startsWith('/api/')) {
-    // Hier könnte eine API-Schlüssel-Validierung oder andere Sicherheitsmaßnahmen implementiert werden
-    const apiKey = request.headers.get('x-api-key');
+export async function middleware(req: NextRequest) {
+  const res = NextResponse.next();
+  
+  // Erstelle einen Supabase-Client mit den Cookies der Anfrage
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get: (name) => req.cookies.get(name)?.value,
+        set: (name, value, options) => {
+          res.cookies.set({
+            name,
+            value,
+            ...options,
+          });
+        },
+        remove: (name, options) => {
+          res.cookies.set({
+            name,
+            value: '',
+            ...options,
+          });
+        },
+      },
+    }
+  );
+  
+  // Prüfe, ob der Benutzer angemeldet ist
+  const { data: { session } } = await supabase.auth.getSession();
+  
+  // Wenn keine Sitzung vorhanden ist und die Route mit /admin beginnt, leite zur Login-Seite weiter
+  if (!session && req.nextUrl.pathname.startsWith('/admin')) {
+    // Ausnahme für die Login-Seite selbst
+    if (req.nextUrl.pathname === '/admin/login') {
+      return res;
+    }
     
-    // In einer Produktionsumgebung würde man den API-Schlüssel gegen einen sicheren Wert prüfen
-    // Für dieses Beispiel überspringen wir die Validierung
-    
-    // Beispiel für eine einfache CORS-Konfiguration
-    const response = NextResponse.next();
-    response.headers.set('Access-Control-Allow-Origin', '*');
-    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    response.headers.set('Access-Control-Allow-Headers', 'Content-Type, x-api-key');
-    
-    return response;
+    const redirectUrl = new URL('/admin/login', req.url);
+    return NextResponse.redirect(redirectUrl);
   }
   
-  return NextResponse.next();
+  return res;
 }
 
 // Konfiguriere die Middleware, um nur für API-Routen zu gelten
 export const config = {
-  matcher: '/api/:path*',
+  matcher: ['/admin/:path*'],
 }; 
