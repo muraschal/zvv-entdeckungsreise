@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "build:widget": "next build && next export -o widget && cp -r .next/static widget/static",
-    "build:standalone": "webpack --config webpack.widget.config.js"
+    "build:standalone": "webpack --config webpack.widget.config.js && mkdir -p public && cp dist/zvv-entdeckungsreise-widget.js public/"
   },
   "repository": {
     "type": "git",
