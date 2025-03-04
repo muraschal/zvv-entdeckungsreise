@@ -114,7 +114,7 @@ Diese Lösung macht den Bestellprozess **skalierbar, sicher und benutzerfreundli
 
 ## Datenbank-Setup
 
-Die Anwendung verwendet Supabase als Datenbank. Folgende Tabellen werden benötigt:
+Die Anwendung verwendet Supabase als Datenbank. Die Datenbank kann mit dem SQL-Skript `setup-database.sql` eingerichtet werden.
 
 ### Tabellen
 
@@ -138,16 +138,16 @@ CREATE TABLE registrations (
 );
 ```
 
-### Demo-Codes
+### Datenbank einrichten
 
-Für Testzwecke können Demo-Codes in die Datenbank eingefügt werden. Verwende dazu die Datei `create-demo-codes.sql`:
+Um die Datenbank einzurichten und Demo-Codes einzufügen, verwende die Datei `setup-database.sql`:
 
 ```bash
 # Verbinde dich mit deiner Supabase-Datenbank
 psql -h db.abcdefghijklm.supabase.co -p 5432 -d postgres -U postgres
 
 # Führe das SQL-Skript aus
-\i create-demo-codes.sql
+\i setup-database.sql
 ```
 
 Alternativ kannst du die SQL-Befehle auch direkt im Supabase SQL-Editor ausführen.

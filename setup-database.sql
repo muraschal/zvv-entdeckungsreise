@@ -1,8 +1,12 @@
--- Lösche bestehende Tabellen (in umgekehrter Reihenfolge der Abhängigkeiten)
+-- ZVV-Entdeckungsreise: Vollständiges Datenbank-Setup
+-- Dieses Skript löscht alle bestehenden Tabellen und erstellt sie neu
+-- Führe dieses Skript aus, um die Datenbank komplett neu aufzusetzen
+
+-- 1. Bestehende Tabellen löschen (in umgekehrter Reihenfolge der Abhängigkeiten)
 DROP TABLE IF EXISTS registrations;
 DROP TABLE IF EXISTS codes;
 
--- Erstelle die codes-Tabelle
+-- 2. Tabelle für Codes erstellen
 CREATE TABLE codes (
     code TEXT PRIMARY KEY,
     status TEXT DEFAULT 'unused' CHECK (status IN ('unused', 'used')),
@@ -17,7 +21,7 @@ COMMENT ON COLUMN codes.status IS 'Status des Codes: unused oder used';
 COMMENT ON COLUMN codes.expires_at IS 'Ablaufdatum des Codes';
 COMMENT ON COLUMN codes.created_at IS 'Erstellungsdatum des Codes';
 
--- Erstelle die registrations-Tabelle
+-- 3. Tabelle für Anmeldungen erstellen
 CREATE TABLE registrations (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     code TEXT REFERENCES codes(code),
@@ -43,13 +47,49 @@ COMMENT ON COLUMN registrations.additional_notes IS 'Zusätzliche Anmerkungen';
 COMMENT ON COLUMN registrations.email IS 'E-Mail-Adresse für die Bestätigung';
 COMMENT ON COLUMN registrations.created_at IS 'Zeitpunkt der Anmeldung';
 
--- Füge Testcodes in die Datenbank ein
+-- 4. Demo-Codes einfügen
 INSERT INTO codes (code, expires_at) 
 VALUES 
+  -- Test-Codes für Entwicklung
   ('TEST123', now() + interval '3 years'),
-  ('SCHULE456', now() + interval '3 years'),
+  ('TEST456', now() + interval '3 years'),
+  ('TEST789', now() + interval '3 years'),
+  
+  -- Demo-Codes für Schulen
+  ('SCHULE2023', now() + interval '3 years'),
+  ('SCHULE2024', now() + interval '3 years'),
+  ('SCHULE2025', now() + interval '3 years'),
+  
+  -- ZVV-spezifische Codes
   ('ZVV2023', now() + interval '3 years'),
-  ('DEMO789', now() + interval '3 years');
+  ('ZVV2024', now() + interval '3 years'),
+  ('ZVV2025', now() + interval '3 years'),
+  
+  -- Demo-Codes für Präsentationen
+  ('DEMO001', now() + interval '3 years'),
+  ('DEMO002', now() + interval '3 years'),
+  ('DEMO003', now() + interval '3 years'),
+  
+  -- Codes für verschiedene Regionen
+  ('ZUERICH01', now() + interval '3 years'),
+  ('ZUERICH02', now() + interval '3 years'),
+  ('WINTERTHUR01', now() + interval '3 years'),
+  ('WINTERTHUR02', now() + interval '3 years'),
+  ('USTER01', now() + interval '3 years'),
+  ('WETZIKON01', now() + interval '3 years'),
+  ('DIETIKON01', now() + interval '3 years'),
+  ('HORGEN01', now() + interval '3 years');
 
--- Zeige alle Codes an
-SELECT * FROM codes; 
+-- 5. Überprüfen der erstellten Tabellen und eingefügten Daten
+SELECT 'Anzahl der Codes: ' || COUNT(*) AS info FROM codes;
+SELECT 'Anzahl der Anmeldungen: ' || COUNT(*) AS info FROM registrations;
+
+-- 6. Beispiel-Abfragen
+-- Alle verfügbaren Codes anzeigen
+SELECT code, status, expires_at FROM codes WHERE status = 'unused';
+
+-- Alle abgelaufenen Codes anzeigen
+SELECT code, status, expires_at FROM codes WHERE expires_at < now();
+
+-- Alle eingelösten Codes anzeigen
+SELECT code, status, expires_at FROM codes WHERE status = 'used'; 
