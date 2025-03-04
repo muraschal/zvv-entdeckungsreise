@@ -1,10 +1,21 @@
 # Entdeckungsreise Widget für zvv.ch 🚆 🧭 🎒
 
+## Inhaltsverzeichnis
+- [Über das Projekt](#über-das-projekt)
+- [Architektur](#architektur)
+- [Technologie-Stack](#technologie-stack)
+- [Funktionalitäten](#funktionalitäten)
+- [Datenbank-Struktur](#datenbank-struktur-supabase)
+- [Erste Schritte](#erste-schritte-)
+- [Widget-Integration](#widget-integration-)
+- [Admin-Bereich](#admin-bereich-)
+- [Best Practices](#best-practices)
+- [Demo-Daten](#demo-daten)
+
 ## Über das Projekt 
 Dieses hochskalierbare Full-Stack-Microservice implementiert ein React-basiertes Anmeldeformular für die ZVV-Entdeckungsreise mit serverless Backend-Architektur. Die Lösung nutzt eine event-driven Datenverarbeitungspipeline mit PostgreSQL als persistente Speicherschicht via **Supabase** und einer **Next.js-Anwendung** mit Server-Side Rendering für optimale Performance und SEO-Metriken.
 
-## Ziel
-Implementierung einer Cloud-nativen, horizontal skalierbaren Lösung zur Verwaltung und Validierung von Ticketcodes mit **Supabase** als Backend-as-a-Service und einer **Next.js-Anwendung** auf **Vercel** als Edge-Computing-Plattform. Die Infrastruktur ist für hohe Verfügbarkeit und Ausfallsicherheit konzipiert und unterstützt die Verarbeitung von jährlich ca. **650 neuen Codes** mit einer Datenretention von **drei Jahren**.
+Die Infrastruktur ist für hohe Verfügbarkeit und Ausfallsicherheit konzipiert und unterstützt die Verarbeitung von jährlich ca. **650 neuen Codes** mit einer Datenretention von **drei Jahren**.
 
 ## Architektur
 - **Supabase (PostgreSQL)** als **zentrale Datenbank** für Codes und Anmeldungen 📊
@@ -16,6 +27,41 @@ Implementierung einer Cloud-nativen, horizontal skalierbaren Lösung zur Verwalt
 - **Next.js** für Frontend und API-Routes 🚀
 - **Vercel** für Hosting und Serverless-Funktionen ☁️
 - **Resend** für transaktionale E-Mails 📨
+
+## Funktionalitäten
+### **1. Code-Validierung** ✅
+- API-Endpunkt: `POST /api/validate`
+- Überprüft, ob ein Ticketcode gültig ist.
+
+### **2. Code-Einlösung mit Anmeldeformular** 📝
+- Einfaches Formular mit folgenden Feldern:
+  - Code
+  - Schule
+  - Kontaktperson
+  - E-Mail-Adresse
+  - Telefonnummer
+  - Klasse (Dropdown-Menü)
+  - Anzahl Schüler
+  - Anzahl Begleitpersonen
+  - Gewünschtes Reisedatum
+  - Ankunftszeit
+  - Zusätzliche Anmerkung
+- API-Endpunkt: `POST /api/redeem`
+- Validiert den Code und speichert die Anmeldedaten.
+
+### **3. E-Mail-Benachrichtigungen** 📬
+- **Bestätigungs-E-Mail** an den Benutzer nach erfolgreicher Anmeldung.
+- **Benachrichtigungs-E-Mail** an den Administrator mit den Anmeldedetails.
+
+### **4. Widget-Integration** 🔌
+- **Standalone JavaScript-Widget** für die Integration in externe Websites.
+- **Keine iframe-Einbindung** erforderlich, sondern direkte Integration als React-Komponente.
+- **Konfigurierbare API-Basis-URL** für flexible Deployment-Szenarien.
+
+### **5. Admin-Ansicht** 🔐
+- Geschützte Seite unter `/admin` zur Überwachung der Anmeldungen.
+- Tabellarische Übersicht aller Anmeldungen mit wichtigen Informationen.
+- Automatische Weiterleitung von der Root-Route zur Admin-Ansicht.
 
 ## Datenbank-Struktur (Supabase)
 
@@ -82,90 +128,10 @@ erDiagram
 | arrival_time | TIME | NOT NULL | Geplante Ankunftszeit |
 | created_at | TIMESTAMP | DEFAULT now() | Erstellungsdatum der Anmeldung |
 
-#### SQL-Definitionen
-
-```sql
--- Tabelle für Ticketcodes
-CREATE TABLE codes (
-    code TEXT PRIMARY KEY,
-    status TEXT DEFAULT 'unused' CHECK (status IN ('unused', 'used')),
-    expires_at TIMESTAMP NOT NULL,
-    created_at TIMESTAMP DEFAULT now()
-);
-
--- Tabelle für Anmeldungen
-CREATE TABLE registrations (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    code TEXT REFERENCES codes(code),
-    school TEXT NOT NULL,
-    student_count INTEGER NOT NULL,
-    travel_date DATE NOT NULL,
-    additional_notes TEXT,
-    email TEXT NOT NULL,
-    contact_person TEXT NOT NULL,
-    phone_number TEXT NOT NULL,
-    class TEXT NOT NULL,
-    accompanist_count INTEGER NOT NULL,
-    arrival_time TIME NOT NULL,
-    created_at TIMESTAMP DEFAULT now()
-);
-```
-
 #### Beziehungen
 
 - Ein Code (`codes`) kann höchstens eine Anmeldung (`registrations`) haben (1:0..1)
 - Eine Anmeldung (`registrations`) gehört genau zu einem Code (`codes`) (1:1)
-
-## Funktionalitäten
-### **1. Code-Validierung** ✅
-- API-Endpunkt: `POST /api/validate`
-- Überprüft, ob ein Ticketcode gültig ist.
-
-### **2. Code-Einlösung mit Anmeldeformular** 📝
-- Einfaches Formular mit folgenden Feldern:
-  - Code
-  - Schule
-  - Kontaktperson
-  - E-Mail-Adresse
-  - Telefonnummer
-  - Klasse (Dropdown-Menü)
-  - Anzahl Schüler
-  - Anzahl Begleitpersonen
-  - Gewünschtes Reisedatum
-  - Ankunftszeit
-  - Zusätzliche Anmerkung
-- API-Endpunkt: `POST /api/redeem`
-- Validiert den Code und speichert die Anmeldedaten.
-
-### **3. E-Mail-Benachrichtigungen** 📬
-- **Bestätigungs-E-Mail** an den Benutzer nach erfolgreicher Anmeldung.
-- **Benachrichtigungs-E-Mail** an den Administrator mit den Anmeldedetails.
-
-### **4. Widget-Integration** 🔌
-- **Standalone JavaScript-Widget** für die Integration in externe Websites.
-- **Keine iframe-Einbindung** erforderlich, sondern direkte Integration als React-Komponente.
-- **Konfigurierbare API-Basis-URL** für flexible Deployment-Szenarien.
-
-### **5. Admin-Ansicht** 🔐
-- Geschützte Seite unter `/admin` zur Überwachung der Anmeldungen.
-- **Supabase Auth** für sichere Benutzerauthentifizierung mit JWT-basierter Session-Verwaltung.
-- Tabellarische Übersicht aller Anmeldungen mit wichtigen Informationen.
-- Direkter Datenbankzugriff mit Row-Level Security für maximale Sicherheit.
-- Automatische Weiterleitung von der Root-Route zur Admin-Ansicht.
-
-## Best Practices
-- **Supabase Row-Level Security (RLS)** aktivieren, um Datenzugriff abzusichern 🔒
-- **Serverless-Funktionen** für optimale Skalierbarkeit 📈
-- **Formularvalidierung** sowohl client- als auch serverseitig ✓
-- **Transaktionale E-Mails** für Bestätigungen und Benachrichtigungen 📩
-
-## Implementierte Funktionen
-1. **Anmeldeformular** mit allen erforderlichen Feldern und Validierung ✅
-2. **Datenbank-Struktur** in Supabase für Codes und Anmeldungen ✅
-3. **API-Endpunkte** für Validierung und Einlösung von Codes ✅
-4. **E-Mail-System** für Bestätigungen und Benachrichtigungen ✅
-5. **Bestätigungsseite** nach erfolgreicher Anmeldung ✅
-6. **Widget-Integration** für nahtlose Einbindung in zvv.ch ✅
 
 ## Erste Schritte 🚀
 1. Klone das Repository:
@@ -196,12 +162,7 @@ CREATE TABLE registrations (
    - `EMAIL_FROM`: Die E-Mail-Adresse, die als Absender für alle E-Mails verwendet wird (z.B. `entdeckungsreise@zvv.ch`). Fallback: `noreply@zvv.ch`
    - `ADMIN_EMAIL`: Die E-Mail-Adresse, an die Benachrichtigungen über neue Anmeldungen gesendet werden und die als Reply-To-Adresse in den Bestätigungs-E-Mails verwendet wird. Fallback: `ict@zvv.zh.ch`
 
-4. Erstelle Admin-Benutzer in Supabase:
-   - Gehe zum Supabase Dashboard → Authentication → Users
-   - Klicke auf "Add User" und gib E-Mail und Passwort ein
-   - Der Benutzer erhält eine Einladungs-E-Mail zur Bestätigung
-
-5. Starte die Entwicklungsumgebung:
+4. Starte die Entwicklungsumgebung:
    ```bash
    npm run dev
    ```
@@ -262,45 +223,33 @@ Das Widget akzeptiert folgende Konfigurationsoptionen:
 
 Ein vollständiges Beispiel für die Integration findest du in der Datei `examples/widget-integration.html`.
 
-## Fazit
-Diese Lösung macht den Anmeldeprozess für die ZVV-Entdeckungsreise **skalierbar, sicher und benutzerfreundlich** 🎯. Durch die direkte Integration des Anmeldeformulars als Widget wird der Prozess vereinfacht und die Benutzererfahrung verbessert. Die E-Mail-Funktionalität sorgt für eine nahtlose Kommunikation mit den Benutzern und Administratoren.
+## Admin-Bereich 🔐
 
-Die Widget-Integration ermöglicht eine flexible Einbindung des Anmeldeformulars in externe Websites, ohne auf iframes zurückgreifen zu müssen. Dies verbessert die Benutzererfahrung und erleichtert die Integration in bestehende Webseiten.
+Der Admin-Bereich ist unter `/admin` erreichbar und bietet eine Übersicht über alle Anmeldungen.
 
-## Datenbank-Setup
+### Authentifizierung
 
-Die Anwendung verwendet Supabase als Datenbank. Die Datenbank kann mit dem SQL-Skript `setup-database.sql` eingerichtet werden.
+Die Authentifizierung erfolgt über **Supabase Auth** mit folgenden Merkmalen:
+- Sichere Benutzerauthentifizierung mit JWT-basierter Session-Verwaltung
+- Direkter Datenbankzugriff mit Row-Level Security für maximale Sicherheit
 
-### Tabellen
+### Admin-Benutzer erstellen
 
-```sql
-CREATE TABLE codes (
-    code TEXT PRIMARY KEY,
-    status TEXT DEFAULT 'unused' CHECK (status IN ('unused', 'used')),
-    expires_at TIMESTAMP NOT NULL,
-    created_at TIMESTAMP DEFAULT now()
-);
+Um Admin-Benutzer zu erstellen:
+1. Gehe zum Supabase Dashboard → Authentication → Users
+2. Klicke auf "Add User" und gib E-Mail und Passwort ein
+3. Der Benutzer erhält eine Einladungs-E-Mail zur Bestätigung
 
-CREATE TABLE registrations (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    code TEXT REFERENCES codes(code),
-    school TEXT NOT NULL,
-    student_count INTEGER NOT NULL,
-    travel_date DATE NOT NULL,
-    additional_notes TEXT,
-    email TEXT NOT NULL,
-    contact_person TEXT NOT NULL,
-    phone_number TEXT NOT NULL,
-    class TEXT NOT NULL,
-    accompanist_count INTEGER NOT NULL,
-    arrival_time TIME NOT NULL,
-    created_at TIMESTAMP DEFAULT now()
-);
-```
+## Best Practices
+- **Supabase Row-Level Security (RLS)** aktivieren, um Datenzugriff abzusichern 🔒
+- **Serverless-Funktionen** für optimale Skalierbarkeit 📈
+- **Formularvalidierung** sowohl client- als auch serverseitig ✓
+- **Transaktionale E-Mails** für Bestätigungen und Benachrichtigungen 📩
+- **Widget-Integration** ohne iframes für bessere Benutzererfahrung 🖼️
 
-### Demo-Codes
+## Demo-Daten
 
-Das Setup-Skript fügt folgende Demo-Codes in die Datenbank ein:
+Für Testzwecke können folgende Demo-Codes verwendet werden:
 
 | Kategorie | Codes |
 |-----------|-------|
