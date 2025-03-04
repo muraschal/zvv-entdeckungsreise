@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZVV Entdeckungsreise Widget Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .container {
+      border: 1px solid #ddd;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+    h1 {
+      color: #0066b3; /* ZVV Blau */
+    }
+  </style>
+</head>
+<body>
+  <h1>ZVV Entdeckungsreise Widget Test</h1>
+  
+  <p>Unten sehen Sie das ZVV Entdeckungsreise Formular, das als Widget eingebunden wurde:</p>
+  
+  <div class="container">
+    <!-- Widget Container -->
+    <div id="zvv-entdeckungsreise-widget"></div>
+  </div>
+  
+  <!-- React und ReactDOM einbinden (von CDN) -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  
+  <!-- ZVV Entdeckungsreise Widget einbinden -->
+  <script src="/zvv-entdeckungsreise-widget.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Widget initialisieren
+      if (window.initZVVEntdeckungsreiseWidget) {
+        window.initZVVEntdeckungsreiseWidget('zvv-entdeckungsreise-widget', {
+          apiBaseUrl: window.location.origin
+        });
+      } else {
+        document.getElementById('zvv-entdeckungsreise-widget').innerHTML = 
+          '<p style="color: red;">Widget konnte nicht geladen werden. Bitte stellen Sie sicher, dass Sie das Widget korrekt gebaut haben.</p>';
+      }
+    });
+  </script>
+</body>
+</html> 
