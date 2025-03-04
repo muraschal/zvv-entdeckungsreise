@@ -9,8 +9,23 @@ Um die Anwendung erfolgreich auf Vercel zu deployen, müssen die folgenden Umgeb
 | `NEXT_PUBLIC_SUPABASE_URL` | Die URL deines Supabase-Projekts | `https://abcdefghijklm.supabase.co` |
 | `SUPABASE_SERVICE_ROLE_KEY` | Der Service-Role-Key deines Supabase-Projekts | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` |
 | `RESEND_API_KEY` | Der API-Schlüssel für den Resend-E-Mail-Dienst | `re_123456789` |
-| `EMAIL_FROM` | Die E-Mail-Adresse, die als Absender verwendet wird | `noreply@zvv.ch` |
-| `ADMIN_EMAIL` | Die E-Mail-Adresse, an die Benachrichtigungen gesendet werden | `admin@example.com` |
+| `EMAIL_FROM` | Die E-Mail-Adresse, die als Absender verwendet wird | `entdeckungsreise@zvv.ch` |
+| `ADMIN_EMAIL` | Die E-Mail-Adresse, an die Benachrichtigungen gesendet werden und die als Reply-To-Adresse in den Bestätigungs-E-Mails verwendet wird | `ict@zvv.zh.ch` |
+
+## E-Mail-Konfiguration
+
+Die Anwendung verwendet zwei E-Mail-Adressen für die Kommunikation:
+
+1. **Absender-E-Mail (`EMAIL_FROM`)**: 
+   - Wird als Absender für alle E-Mails verwendet
+   - Sollte eine offizielle E-Mail-Adresse sein, z.B. `entdeckungsreise@zvv.ch`
+   - Fallback-Wert: `noreply@zvv.ch`
+
+2. **Admin-E-Mail (`ADMIN_EMAIL`)**:
+   - Empfängt Benachrichtigungen über neue Anmeldungen
+   - Wird als Reply-To-Adresse in den Bestätigungs-E-Mails verwendet
+   - Wenn Benutzer auf die Bestätigungs-E-Mail antworten, geht die Antwort an diese Adresse
+   - Fallback-Wert: `ict@zvv.zh.ch`
 
 ## Anleitung zur Einrichtung
 

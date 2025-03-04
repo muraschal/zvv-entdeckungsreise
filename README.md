@@ -18,21 +18,82 @@ Eine skalierbare, performante Lösung zur Verwaltung und Validierung von Ticketc
 - **Resend** für transaktionale E-Mails.
 
 ## Datenbank-Struktur (Supabase)
-### Tabelle: `codes`
+
+### Datenbankschema
+
+Die Anwendung verwendet zwei Haupttabellen: `codes` für die Ticketcodes und `registrations` für die Anmeldungen.
+
+#### ER-Diagramm
+
+```mermaid
+erDiagram
+    CODES ||--o{ REGISTRATIONS : "hat"
+    
+    CODES {
+        string code PK "Einzigartiger Ticketcode"
+        string status "unused/used"
+        timestamp expires_at "Ablaufdatum"
+        timestamp created_at "Erstellungsdatum"
+    }
+    
+    REGISTRATIONS {
+        uuid id PK "Eindeutige ID"
+        string code FK "Referenz zum Code"
+        string school "Name der Schule"
+        int student_count "Anzahl Schüler"
+        date travel_date "Reisedatum"
+        string additional_notes "Optionale Anmerkungen"
+        string email "Kontakt-E-Mail"
+        string contact_person "Ansprechpartner"
+        string phone_number "Telefonnummer"
+        string class "Klassenstufe"
+        int accompanist_count "Anzahl Begleitpersonen"
+        time arrival_time "Ankunftszeit"
+        timestamp created_at "Erstellungsdatum"
+    }
+```
+
+#### Tabellenstruktur
+
+##### Tabelle: `codes`
+
+| Spalte | Typ | Constraints | Beschreibung |
+|--------|-----|-------------|-------------|
+| code | TEXT | PRIMARY KEY | Einzigartiger Ticketcode |
+| status | TEXT | DEFAULT 'unused', CHECK (status IN ('unused', 'used')) | Status des Codes (unused/used) |
+| expires_at | TIMESTAMP | NOT NULL | Ablaufdatum des Codes (3 Jahre nach Erstellung) |
+| created_at | TIMESTAMP | DEFAULT now() | Erstellungsdatum |
+
+##### Tabelle: `registrations`
+
+| Spalte | Typ | Constraints | Beschreibung |
+|--------|-----|-------------|-------------|
+| id | UUID | PRIMARY KEY, DEFAULT gen_random_uuid() | Eindeutige ID der Anmeldung |
+| code | TEXT | REFERENCES codes(code) | Referenz zum eingelösten Code |
+| school | TEXT | NOT NULL | Name der Schule |
+| student_count | INTEGER | NOT NULL | Anzahl der Schüler |
+| travel_date | DATE | NOT NULL | Gewünschtes Reisedatum |
+| additional_notes | TEXT | | Zusätzliche Anmerkungen (optional) |
+| email | TEXT | NOT NULL | E-Mail-Adresse für die Bestätigung |
+| contact_person | TEXT | NOT NULL | Name der Kontaktperson |
+| phone_number | TEXT | NOT NULL | Telefonnummer der Kontaktperson |
+| class | TEXT | NOT NULL | Klassenstufe (z.B. "4. Klasse") |
+| accompanist_count | INTEGER | NOT NULL | Anzahl der Begleitpersonen |
+| arrival_time | TIME | NOT NULL | Geplante Ankunftszeit |
+| created_at | TIMESTAMP | DEFAULT now() | Erstellungsdatum der Anmeldung |
+
+#### SQL-Definitionen
+
 ```sql
+-- Tabelle für Ticketcodes
 CREATE TABLE codes (
     code TEXT PRIMARY KEY,
     status TEXT DEFAULT 'unused' CHECK (status IN ('unused', 'used')),
     expires_at TIMESTAMP NOT NULL,
     created_at TIMESTAMP DEFAULT now()
 );
-```
-- `code`: Einzigartiger Ticketcode.
-- `status`: Wird auf `used` gesetzt, wenn der Code eingelöst wurde.
-- `expires_at`: Ablaufdatum des Codes (3 Jahre nach Erstellung).
 
-### Tabelle: `registrations`
-```sql
+-- Tabelle für Anmeldungen
 CREATE TABLE registrations (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     code TEXT REFERENCES codes(code),
@@ -49,17 +110,11 @@ CREATE TABLE registrations (
     created_at TIMESTAMP DEFAULT now()
 );
 ```
-- `code`: Referenz zum eingelösten Ticketcode.
-- `school`: Name der Schule.
-- `student_count`: Anzahl der Schüler.
-- `travel_date`: Gewünschtes Reisedatum.
-- `additional_notes`: Zusätzliche Anmerkungen.
-- `email`: E-Mail-Adresse für die Bestätigung.
-- `contact_person`: Name der Kontaktperson.
-- `phone_number`: Telefonnummer der Kontaktperson.
-- `class`: Klassenstufe (z.B. "4. Klasse").
-- `accompanist_count`: Anzahl der Begleitpersonen.
-- `arrival_time`: Geplante Ankunftszeit.
+
+#### Beziehungen
+
+- Ein Code (`codes`) kann höchstens eine Anmeldung (`registrations`) haben (1:0..1)
+- Eine Anmeldung (`registrations`) gehört genau zu einem Code (`codes`) (1:1)
 
 ## Funktionalitäten
 ### **1. Code-Validierung**
@@ -116,8 +171,13 @@ CREATE TABLE registrations (
    NEXT_PUBLIC_SUPABASE_URL=deine-supabase-url
    SUPABASE_SERVICE_ROLE_KEY=dein-service-role-key
    RESEND_API_KEY=dein-resend-api-key
-   ADMIN_EMAIL=admin@beispiel.com
+   EMAIL_FROM=noreply@zvv.ch
+   ADMIN_EMAIL=ict@zvv.zh.ch
    ```
+
+   **Hinweis zur E-Mail-Konfiguration:**
+   - `EMAIL_FROM`: Die E-Mail-Adresse, die als Absender für alle E-Mails verwendet wird (z.B. `entdeckungsreise@zvv.ch`). Fallback: `noreply@zvv.ch`
+   - `ADMIN_EMAIL`: Die E-Mail-Adresse, an die Benachrichtigungen über neue Anmeldungen gesendet werden und die als Reply-To-Adresse in den Bestätigungs-E-Mails verwendet wird. Fallback: `ict@zvv.zh.ch`
 
 4. Starte die Entwicklungsumgebung:
    ```bash

@@ -5,6 +5,8 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 // E-Mail-Absender
 const FROM_EMAIL = process.env.EMAIL_FROM || 'noreply@zvv.ch';
+// Admin-E-Mail-Adresse
+export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'ict@zvv.zh.ch';
 
 /**
  * Sendet eine Bestätigungs-E-Mail nach erfolgreicher Anmeldung
@@ -43,6 +45,7 @@ export async function sendConfirmationEmail({
     const { data, error } = await resend.emails.send({
       from: FROM_EMAIL,
       to: [to],
+      reply_to: ADMIN_EMAIL,
       subject: `Bestätigung deiner Anmeldung zur ZVV-Entdeckungsreise`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
@@ -97,7 +100,6 @@ export async function sendConfirmationEmail({
  * Sendet eine Benachrichtigungs-E-Mail an den Administrator
  */
 export async function sendAdminNotificationEmail({
-  adminEmail,
   school,
   studentCount,
   travelDate,
@@ -109,7 +111,6 @@ export async function sendAdminNotificationEmail({
   accompanistCount,
   arrivalTime
 }: {
-  adminEmail: string;
   school: string;
   studentCount: number;
   travelDate: string;
@@ -131,7 +132,7 @@ export async function sendAdminNotificationEmail({
 
     const { data, error } = await resend.emails.send({
       from: FROM_EMAIL,
-      to: [adminEmail],
+      to: [ADMIN_EMAIL],
       subject: `Neue Anmeldung zur ZVV-Entdeckungsreise: ${school}`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
