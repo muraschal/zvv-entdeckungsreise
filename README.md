@@ -149,6 +149,12 @@ CREATE TABLE registrations (
 - **Keine iframe-Einbindung** erforderlich, sondern direkte Integration als React-Komponente.
 - **Konfigurierbare API-Basis-URL** für flexible Deployment-Szenarien.
 
+### **5. Admin-Ansicht** 🔐
+- Geschützte Seite unter `/admin` zur Überwachung der Anmeldungen.
+- Einfache API-Schlüssel-Authentifizierung.
+- Tabellarische Übersicht aller Anmeldungen mit wichtigen Informationen.
+- API-Endpunkt: `GET /api/admin` (geschützt durch API-Schlüssel).
+
 ## Best Practices
 - **Supabase Row-Level Security (RLS)** aktivieren, um Datenzugriff abzusichern 🔒
 - **Serverless-Funktionen** für optimale Skalierbarkeit 📈
@@ -182,11 +188,13 @@ CREATE TABLE registrations (
    RESEND_API_KEY=dein-resend-api-key
    EMAIL_FROM=noreply@zvv.ch
    ADMIN_EMAIL=ict@zvv.zh.ch
+   ADMIN_API_KEY=dein-admin-api-schluessel
    ```
 
    **Hinweis zur E-Mail-Konfiguration:**
    - `EMAIL_FROM`: Die E-Mail-Adresse, die als Absender für alle E-Mails verwendet wird (z.B. `entdeckungsreise@zvv.ch`). Fallback: `noreply@zvv.ch`
    - `ADMIN_EMAIL`: Die E-Mail-Adresse, an die Benachrichtigungen über neue Anmeldungen gesendet werden und die als Reply-To-Adresse in den Bestätigungs-E-Mails verwendet wird. Fallback: `ict@zvv.zh.ch`
+   - `ADMIN_API_KEY`: Ein sicherer Schlüssel für den Zugriff auf die Admin-Ansicht.
 
 4. Starte die Entwicklungsumgebung:
    ```bash
