@@ -111,3 +111,43 @@ CREATE TABLE registrations (
 
 ## 🎉 Fazit
 Diese Lösung macht den Bestellprozess **skalierbar, sicher und benutzerfreundlich**. Durch die direkte Integration des Anmeldeformulars in die Next.js-Anwendung wird der Prozess vereinfacht und die Abhängigkeit von Drittanbietern wie Typeform und Zapier eliminiert. Die E-Mail-Funktionalität sorgt für eine nahtlose Kommunikation mit den Benutzern und Administratoren.
+
+## Datenbank-Setup
+
+Die Anwendung verwendet Supabase als Datenbank. Folgende Tabellen werden benötigt:
+
+### Tabellen
+
+```sql
+CREATE TABLE codes (
+    code TEXT PRIMARY KEY,
+    status TEXT DEFAULT 'unused' CHECK (status IN ('unused', 'used')),
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT now()
+);
+
+CREATE TABLE registrations (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    code TEXT REFERENCES codes(code),
+    school TEXT NOT NULL,
+    student_count INTEGER NOT NULL,
+    travel_date DATE NOT NULL,
+    additional_notes TEXT,
+    email TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT now()
+);
+```
+
+### Demo-Codes
+
+Für Testzwecke können Demo-Codes in die Datenbank eingefügt werden. Verwende dazu die Datei `create-demo-codes.sql`:
+
+```bash
+# Verbinde dich mit deiner Supabase-Datenbank
+psql -h db.abcdefghijklm.supabase.co -p 5432 -d postgres -U postgres
+
+# Führe das SQL-Skript aus
+\i create-demo-codes.sql
+```
+
+Alternativ kannst du die SQL-Befehle auch direkt im Supabase SQL-Editor ausführen.
