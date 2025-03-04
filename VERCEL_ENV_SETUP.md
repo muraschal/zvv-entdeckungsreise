@@ -9,6 +9,7 @@ Um die Anwendung erfolgreich auf Vercel zu deployen, müssen die folgenden Umgeb
 | `NEXT_PUBLIC_SUPABASE_URL` | Die URL deines Supabase-Projekts | `https://abcdefghijklm.supabase.co` |
 | `SUPABASE_SERVICE_ROLE_KEY` | Der Service-Role-Key deines Supabase-Projekts | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` |
 | `RESEND_API_KEY` | Der API-Schlüssel für den Resend-E-Mail-Dienst | `re_123456789` |
+| `EMAIL_FROM` | Die E-Mail-Adresse, die als Absender verwendet wird | `noreply@zvv.ch` |
 | `ADMIN_EMAIL` | Die E-Mail-Adresse, an die Benachrichtigungen gesendet werden | `admin@example.com` |
 
 ## Anleitung zur Einrichtung
