@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 import supabase from '../../../lib/supabase';
 import { sendConfirmationEmail, sendAdminNotificationEmail } from '../../../lib/email';
 
-// Admin-E-Mail-Adresse
-const ADMIN_EMAIL = 'admin@zvv-entdeckungsreise.ch'; // Ersetze dies mit der tatsächlichen Admin-E-Mail
+// Admin-E-Mail-Adresse aus Umgebungsvariablen oder Fallback
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@zvv-entdeckungsreise.ch';
 
 export async function POST(request: Request) {
   try {
@@ -78,7 +78,8 @@ export async function POST(request: Request) {
         school: school,
         student_count: studentCount,
         travel_date: travelDate,
-        additional_notes: additionalNotes || null
+        additional_notes: additionalNotes || null,
+        email: email // E-Mail-Adresse hinzufügen
       })
       .select();
 
@@ -92,10 +93,11 @@ export async function POST(request: Request) {
     }
 
     // 2. Aktualisiere den Status des Codes auf 'used'
+    // Verwende 'code' als Primärschlüssel, nicht 'id'
     const { error: updateError } = await supabase
       .from('codes')
       .update({ status: 'used' })
-      .eq('id', data.id);
+      .eq('code', code);
 
     // Fehlerbehandlung bei der Aktualisierung
     if (updateError) {
