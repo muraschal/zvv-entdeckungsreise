@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ZVVEntdeckungsreiseForm } from './app/page';
+import { ZVVEntdeckungsreiseForm } from './components/ZVVEntdeckungsreiseForm';
 
 // Funktion zum Initialisieren des Widgets
 window.initZVVEntdeckungsreiseWidget = (containerId: string, options = {}) => {
