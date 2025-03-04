@@ -29,6 +29,7 @@ async function createRegistrationsTable() {
           student_count INTEGER NOT NULL,
           travel_date DATE NOT NULL,
           additional_notes TEXT,
+          email TEXT NOT NULL,
           created_at TIMESTAMP DEFAULT now()
         );
         
@@ -41,6 +42,7 @@ async function createRegistrationsTable() {
         COMMENT ON COLUMN registrations.student_count IS 'Anzahl der Schüler';
         COMMENT ON COLUMN registrations.travel_date IS 'Gewünschtes Reisedatum';
         COMMENT ON COLUMN registrations.additional_notes IS 'Zusätzliche Anmerkungen';
+        COMMENT ON COLUMN registrations.email IS 'E-Mail-Adresse für die Bestätigung';
         COMMENT ON COLUMN registrations.created_at IS 'Zeitpunkt der Anmeldung';
       `
     });

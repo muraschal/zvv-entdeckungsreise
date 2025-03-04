@@ -9,21 +9,22 @@ Eine skalierbare, performante Lösung zur Verwaltung und Validierung von Ticketc
 ## 💪 Architektur
 - **Supabase (PostgreSQL)** als **zentrale Datenbank** für Codes und Anmeldungen.
 - **Vercel (Next.js)** für die Benutzeroberfläche und API-Endpunkte.
+- **Resend** für den E-Mail-Versand von Bestätigungen und Benachrichtigungen.
 
 ## 🔧 Technologie-Stack
 - **Supabase (PostgreSQL)** für Speicherung & Validierung der Codes.
 - **Next.js** für Frontend und API-Routes.
 - **Vercel** für Hosting und Serverless-Funktionen.
+- **Resend** für transaktionale E-Mails.
 
 ## 🎯 Datenbank-Struktur (Supabase)
 ### Tabelle: `codes`
 ```sql
 CREATE TABLE codes (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    code TEXT UNIQUE NOT NULL,
-    status TEXT CHECK (status IN ('unused', 'used')) DEFAULT 'unused',
-    created_at TIMESTAMP DEFAULT now(),
-    expires_at TIMESTAMP
+    code TEXT PRIMARY KEY,
+    status TEXT DEFAULT 'unused' CHECK (status IN ('unused', 'used')),
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT now()
 );
 ```
 - `code`: Einzigartiger Ticketcode.
@@ -39,6 +40,7 @@ CREATE TABLE registrations (
     student_count INTEGER NOT NULL,
     travel_date DATE NOT NULL,
     additional_notes TEXT,
+    email TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT now()
 );
 ```
@@ -47,6 +49,7 @@ CREATE TABLE registrations (
 - `student_count`: Anzahl der Schüler.
 - `travel_date`: Gewünschtes Reisedatum.
 - `additional_notes`: Zusätzliche Anmerkungen.
+- `email`: E-Mail-Adresse für die Bestätigung.
 
 ## 🛠️ Funktionalitäten
 ### **1. Code-Validierung**
@@ -59,20 +62,52 @@ CREATE TABLE registrations (
   - Schule
   - Anzahl Schüler
   - Gewünschtes Reisedatum
+  - E-Mail-Adresse
   - Zusätzliche Anmerkung
 - API-Endpunkt: `POST /api/redeem`
 - Validiert den Code und speichert die Anmeldedaten.
+
+### **3. E-Mail-Benachrichtigungen**
+- **Bestätigungs-E-Mail** an den Benutzer nach erfolgreicher Anmeldung.
+- **Benachrichtigungs-E-Mail** an den Administrator mit den Anmeldedetails.
 
 ## 🚨 Best Practices
 - **Supabase Row-Level Security (RLS)** aktivieren, um Datenzugriff abzusichern.
 - **Serverless-Funktionen** für optimale Skalierbarkeit.
 - **Formularvalidierung** sowohl client- als auch serverseitig.
+- **Transaktionale E-Mails** für Bestätigungen und Benachrichtigungen.
 
-## 🏢 Nächste Schritte
-1. **Anmeldeformular erstellen** (einfaches Design, Fokus auf Funktionalität).
-2. **Registrations-Tabelle in Supabase einrichten**.
-3. **API-Endpunkte für Formularverarbeitung implementieren**.
-4. **Bestätigungsseite nach erfolgreicher Anmeldung erstellen**.
+## 🏁 Implementierte Funktionen
+1. ✅ **Anmeldeformular erstellt** mit allen erforderlichen Feldern.
+2. ✅ **Datenbank-Tabellen in Supabase eingerichtet** für Codes und Anmeldungen.
+3. ✅ **API-Endpunkte implementiert** für Validierung und Einlösung von Codes.
+4. ✅ **E-Mail-Funktionalität integriert** für Bestätigungen und Benachrichtigungen.
+5. ✅ **Bestätigungsseite nach erfolgreicher Anmeldung erstellt**.
+
+## 🚀 Erste Schritte
+1. Klone das Repository:
+   ```bash
+   git clone https://github.com/dein-username/zvv-entdeckungsreise.git
+   cd zvv-entdeckungsreise
+   ```
+
+2. Installiere die Abhängigkeiten:
+   ```bash
+   npm install
+   ```
+
+3. Erstelle eine `.env.local` Datei mit den erforderlichen Umgebungsvariablen:
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=deine-supabase-url
+   SUPABASE_SERVICE_ROLE_KEY=dein-service-role-key
+   RESEND_API_KEY=dein-resend-api-key
+   ADMIN_EMAIL=admin@beispiel.com
+   ```
+
+4. Starte die Entwicklungsumgebung:
+   ```bash
+   npm run dev
+   ```
 
 ## 🎉 Fazit
-Diese Lösung macht den Bestellprozess **skalierbar, sicher und benutzerfreundlich**. Durch die direkte Integration des Anmeldeformulars in die Next.js-Anwendung wird der Prozess vereinfacht und die Abhängigkeit von Drittanbietern wie Typeform und Zapier eliminiert.
+Diese Lösung macht den Bestellprozess **skalierbar, sicher und benutzerfreundlich**. Durch die direkte Integration des Anmeldeformulars in die Next.js-Anwendung wird der Prozess vereinfacht und die Abhängigkeit von Drittanbietern wie Typeform und Zapier eliminiert. Die E-Mail-Funktionalität sorgt für eine nahtlose Kommunikation mit den Benutzern und Administratoren.
