@@ -33,6 +33,43 @@ export interface Database {
         }
         Relationships: []
       }
+      registrations: {
+        Row: {
+          id: string
+          code: string
+          school: string
+          student_count: number
+          travel_date: string
+          additional_notes: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          code: string
+          school: string
+          student_count: number
+          travel_date: string
+          additional_notes?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          code?: string
+          school?: string
+          student_count?: number
+          travel_date?: string
+          additional_notes?: string | null
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "registrations_code_fkey"
+            columns: ["code"]
+            referencedRelation: "codes"
+            referencedColumns: ["code"]
+          }
+        ]
+      }
     }
     Views: {
       [_ in never]: never

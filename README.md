@@ -1,23 +1,22 @@
-# ZVV Ticketcode-Validierung mit Supabase & Zapier
+# ZVV Ticketcode-Validierung mit Supabase & Next.js
 
 ## 💡 Problemstellung
-Aktuell wird die Bestellcode-Verwaltung für die ZVV-Entdeckungsreise über Google Sheets und Zapier gehandhabt. Google Sheets hat jedoch eine **500-Zeilen-Grenze**, was langfristig zu Skalierungsproblemen führt. Jährlich werden ca. **650 neue Codes generiert** und diese bleiben **drei Jahre gültig**. Das bestehende Modell ist nicht nachhaltig.
+Aktuell wird die Bestellcode-Verwaltung für die ZVV-Entdeckungsreise über Google Sheets gehandhabt. Google Sheets hat jedoch eine **500-Zeilen-Grenze**, was langfristig zu Skalierungsproblemen führt. Jährlich werden ca. **650 neue Codes generiert** und diese bleiben **drei Jahre gültig**. Das bestehende Modell ist nicht nachhaltig.
 
 ## 🚀 Ziel
-Eine skalierbare, performante Lösung zur Verwaltung und Validierung von Ticketcodes unter Nutzung von **Supabase** als zentrale Datenbank und einer **Webhook-gesteuerten API** auf **Vercel** zur Kommunikation mit Zapier.
+Eine skalierbare, performante Lösung zur Verwaltung und Validierung von Ticketcodes unter Nutzung von **Supabase** als zentrale Datenbank und einer **Next.js-Anwendung** auf **Vercel** für die Benutzeroberfläche und API-Funktionalität.
 
 ## 💪 Architektur
-- **Supabase (PostgreSQL)** als **zentrale Datenbank** für Codes.
-- **Vercel (Serverless API)** für schnelle Code-Validierung via Webhooks.
-- **Zapier** als Automatisierungsplattform für den Bestellprozess.
+- **Supabase (PostgreSQL)** als **zentrale Datenbank** für Codes und Anmeldungen.
+- **Vercel (Next.js)** für die Benutzeroberfläche und API-Endpunkte.
 
 ## 🔧 Technologie-Stack
 - **Supabase (PostgreSQL)** für Speicherung & Validierung der Codes.
-- **Vercel** mit **Next.js API Routes** für REST-Schnittstelle.
-- **Zapier** zur Anbindung von Typeform und Benachrichtigung.
+- **Next.js** für Frontend und API-Routes.
+- **Vercel** für Hosting und Serverless-Funktionen.
 
 ## 🎯 Datenbank-Struktur (Supabase)
-Tabelle: `codes`
+### Tabelle: `codes`
 ```sql
 CREATE TABLE codes (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -31,48 +30,49 @@ CREATE TABLE codes (
 - `status`: Wird auf `used` gesetzt, wenn der Code eingelöst wurde.
 - `expires_at`: Ablaufdatum des Codes (3 Jahre nach Erstellung).
 
-## 🛠️ API-Schnittstellen (Vercel)
-### **1. `POST /validate`** (Validierung eines Codes)
-#### Request
-```json
-{
-  "code": "XYZ12345"
-}
+### Tabelle: `registrations`
+```sql
+CREATE TABLE registrations (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    code TEXT REFERENCES codes(code),
+    school TEXT NOT NULL,
+    student_count INTEGER NOT NULL,
+    travel_date DATE NOT NULL,
+    additional_notes TEXT,
+    created_at TIMESTAMP DEFAULT now()
+);
 ```
-#### Response
-```json
-{
-  "valid": true,
-  "message": "Code is valid."
-}
-```
-- Falls **ungültig**, gibt API `valid: false` und eine Fehlermeldung zurück.
+- `code`: Referenz zum eingelösten Ticketcode.
+- `school`: Name der Schule.
+- `student_count`: Anzahl der Schüler.
+- `travel_date`: Gewünschtes Reisedatum.
+- `additional_notes`: Zusätzliche Anmerkungen.
 
-### **2. `POST /redeem`** (Einlösen eines Codes)
-#### Request
-```json
-{
-  "code": "XYZ12345"
-}
-```
-#### Response
-```json
-{
-  "success": true,
-  "message": "Code redeemed successfully."
-}
-```
-- Setzt `status` des Codes in Supabase auf `used`.
+## 🛠️ Funktionalitäten
+### **1. Code-Validierung**
+- API-Endpunkt: `POST /api/validate`
+- Überprüft, ob ein Ticketcode gültig ist.
+
+### **2. Code-Einlösung mit Anmeldeformular**
+- Einfaches Formular mit folgenden Feldern:
+  - Code
+  - Schule
+  - Anzahl Schüler
+  - Gewünschtes Reisedatum
+  - Zusätzliche Anmerkung
+- API-Endpunkt: `POST /api/redeem`
+- Validiert den Code und speichert die Anmeldedaten.
 
 ## 🚨 Best Practices
-- API ist **stateless** und optimiert für schnelle Antwortzeiten (<200ms).
 - **Supabase Row-Level Security (RLS)** aktivieren, um Datenzugriff abzusichern.
-- **Logging und Monitoring** über Vercel & Supabase einrichten.
+- **Serverless-Funktionen** für optimale Skalierbarkeit.
+- **Formularvalidierung** sowohl client- als auch serverseitig.
 
 ## 🏢 Nächste Schritte
-1. **Supabase DB einrichten** (inkl. Testdaten füllen).
-2. **Vercel API entwickeln** (Next.js API Routes oder Express.js).
-3. **Zapier integrieren** (Typeform -> API -> Bestätigungs-E-Mail).
+1. **Anmeldeformular erstellen** (einfaches Design, Fokus auf Funktionalität).
+2. **Registrations-Tabelle in Supabase einrichten**.
+3. **API-Endpunkte für Formularverarbeitung implementieren**.
+4. **Bestätigungsseite nach erfolgreicher Anmeldung erstellen**.
 
 ## 🎉 Fazit
-Diese Lösung macht den Bestellprozess **skalierbar, sicher und automatisiert**. Supabase bietet eine performante Alternative zu Google Sheets, während Vercel die API effizient und kostengünstig hostet. Zapier sorgt für eine reibungslose Integration in den bestehenden Workflow.
+Diese Lösung macht den Bestellprozess **skalierbar, sicher und benutzerfreundlich**. Durch die direkte Integration des Anmeldeformulars in die Next.js-Anwendung wird der Prozess vereinfacht und die Abhängigkeit von Drittanbietern wie Typeform und Zapier eliminiert.

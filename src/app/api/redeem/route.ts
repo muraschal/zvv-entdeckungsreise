@@ -3,13 +3,13 @@ import supabase from '../../../lib/supabase';
 
 export async function POST(request: Request) {
   try {
-    // Extrahiere den Code aus dem Request-Body
-    const { code } = await request.json();
+    // Extrahiere die Daten aus dem Request-Body
+    const { code, school, studentCount, travelDate, additionalNotes } = await request.json();
 
-    // Überprüfe, ob der Code vorhanden ist
-    if (!code) {
+    // Überprüfe, ob alle erforderlichen Felder vorhanden sind
+    if (!code || !school || !studentCount || !travelDate) {
       return NextResponse.json(
-        { success: false, message: 'Code ist erforderlich.' },
+        { success: false, message: 'Alle Pflichtfelder müssen ausgefüllt sein.' },
         { status: 400 }
       );
     }
@@ -54,7 +54,31 @@ export async function POST(request: Request) {
       );
     }
 
-    // Aktualisiere den Status des Codes auf 'used'
+    // Starte eine Transaktion, um sowohl den Code zu aktualisieren als auch die Anmeldung zu speichern
+    // Da Supabase keine echten Transaktionen unterstützt, führen wir die Operationen nacheinander aus
+    
+    // 1. Speichere die Anmeldedaten in der registrations-Tabelle
+    const { data: registrationData, error: registrationError } = await supabase
+      .from('registrations')
+      .insert({
+        code: code,
+        school: school,
+        student_count: studentCount,
+        travel_date: travelDate,
+        additional_notes: additionalNotes || null
+      })
+      .select();
+
+    // Fehlerbehandlung bei der Speicherung der Anmeldedaten
+    if (registrationError) {
+      console.error('Fehler beim Speichern der Anmeldedaten:', registrationError);
+      return NextResponse.json(
+        { success: false, message: 'Fehler beim Speichern der Anmeldedaten.' },
+        { status: 500 }
+      );
+    }
+
+    // 2. Aktualisiere den Status des Codes auf 'used'
     const { error: updateError } = await supabase
       .from('codes')
       .update({ status: 'used' })
@@ -63,15 +87,30 @@ export async function POST(request: Request) {
     // Fehlerbehandlung bei der Aktualisierung
     if (updateError) {
       console.error('Supabase-Aktualisierungsfehler:', updateError);
+      
+      // Versuche, die Anmeldung rückgängig zu machen, da der Code nicht aktualisiert werden konnte
+      await supabase
+        .from('registrations')
+        .delete()
+        .eq('id', registrationData[0].id);
+        
       return NextResponse.json(
         { success: false, message: 'Fehler beim Einlösen des Codes.' },
         { status: 500 }
       );
     }
 
-    // Code erfolgreich eingelöst
+    // Code erfolgreich eingelöst und Anmeldung gespeichert
     return NextResponse.json(
-      { success: true, message: 'Code erfolgreich eingelöst.' },
+      { 
+        success: true, 
+        message: 'Anmeldung erfolgreich. Vielen Dank!',
+        data: {
+          registrationId: registrationData[0].id,
+          school: school,
+          travelDate: travelDate
+        }
+      },
       { status: 200 }
     );
   } catch (error) {
