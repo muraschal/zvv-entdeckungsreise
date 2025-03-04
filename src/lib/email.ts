@@ -4,7 +4,7 @@ import { Resend } from 'resend';
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // E-Mail-Absender
-const FROM_EMAIL = 'noreply@zvv-entdeckungsreise.vercel.app';
+const FROM_EMAIL = 'noreply@zvv.ch';
 
 /**
  * Sendet eine Bestätigungs-E-Mail nach erfolgreicher Anmeldung
