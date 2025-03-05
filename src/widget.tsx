@@ -2,6 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { ZVVEntdeckungsreiseForm } from './components/ZVVEntdeckungsreiseForm';
 
+// Aktuelle Version und Build-Datum ausgeben
+const version = '2.0.0';
+const buildDate = new Date().toISOString();
+console.log(`ZVV-Entdeckungsreise Widget v${version} - Build: ${buildDate} - GitHub: ${process.env.GITHUB_SHA || 'local'}`);
+
 // Funktion zum Initialisieren des Widgets
 window.initZVVEntdeckungsreiseWidget = (containerId: string, options = {}) => {
   const container = document.getElementById(containerId);
