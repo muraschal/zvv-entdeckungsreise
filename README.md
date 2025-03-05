@@ -131,7 +131,7 @@ erDiagram
 ## Erste Schritte 🚀
 1. Klone das Repository:
    ```bash
-   git clone https://github.com/dein-username/zvv-entdeckungsreise.git
+   git clone https://github.com/muraschal/zvv-entdeckungsreise.git
    cd zvv-entdeckungsreise
    ```
 
