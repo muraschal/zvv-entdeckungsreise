@@ -138,10 +138,10 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
       <form onSubmit={handleSubmit}>
         {/* Ticketcode */}
         <div className="cmp-row-container aem-Grid cmp-row-container--spacing">
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--6 aem-GridColumn--vpm--6 aem-GridColumn--vpms--6">
+          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
             <label htmlFor="code">Ticketcode</label>
           </div>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--6 aem-GridColumn--vpm--6 aem-GridColumn--vpms--6">
+          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--8 aem-GridColumn--vpm--8 aem-GridColumn--vpms--8">
             <div className="cmp-form-text">
               <input
                 id="code"
@@ -161,10 +161,10 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
         
         {/* Schule */}
         <div className="cmp-row-container aem-Grid cmp-row-container--spacing">
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--6 aem-GridColumn--vpm--6 aem-GridColumn--vpms--6">
+          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
             <label htmlFor="school">Schule</label>
           </div>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--6 aem-GridColumn--vpm--6 aem-GridColumn--vpms--6">
+          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--8 aem-GridColumn--vpm--8 aem-GridColumn--vpms--8">
             <div className="cmp-form-text">
               <input
                 id="school"
@@ -184,10 +184,10 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
         
         {/* Kontaktperson */}
         <div className="cmp-row-container aem-Grid cmp-row-container--spacing">
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--6 aem-GridColumn--vpm--6 aem-GridColumn--vpms--6">
+          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
             <label htmlFor="contactPerson">Kontaktperson</label>
           </div>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--6 aem-GridColumn--vpm--6 aem-GridColumn--vpms--6">
+          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--8 aem-GridColumn--vpm--8 aem-GridColumn--vpms--8">
             <div className="cmp-form-text">
               <input
                 id="contactPerson"
@@ -207,10 +207,10 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
         
         {/* E-Mail */}
         <div className="cmp-row-container aem-Grid cmp-row-container--spacing">
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--6 aem-GridColumn--vpm--6 aem-GridColumn--vpms--6">
+          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
             <label htmlFor="email">E-Mail</label>
           </div>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--6 aem-GridColumn--vpm--6 aem-GridColumn--vpms--6">
+          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--8 aem-GridColumn--vpm--8 aem-GridColumn--vpms--8">
             <div className="cmp-form-text">
               <input
                 id="email"
@@ -231,10 +231,10 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
         
         {/* Telefon */}
         <div className="cmp-row-container aem-Grid cmp-row-container--spacing">
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--6 aem-GridColumn--vpm--6 aem-GridColumn--vpms--6">
+          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
             <label htmlFor="phoneNumber">Telefon</label>
           </div>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--6 aem-GridColumn--vpm--6 aem-GridColumn--vpms--6">
+          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--8 aem-GridColumn--vpm--8 aem-GridColumn--vpms--8">
             <div className="cmp-form-text">
               <input
                 id="phoneNumber"
@@ -255,10 +255,10 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
         
         {/* Klasse */}
         <div className="cmp-row-container aem-Grid cmp-row-container--spacing">
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--6 aem-GridColumn--vpm--6 aem-GridColumn--vpms--6">
+          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
             <label htmlFor="className">Klasse</label>
           </div>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--6 aem-GridColumn--vpm--6 aem-GridColumn--vpms--6">
+          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--8 aem-GridColumn--vpm--8 aem-GridColumn--vpms--8">
             <div className="cmp-dropdown">
               <div 
                 tabIndex={0} 
@@ -267,7 +267,7 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
               >
                 {formData.className || 'Bitte wählen'}
               </div>
-              <div className="cmp-dropdown__options">
+              <div className={`cmp-dropdown__options ${dropdownVisible ? 'visible' : ''}`}>
                 <div 
                   className="cmp-dropdown__option" 
                   data-value=""
@@ -324,10 +324,10 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
         
         {/* Anzahl Schüler */}
         <div className="cmp-row-container aem-Grid cmp-row-container--spacing">
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--6 aem-GridColumn--vpm--6 aem-GridColumn--vpms--6">
+          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
             <label htmlFor="studentCount">Anzahl Schüler</label>
           </div>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--6 aem-GridColumn--vpm--6 aem-GridColumn--vpms--6">
+          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--8 aem-GridColumn--vpm--8 aem-GridColumn--vpms--8">
             <div className="cmp-form-text">
               <input
                 id="studentCount"
@@ -349,10 +349,10 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
         
         {/* Begleitpersonen */}
         <div className="cmp-row-container aem-Grid cmp-row-container--spacing">
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--6 aem-GridColumn--vpm--6 aem-GridColumn--vpms--6">
+          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
             <label htmlFor="accompanistCount">Begleitpersonen</label>
           </div>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--6 aem-GridColumn--vpm--6 aem-GridColumn--vpms--6">
+          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--8 aem-GridColumn--vpm--8 aem-GridColumn--vpms--8">
             <div className="cmp-form-text">
               <input
                 id="accompanistCount"
@@ -374,10 +374,10 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
         
         {/* Reisedatum */}
         <div className="cmp-row-container aem-Grid cmp-row-container--spacing">
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--6 aem-GridColumn--vpm--6 aem-GridColumn--vpms--6">
+          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
             <label htmlFor="travelDate">Reisedatum</label>
           </div>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--6 aem-GridColumn--vpm--6 aem-GridColumn--vpms--6">
+          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--8 aem-GridColumn--vpm--8 aem-GridColumn--vpms--8">
             <div className="cmp-form-text">
               <input
                 id="travelDate"
@@ -399,10 +399,10 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
         
         {/* Ankunftszeit */}
         <div className="cmp-row-container aem-Grid cmp-row-container--spacing">
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--6 aem-GridColumn--vpm--6 aem-GridColumn--vpms--6">
+          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
             <label htmlFor="arrivalTime">Ankunftszeit</label>
           </div>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--6 aem-GridColumn--vpm--6 aem-GridColumn--vpms--6">
+          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--8 aem-GridColumn--vpm--8 aem-GridColumn--vpms--8">
             <div className="cmp-form-text">
               <input
                 id="arrivalTime"
@@ -423,10 +423,10 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
         
         {/* Anmerkungen */}
         <div className="cmp-row-container aem-Grid cmp-row-container--spacing">
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--6 aem-GridColumn--vpm--6 aem-GridColumn--vpms--6">
+          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
             <label htmlFor="additionalNotes">Anmerkungen</label>
           </div>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--6 aem-GridColumn--vpm--6 aem-GridColumn--vpms--6">
+          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--8 aem-GridColumn--vpm--8 aem-GridColumn--vpms--8">
             <div className="cmp-form-text">
               <textarea
                 id="additionalNotes"
