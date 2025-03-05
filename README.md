@@ -2,7 +2,6 @@
 
 ## Inhaltsverzeichnis
 - [Über das Projekt](#über-das-projekt)
-- [Architektur](#architektur)
 - [Technologie-Stack](#technologie-stack)
 - [Funktionalitäten](#funktionalitäten)
 - [Datenbank-Struktur](#datenbank-struktur-supabase)
@@ -15,18 +14,12 @@
 ## Über das Projekt 
 Dieses hochskalierbare Full-Stack-Microservice implementiert ein React-basiertes Anmeldeformular für die ZVV-Entdeckungsreise mit serverless Backend-Architektur. Die Lösung nutzt eine event-driven Datenverarbeitungspipeline mit PostgreSQL als persistente Speicherschicht via **Supabase** und einer **Next.js-Anwendung** mit Server-Side Rendering für optimale Performance und SEO-Metriken.
 
-## Architektur
-- **Supabase (PostgreSQL)** als **zentrale Datenbank** für Codes und Anmeldungen 📊
-- **Vercel (Next.js)** für die Benutzeroberfläche und API-Endpunkte 🖥️
-- **Resend** für den E-Mail-Versand von Bestätigungen und Benachrichtigungen 📧
-- **shadcn/ui** für moderne, zugängliche UI-Komponenten 🎨
-
 ## Technologie-Stack
-- **Supabase (PostgreSQL)** für Speicherung & Validierung der Codes 🗄️
-- **Next.js** für Frontend und API-Routes 🚀
-- **Vercel** für Hosting und Serverless-Funktionen ☁️
-- **Resend** für transaktionale E-Mails 📨
-- **shadcn/ui** für konsistentes, modernes UI-Design 🎭
+- **Supabase (PostgreSQL)** als zentrale Datenbank für Speicherung & Validierung der Codes 🗄️
+- **Next.js** für Frontend und API-Routes auf **Vercel** für optimale Performance 🚀
+- **Vercel** für Hosting und Serverless-Funktionen mit automatischem Scaling ☁️
+- **Resend** für zuverlässigen E-Mail-Versand von Bestätigungen und Benachrichtigungen 📧
+- **shadcn/ui** für konsistentes, modernes und zugängliches UI-Design 🎨
 - **Tailwind CSS** für effizientes, responsives Styling 🌈
 
 ## Funktionalitäten
