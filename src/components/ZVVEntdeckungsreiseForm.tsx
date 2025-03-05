@@ -267,9 +267,9 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
               >
                 {formData.className || 'Bitte wählen'}
               </div>
-              <div className={`cmp-dropdown__options ${dropdownVisible ? 'visible' : ''}`}>
+              <div className="cmp-dropdown__options">
                 <div 
-                  className={`cmp-dropdown__option ${!formData.className ? 'cmp-dropdown__option--selected' : ''}`} 
+                  className="cmp-dropdown__option" 
                   data-value=""
                   onClick={() => {
                     setFormData(prev => ({ ...prev, className: '' }));
@@ -279,34 +279,34 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                   Bitte wählen
                 </div>
                 <div 
-                  className={`cmp-dropdown__option ${formData.className === '4. Klasse' ? 'cmp-dropdown__option--selected' : ''}`} 
+                  className="cmp-dropdown__option" 
                   data-value="klasse-4"
                   onClick={() => {
                     setFormData(prev => ({ ...prev, className: '4. Klasse' }));
                     setDropdownVisible(false);
                   }}
                 >
-                  4. Klasse
+                  4.
                 </div>
                 <div 
-                  className={`cmp-dropdown__option ${formData.className === '5. Klasse' ? 'cmp-dropdown__option--selected' : ''}`} 
+                  className="cmp-dropdown__option" 
                   data-value="klasse-5"
                   onClick={() => {
                     setFormData(prev => ({ ...prev, className: '5. Klasse' }));
                     setDropdownVisible(false);
                   }}
                 >
-                  5. Klasse
+                  5.
                 </div>
                 <div 
-                  className={`cmp-dropdown__option ${formData.className === '6. Klasse' ? 'cmp-dropdown__option--selected' : ''}`} 
+                  className="cmp-dropdown__option" 
                   data-value="klasse-6"
                   onClick={() => {
                     setFormData(prev => ({ ...prev, className: '6. Klasse' }));
                     setDropdownVisible(false);
                   }}
                 >
-                  6. Klasse
+                  6.
                 </div>
               </div>
               <input 
