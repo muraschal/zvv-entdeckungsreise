@@ -135,295 +135,319 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
         </div>
       )}
       
-      <form onSubmit={handleSubmit} className="cmp-teacher-training-material">
-        <div className="grid gap-6 mb-4">
-          <div className="cmp-newsletter__input-wrapper">
-            <label htmlFor="code" className="cmp-teacher-training-material__topics-title">
-              Ticketcode
-            </label>
-            <div className="cmp-newsletter__input-wrapper-inner">
-              <input
-                id="code"
-                className="cmp-form-text__text cmp-newsletter__input"
-                placeholder="Ticketcode eingeben"
-                name="code"
-                value={formData.code}
-                onChange={handleChange}
-                required
-                aria-describedby="code-desc"
-                data-cmphookformtext=""
-                data-cmprequiredmessage="Bitte geben Sie einen Ticketcode ein"
-              />
-            </div>
-          </div>
-          
-          <div className="cmp-newsletter__input-wrapper">
-            <label htmlFor="school" className="cmp-teacher-training-material__topics-title">
-              Schule
-            </label>
-            <div className="cmp-newsletter__input-wrapper-inner">
-              <input
-                id="school"
-                className="cmp-form-text__text cmp-newsletter__input"
-                placeholder="Name der Schule"
-                name="school"
-                value={formData.school}
-                onChange={handleChange}
-                required
-                aria-describedby="school-desc"
-                data-cmphookformtext=""
-                data-cmprequiredmessage="Bitte geben Sie den Namen der Schule ein"
-              />
-            </div>
-          </div>
-          
-          <div className="cmp-newsletter__input-wrapper">
-            <label htmlFor="contactPerson" className="cmp-teacher-training-material__topics-title">
-              Kontaktperson
-            </label>
-            <div className="cmp-newsletter__input-wrapper-inner">
-              <input
-                id="contactPerson"
-                className="cmp-form-text__text cmp-newsletter__input"
-                placeholder="Name der Kontaktperson"
-                name="contactPerson"
-                value={formData.contactPerson}
-                onChange={handleChange}
-                required
-                aria-describedby="contactPerson-desc"
-                data-cmphookformtext=""
-                data-cmprequiredmessage="Bitte geben Sie den Namen der Kontaktperson ein"
-              />
-            </div>
-          </div>
-          
-          <div className="cmp-newsletter__input-wrapper">
-            <label htmlFor="email" className="cmp-teacher-training-material__topics-title">
-              E-Mail
-            </label>
-            <div className="cmp-newsletter__input-wrapper-inner">
-              <input
-                id="email"
-                className="cmp-form-text__text cmp-newsletter__input"
-                placeholder="E-Mail-Adresse"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                aria-describedby="email-desc"
-                data-cmphookformtext=""
-                data-cmprequiredmessage="Bitte geben Sie eine gültige E-Mail-Adresse ein"
-              />
-            </div>
-          </div>
-          
-          <div className="cmp-newsletter__input-wrapper">
-            <label htmlFor="phoneNumber" className="cmp-teacher-training-material__topics-title">
-              Telefon
-            </label>
-            <div className="cmp-newsletter__input-wrapper-inner">
-              <input
-                id="phoneNumber"
-                className="cmp-form-text__text cmp-newsletter__input"
-                placeholder="Telefonnummer"
-                name="phoneNumber"
-                type="tel"
-                value={formData.phoneNumber}
-                onChange={handleChange}
-                required
-                aria-describedby="phoneNumber-desc"
-                data-cmphookformtext=""
-                data-cmprequiredmessage="Bitte geben Sie eine Telefonnummer ein"
-              />
-            </div>
-          </div>
-          
-          <div className="cmp-newsletter__input-wrapper">
-            <label htmlFor="className" className="cmp-teacher-training-material__classes-dropdown-title">
-              Klasse
-            </label>
-            <div className="cmp-dropdown__wrapper">
-              <div className="cmp-dropdown">
-                <div 
-                  tabIndex={0} 
-                  className="cmp-dropdown__label"
-                  onClick={() => setDropdownVisible(!dropdownVisible)}
-                >
-                  {formData.className || 'Bitte wählen'}
+      <div className="teacher-training-material">
+        <div className="cmp-teacher-training-material">
+          <form onSubmit={handleSubmit} className="cmp-teacher-training-material__filters">
+            <div className="grid gap-6 mb-4">
+              <div className="cmp-form-text__wrapper-outter">
+                <div className="cmp-teacher-training-material__topics-title">
+                  Ticketcode
                 </div>
-                <div className={`cmp-dropdown__options ${dropdownVisible ? 'visible' : ''}`}>
-                  <div 
-                    className={`cmp-dropdown__option ${!formData.className ? 'cmp-dropdown__option--selected' : ''}`} 
-                    data-value=""
-                    onClick={() => {
-                      setFormData(prev => ({ ...prev, className: '' }));
-                      setDropdownVisible(false);
-                    }}
-                  >
-                    Bitte wählen
-                  </div>
-                  <div 
-                    className={`cmp-dropdown__option ${formData.className === '4. Klasse' ? 'cmp-dropdown__option--selected' : ''}`} 
-                    data-value="klasse-4"
-                    onClick={() => {
-                      setFormData(prev => ({ ...prev, className: '4. Klasse' }));
-                      setDropdownVisible(false);
-                    }}
-                  >
-                    4.
-                  </div>
-                  <div 
-                    className={`cmp-dropdown__option ${formData.className === '5. Klasse' ? 'cmp-dropdown__option--selected' : ''}`} 
-                    data-value="klasse-5"
-                    onClick={() => {
-                      setFormData(prev => ({ ...prev, className: '5. Klasse' }));
-                      setDropdownVisible(false);
-                    }}
-                  >
-                    5.
-                  </div>
-                  <div 
-                    className={`cmp-dropdown__option ${formData.className === '6. Klasse' ? 'cmp-dropdown__option--selected' : ''}`} 
-                    data-value="klasse-6"
-                    onClick={() => {
-                      setFormData(prev => ({ ...prev, className: '6. Klasse' }));
-                      setDropdownVisible(false);
-                    }}
-                  >
-                    6.
+                <div className="cmp-form-text__wrapper-inner">
+                  <div className="cmp-form-text">
+                    <input
+                      id="code"
+                      className="cmp-form-text__text"
+                      placeholder="Ticketcode eingeben"
+                      name="code"
+                      value={formData.code}
+                      onChange={handleChange}
+                      required
+                      aria-describedby="code-desc"
+                      data-cmphookformtext=""
+                      data-cmprequiredmessage="Bitte geben Sie einen Ticketcode ein"
+                    />
                   </div>
                 </div>
               </div>
-              <div className="cmp-dropdown__spacer"></div>
-              <input 
-                type="hidden" 
-                id="className"
-                name="className"
-                value={formData.className}
-                required
-                aria-describedby="className-desc"
-                data-cmprequiredmessage="Bitte wählen Sie eine Klasse aus"
-              />
+              
+              <div className="cmp-form-text__wrapper-outter">
+                <div className="cmp-teacher-training-material__topics-title">
+                  Schule
+                </div>
+                <div className="cmp-form-text__wrapper-inner">
+                  <div className="cmp-form-text">
+                    <input
+                      id="school"
+                      className="cmp-form-text__text"
+                      placeholder="Name der Schule"
+                      name="school"
+                      value={formData.school}
+                      onChange={handleChange}
+                      required
+                      aria-describedby="school-desc"
+                      data-cmphookformtext=""
+                      data-cmprequiredmessage="Bitte geben Sie den Namen der Schule ein"
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              <div className="cmp-form-text__wrapper-outter">
+                <div className="cmp-teacher-training-material__topics-title">
+                  Kontaktperson
+                </div>
+                <div className="cmp-form-text__wrapper-inner">
+                  <div className="cmp-form-text">
+                    <input
+                      id="contactPerson"
+                      className="cmp-form-text__text"
+                      placeholder="Name der Kontaktperson"
+                      name="contactPerson"
+                      value={formData.contactPerson}
+                      onChange={handleChange}
+                      required
+                      aria-describedby="contactPerson-desc"
+                      data-cmphookformtext=""
+                      data-cmprequiredmessage="Bitte geben Sie den Namen der Kontaktperson ein"
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              <div className="cmp-form-text__wrapper-outter">
+                <div className="cmp-teacher-training-material__topics-title">
+                  E-Mail
+                </div>
+                <div className="cmp-form-text__wrapper-inner">
+                  <div className="cmp-form-text">
+                    <input
+                      id="email"
+                      className="cmp-form-text__text"
+                      placeholder="E-Mail-Adresse"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                      aria-describedby="email-desc"
+                      data-cmphookformtext=""
+                      data-cmprequiredmessage="Bitte geben Sie eine gültige E-Mail-Adresse ein"
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              <div className="cmp-form-text__wrapper-outter">
+                <div className="cmp-teacher-training-material__topics-title">
+                  Telefon
+                </div>
+                <div className="cmp-form-text__wrapper-inner">
+                  <div className="cmp-form-text">
+                    <input
+                      id="phoneNumber"
+                      className="cmp-form-text__text"
+                      placeholder="Telefonnummer"
+                      name="phoneNumber"
+                      type="tel"
+                      value={formData.phoneNumber}
+                      onChange={handleChange}
+                      required
+                      aria-describedby="phoneNumber-desc"
+                      data-cmphookformtext=""
+                      data-cmprequiredmessage="Bitte geben Sie eine Telefonnummer ein"
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              <div className="cmp-teacher-training-material__classes-filter">
+                <div className="cmp-teacher-training-material__classes-dropdown-title">
+                  Klasse
+                </div>
+                <div className="cmp-dropdown__wrapper">
+                  <div className="cmp-dropdown">
+                    <div 
+                      tabIndex={0} 
+                      className="cmp-dropdown__label"
+                      onClick={() => setDropdownVisible(!dropdownVisible)}
+                    >
+                      {formData.className || 'Bitte wählen'}
+                    </div>
+                    <div className={`cmp-dropdown__options ${dropdownVisible ? 'visible' : ''}`}>
+                      <div 
+                        className={`cmp-dropdown__option ${!formData.className ? 'cmp-dropdown__option--selected' : ''}`} 
+                        data-value=""
+                        onClick={() => {
+                          setFormData(prev => ({ ...prev, className: '' }));
+                          setDropdownVisible(false);
+                        }}
+                      >
+                        Bitte wählen
+                      </div>
+                      <div 
+                        className={`cmp-dropdown__option ${formData.className === '4. Klasse' ? 'cmp-dropdown__option--selected' : ''}`} 
+                        data-value="klasse-4"
+                        onClick={() => {
+                          setFormData(prev => ({ ...prev, className: '4. Klasse' }));
+                          setDropdownVisible(false);
+                        }}
+                      >
+                        4.
+                      </div>
+                      <div 
+                        className={`cmp-dropdown__option ${formData.className === '5. Klasse' ? 'cmp-dropdown__option--selected' : ''}`} 
+                        data-value="klasse-5"
+                        onClick={() => {
+                          setFormData(prev => ({ ...prev, className: '5. Klasse' }));
+                          setDropdownVisible(false);
+                        }}
+                      >
+                        5.
+                      </div>
+                      <div 
+                        className={`cmp-dropdown__option ${formData.className === '6. Klasse' ? 'cmp-dropdown__option--selected' : ''}`} 
+                        data-value="klasse-6"
+                        onClick={() => {
+                          setFormData(prev => ({ ...prev, className: '6. Klasse' }));
+                          setDropdownVisible(false);
+                        }}
+                      >
+                        6.
+                      </div>
+                    </div>
+                  </div>
+                  <div className="cmp-dropdown__spacer"></div>
+                  <input 
+                    type="hidden" 
+                    id="className"
+                    name="className"
+                    value={formData.className}
+                    required
+                    aria-describedby="className-desc"
+                    data-cmprequiredmessage="Bitte wählen Sie eine Klasse aus"
+                  />
+                </div>
+              </div>
+              
+              <div className="cmp-form-text__wrapper-outter">
+                <div className="cmp-teacher-training-material__topics-title">
+                  Anzahl Schüler
+                </div>
+                <div className="cmp-form-text__wrapper-inner">
+                  <div className="cmp-form-text">
+                    <input
+                      id="studentCount"
+                      className="cmp-form-text__text"
+                      placeholder="Anzahl der Schüler"
+                      name="studentCount"
+                      type="number"
+                      min="1"
+                      value={formData.studentCount}
+                      onChange={handleChange}
+                      required
+                      aria-describedby="studentCount-desc"
+                      data-cmphookformtext=""
+                      data-cmprequiredmessage="Bitte geben Sie die Anzahl der Schüler ein"
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              <div className="cmp-form-text__wrapper-outter">
+                <div className="cmp-teacher-training-material__topics-title">
+                  Begleitpersonen
+                </div>
+                <div className="cmp-form-text__wrapper-inner">
+                  <div className="cmp-form-text">
+                    <input
+                      id="accompanistCount"
+                      className="cmp-form-text__text"
+                      placeholder="Anzahl der Begleitpersonen"
+                      name="accompanistCount"
+                      type="number"
+                      min="1"
+                      value={formData.accompanistCount}
+                      onChange={handleChange}
+                      required
+                      aria-describedby="accompanistCount-desc"
+                      data-cmphookformtext=""
+                      data-cmprequiredmessage="Bitte geben Sie die Anzahl der Begleitpersonen ein"
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              <div className="cmp-form-text__wrapper-outter">
+                <div className="cmp-teacher-training-material__topics-title">
+                  Reisedatum
+                </div>
+                <div className="cmp-form-text__wrapper-inner">
+                  <div className="cmp-form-text">
+                    <input
+                      id="travelDate"
+                      className="cmp-form-text__text"
+                      placeholder="Reisedatum auswählen"
+                      name="travelDate"
+                      type="date"
+                      min={new Date().toISOString().split('T')[0]}
+                      value={formData.travelDate}
+                      onChange={handleChange}
+                      required
+                      aria-describedby="travelDate-desc"
+                      data-cmphookformtext=""
+                      data-cmprequiredmessage="Bitte wählen Sie ein Reisedatum aus"
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              <div className="cmp-form-text__wrapper-outter">
+                <div className="cmp-teacher-training-material__topics-title">
+                  Ankunftszeit
+                </div>
+                <div className="cmp-form-text__wrapper-inner">
+                  <div className="cmp-form-text">
+                    <input
+                      id="arrivalTime"
+                      className="cmp-form-text__text"
+                      placeholder="Ankunftszeit auswählen"
+                      name="arrivalTime"
+                      type="time"
+                      value={formData.arrivalTime}
+                      onChange={handleChange}
+                      required
+                      aria-describedby="arrivalTime-desc"
+                      data-cmphookformtext=""
+                      data-cmprequiredmessage="Bitte wählen Sie eine Ankunftszeit aus"
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              <div className="cmp-form-text__wrapper-outter">
+                <div className="cmp-teacher-training-material__topics-title">
+                  Anmerkungen
+                </div>
+                <div className="cmp-form-text__wrapper-inner">
+                  <div className="cmp-form-text">
+                    <textarea
+                      id="additionalNotes"
+                      className="cmp-form-text__text"
+                      placeholder="Zusätzliche Anmerkungen"
+                      name="additionalNotes"
+                      rows={2}
+                      value={formData.additionalNotes}
+                      onChange={handleChange}
+                      aria-describedby="additionalNotes-desc"
+                      data-cmphookformtext=""
+                      data-cmprequiredmessage=""
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          
-          <div className="cmp-newsletter__input-wrapper">
-            <label htmlFor="studentCount" className="cmp-teacher-training-material__topics-title">
-              Anzahl Schüler
-            </label>
-            <div className="cmp-newsletter__input-wrapper-inner">
-              <input
-                id="studentCount"
-                className="cmp-form-text__text cmp-newsletter__input"
-                placeholder="Anzahl der Schüler"
-                name="studentCount"
-                type="number"
-                min="1"
-                value={formData.studentCount}
-                onChange={handleChange}
-                required
-                aria-describedby="studentCount-desc"
-                data-cmphookformtext=""
-                data-cmprequiredmessage="Bitte geben Sie die Anzahl der Schüler ein"
-              />
-            </div>
-          </div>
-          
-          <div className="cmp-newsletter__input-wrapper">
-            <label htmlFor="accompanistCount" className="cmp-teacher-training-material__topics-title">
-              Begleitpersonen
-            </label>
-            <div className="cmp-newsletter__input-wrapper-inner">
-              <input
-                id="accompanistCount"
-                className="cmp-form-text__text cmp-newsletter__input"
-                placeholder="Anzahl der Begleitpersonen"
-                name="accompanistCount"
-                type="number"
-                min="1"
-                value={formData.accompanistCount}
-                onChange={handleChange}
-                required
-                aria-describedby="accompanistCount-desc"
-                data-cmphookformtext=""
-                data-cmprequiredmessage="Bitte geben Sie die Anzahl der Begleitpersonen ein"
-              />
-            </div>
-          </div>
-          
-          <div className="cmp-newsletter__input-wrapper">
-            <label htmlFor="travelDate" className="cmp-teacher-training-material__topics-title">
-              Reisedatum
-            </label>
-            <div className="cmp-newsletter__input-wrapper-inner">
-              <input
-                id="travelDate"
-                className="cmp-form-text__text cmp-newsletter__input"
-                placeholder="Reisedatum auswählen"
-                name="travelDate"
-                type="date"
-                min={new Date().toISOString().split('T')[0]}
-                value={formData.travelDate}
-                onChange={handleChange}
-                required
-                aria-describedby="travelDate-desc"
-                data-cmphookformtext=""
-                data-cmprequiredmessage="Bitte wählen Sie ein Reisedatum aus"
-              />
-            </div>
-          </div>
-          
-          <div className="cmp-newsletter__input-wrapper">
-            <label htmlFor="arrivalTime" className="cmp-teacher-training-material__topics-title">
-              Ankunftszeit
-            </label>
-            <div className="cmp-newsletter__input-wrapper-inner">
-              <input
-                id="arrivalTime"
-                className="cmp-form-text__text cmp-newsletter__input"
-                placeholder="Ankunftszeit auswählen"
-                name="arrivalTime"
-                type="time"
-                value={formData.arrivalTime}
-                onChange={handleChange}
-                required
-                aria-describedby="arrivalTime-desc"
-                data-cmphookformtext=""
-                data-cmprequiredmessage="Bitte wählen Sie eine Ankunftszeit aus"
-              />
-            </div>
-          </div>
-          
-          <div className="cmp-newsletter__input-wrapper">
-            <label htmlFor="additionalNotes" className="cmp-teacher-training-material__topics-title">
-              Anmerkungen
-            </label>
-            <div className="cmp-newsletter__input-wrapper-inner">
-              <textarea
-                id="additionalNotes"
-                className="cmp-form-text__text cmp-newsletter__input"
-                placeholder="Zusätzliche Anmerkungen"
-                name="additionalNotes"
-                rows={2}
-                value={formData.additionalNotes}
-                onChange={handleChange}
-                aria-describedby="additionalNotes-desc"
-                data-cmphookformtext=""
-                data-cmprequiredmessage=""
-              ></textarea>
-            </div>
-          </div>
+            
+            <div className="text-sm text-grey mb-4">* Alle Felder sind Pflichtfelder, außer Anmerkungen</div>
+            
+            <button className="cmp-button" type="submit" disabled={isLoading}>
+              <span className="cmp-button__text">
+                {isLoading ? 'Wird verarbeitet...' : 'Anmeldung absenden'}
+              </span>
+            </button>
+          </form>
         </div>
-        
-        <div className="text-sm text-grey mb-4">* Alle Felder sind Pflichtfelder, außer Anmerkungen</div>
-        
-        <button className="cmp-button" type="submit" disabled={isLoading}>
-          <span className="cmp-button__text">
-            {isLoading ? 'Wird verarbeitet...' : 'Anmeldung absenden'}
-          </span>
-        </button>
-      </form>
+      </div>
     </div>
   );
 } 
