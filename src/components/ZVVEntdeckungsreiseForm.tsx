@@ -135,158 +135,220 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
       )}
       
       <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-3 gap-3 mb-4">
-          <label htmlFor="code" className="flex items-center font-bold text-black">Ticketcode <span className="ml-1 text-grey">*</span></label>
-          <div className="col-span-2">
-            <input
-              type="text"
-              id="code"
-              name="code"
-              value={formData.code}
-              onChange={handleChange}
-              required
-              className="w-full h-10 rounded-[4px] border-2 border-grey bg-white px-3 py-2 font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)]"
-            />
+        <div className="grid gap-6 mb-4">
+          <div>
+            <div className="cmp-form-text">
+              <input
+                id="code"
+                className="cmp-form-text__text"
+                placeholder="Ticketcode eingeben"
+                name="code"
+                value={formData.code}
+                onChange={handleChange}
+                required
+                aria-describedby="code-desc"
+                data-cmphookformtext=""
+                data-cmprequiredmessage="Bitte geben Sie einen Ticketcode ein"
+              />
+              <label htmlFor="code">Ticketcode</label>
+            </div>
           </div>
           
-          <label htmlFor="school" className="flex items-center font-bold text-black">Schule <span className="ml-1 text-grey">*</span></label>
-          <div className="col-span-2">
-            <input
-              type="text"
-              id="school"
-              name="school"
-              value={formData.school}
-              onChange={handleChange}
-              required
-              className="w-full h-10 rounded-[4px] border-2 border-grey bg-white px-3 py-2 font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)]"
-            />
+          <div>
+            <div className="cmp-form-text">
+              <input
+                id="school"
+                className="cmp-form-text__text"
+                placeholder="Name der Schule"
+                name="school"
+                value={formData.school}
+                onChange={handleChange}
+                required
+                aria-describedby="school-desc"
+                data-cmphookformtext=""
+                data-cmprequiredmessage="Bitte geben Sie den Namen der Schule ein"
+              />
+              <label htmlFor="school">Schule</label>
+            </div>
           </div>
           
-          <label htmlFor="contactPerson" className="flex items-center font-bold text-black">Kontaktperson <span className="ml-1 text-grey">*</span></label>
-          <div className="col-span-2">
-            <input
-              type="text"
-              id="contactPerson"
-              name="contactPerson"
-              value={formData.contactPerson}
-              onChange={handleChange}
-              required
-              className="w-full h-10 rounded-[4px] border-2 border-grey bg-white px-3 py-2 font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)]"
-            />
+          <div>
+            <div className="cmp-form-text">
+              <input
+                id="contactPerson"
+                className="cmp-form-text__text"
+                placeholder="Name der Kontaktperson"
+                name="contactPerson"
+                value={formData.contactPerson}
+                onChange={handleChange}
+                required
+                aria-describedby="contactPerson-desc"
+                data-cmphookformtext=""
+                data-cmprequiredmessage="Bitte geben Sie den Namen der Kontaktperson ein"
+              />
+              <label htmlFor="contactPerson">Kontaktperson</label>
+            </div>
           </div>
           
-          <label htmlFor="email" className="flex items-center font-bold text-black">E-Mail <span className="ml-1 text-grey">*</span></label>
-          <div className="col-span-2">
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="w-full h-10 rounded-[4px] border-2 border-grey bg-white px-3 py-2 font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)]"
-            />
+          <div>
+            <div className="cmp-form-text">
+              <input
+                id="email"
+                className="cmp-form-text__text"
+                placeholder="E-Mail-Adresse"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                aria-describedby="email-desc"
+                data-cmphookformtext=""
+                data-cmprequiredmessage="Bitte geben Sie eine gültige E-Mail-Adresse ein"
+              />
+              <label htmlFor="email">E-Mail</label>
+            </div>
           </div>
           
-          <label htmlFor="phoneNumber" className="flex items-center font-bold text-black">Telefon <span className="ml-1 text-grey">*</span></label>
-          <div className="col-span-2">
-            <input
-              type="tel"
-              id="phoneNumber"
-              name="phoneNumber"
-              value={formData.phoneNumber}
-              onChange={handleChange}
-              required
-              className="w-full h-10 rounded-[4px] border-2 border-grey bg-white px-3 py-2 font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)]"
-            />
+          <div>
+            <div className="cmp-form-text">
+              <input
+                id="phoneNumber"
+                className="cmp-form-text__text"
+                placeholder="Telefonnummer"
+                name="phoneNumber"
+                type="tel"
+                value={formData.phoneNumber}
+                onChange={handleChange}
+                required
+                aria-describedby="phoneNumber-desc"
+                data-cmphookformtext=""
+                data-cmprequiredmessage="Bitte geben Sie eine Telefonnummer ein"
+              />
+              <label htmlFor="phoneNumber">Telefon</label>
+            </div>
           </div>
           
-          <label htmlFor="className" className="flex items-center font-bold text-black">Klasse <span className="ml-1 text-grey">*</span></label>
-          <div className="col-span-2">
-            <select
-              id="className"
-              name="className"
-              value={formData.className}
-              onChange={handleChange}
-              required
-              className="w-full h-10 rounded-[4px] border-2 border-grey bg-white px-3 py-2 font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)]"
-            >
-              <option value="">Bitte wählen</option>
-              <option value="4. Klasse">4. Klasse</option>
-              <option value="5. Klasse">5. Klasse</option>
-              <option value="6. Klasse">6. Klasse</option>
-            </select>
+          <div>
+            <div className="cmp-form-text">
+              <select
+                id="className"
+                className="cmp-form-text__text"
+                name="className"
+                value={formData.className}
+                onChange={handleChange}
+                required
+                aria-describedby="className-desc"
+                data-cmphookformtext=""
+                data-cmprequiredmessage="Bitte wählen Sie eine Klasse aus"
+              >
+                <option value="">Bitte wählen</option>
+                <option value="4. Klasse">4. Klasse</option>
+                <option value="5. Klasse">5. Klasse</option>
+                <option value="6. Klasse">6. Klasse</option>
+              </select>
+              <label htmlFor="className">Klasse</label>
+            </div>
           </div>
           
-          <label htmlFor="studentCount" className="flex items-center font-bold text-black">Anzahl Schüler <span className="ml-1 text-grey">*</span></label>
-          <div className="col-span-2">
-            <input
-              type="number"
-              id="studentCount"
-              name="studentCount"
-              value={formData.studentCount}
-              onChange={handleChange}
-              required
-              min="1"
-              className="w-full h-10 rounded-[4px] border-2 border-grey bg-white px-3 py-2 font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)]"
-            />
+          <div>
+            <div className="cmp-form-text">
+              <input
+                id="studentCount"
+                className="cmp-form-text__text"
+                placeholder="Anzahl der Schüler"
+                name="studentCount"
+                type="number"
+                min="1"
+                value={formData.studentCount}
+                onChange={handleChange}
+                required
+                aria-describedby="studentCount-desc"
+                data-cmphookformtext=""
+                data-cmprequiredmessage="Bitte geben Sie die Anzahl der Schüler ein"
+              />
+              <label htmlFor="studentCount">Anzahl Schüler</label>
+            </div>
           </div>
           
-          <label htmlFor="accompanistCount" className="flex items-center font-bold text-black">Begleitpersonen <span className="ml-1 text-grey">*</span></label>
-          <div className="col-span-2">
-            <input
-              type="number"
-              id="accompanistCount"
-              name="accompanistCount"
-              value={formData.accompanistCount}
-              onChange={handleChange}
-              required
-              min="1"
-              className="w-full h-10 rounded-[4px] border-2 border-grey bg-white px-3 py-2 font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)]"
-            />
+          <div>
+            <div className="cmp-form-text">
+              <input
+                id="accompanistCount"
+                className="cmp-form-text__text"
+                placeholder="Anzahl der Begleitpersonen"
+                name="accompanistCount"
+                type="number"
+                min="1"
+                value={formData.accompanistCount}
+                onChange={handleChange}
+                required
+                aria-describedby="accompanistCount-desc"
+                data-cmphookformtext=""
+                data-cmprequiredmessage="Bitte geben Sie die Anzahl der Begleitpersonen ein"
+              />
+              <label htmlFor="accompanistCount">Begleitpersonen</label>
+            </div>
           </div>
           
-          <label htmlFor="travelDate" className="flex items-center font-bold text-black">Reisedatum <span className="ml-1 text-grey">*</span></label>
-          <div className="col-span-2">
-            <input
-              type="date"
-              id="travelDate"
-              name="travelDate"
-              value={formData.travelDate}
-              onChange={handleChange}
-              required
-              min={new Date().toISOString().split('T')[0]}
-              className="w-full h-10 rounded-[4px] border-2 border-grey bg-white px-3 py-2 font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)]"
-            />
+          <div>
+            <div className="cmp-form-text">
+              <input
+                id="travelDate"
+                className="cmp-form-text__text"
+                placeholder="Reisedatum auswählen"
+                name="travelDate"
+                type="date"
+                min={new Date().toISOString().split('T')[0]}
+                value={formData.travelDate}
+                onChange={handleChange}
+                required
+                aria-describedby="travelDate-desc"
+                data-cmphookformtext=""
+                data-cmprequiredmessage="Bitte wählen Sie ein Reisedatum aus"
+              />
+              <label htmlFor="travelDate">Reisedatum</label>
+            </div>
           </div>
           
-          <label htmlFor="arrivalTime" className="flex items-center font-bold text-black">Ankunftszeit <span className="ml-1 text-grey">*</span></label>
-          <div className="col-span-2">
-            <input
-              type="time"
-              id="arrivalTime"
-              name="arrivalTime"
-              value={formData.arrivalTime}
-              onChange={handleChange}
-              required
-              className="w-full h-10 rounded-[4px] border-2 border-grey bg-white px-3 py-2 font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)]"
-            />
+          <div>
+            <div className="cmp-form-text">
+              <input
+                id="arrivalTime"
+                className="cmp-form-text__text"
+                placeholder="Ankunftszeit auswählen"
+                name="arrivalTime"
+                type="time"
+                value={formData.arrivalTime}
+                onChange={handleChange}
+                required
+                aria-describedby="arrivalTime-desc"
+                data-cmphookformtext=""
+                data-cmprequiredmessage="Bitte wählen Sie eine Ankunftszeit aus"
+              />
+              <label htmlFor="arrivalTime">Ankunftszeit</label>
+            </div>
           </div>
           
-          <label htmlFor="additionalNotes" className="flex items-center font-bold text-black">Anmerkungen</label>
-          <div className="col-span-2">
-            <textarea
-              id="additionalNotes"
-              name="additionalNotes"
-              value={formData.additionalNotes}
-              onChange={handleChange}
-              rows={2}
-              className="w-full rounded-[4px] border-2 border-grey bg-white px-3 py-2 font-bold focus:border-[#0479cc] focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)]"
-            ></textarea>
+          <div>
+            <div className="cmp-form-text">
+              <textarea
+                id="additionalNotes"
+                className="cmp-form-text__text"
+                placeholder="Zusätzliche Anmerkungen"
+                name="additionalNotes"
+                rows={2}
+                value={formData.additionalNotes}
+                onChange={handleChange}
+                aria-describedby="additionalNotes-desc"
+                data-cmphookformtext=""
+                data-cmprequiredmessage=""
+              ></textarea>
+              <label htmlFor="additionalNotes">Anmerkungen</label>
+            </div>
           </div>
         </div>
         
-        <div className="text-sm text-grey mb-4">* Diese Felder müssen ausgefüllt werden</div>
+        <div className="text-sm text-grey mb-4">* Alle Felder sind Pflichtfelder, außer Anmerkungen</div>
         
         <div className="flex justify-end">
           <button
