@@ -229,23 +229,83 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
           </div>
           
           <div>
-            <div className="cmp-form-text">
-              <select
+            <div className="cmp-dropdown zone-category">
+              <div 
+                tabIndex={1} 
+                className="cmp-dropdown__label"
+                onClick={() => {
+                  // Toggle dropdown visibility
+                  const dropdown = document.querySelector('.cmp-dropdown__options');
+                  if (dropdown) {
+                    dropdown.classList.toggle('visible');
+                  }
+                }}
+              >
+                {formData.className || 'Bitte wählen'}
+              </div>
+              <div className="cmp-dropdown__options">
+                <div 
+                  className="cmp-dropdown__option" 
+                  id="0" 
+                  data-value=""
+                  onClick={(e) => {
+                    const value = '';
+                    setFormData(prev => ({ ...prev, className: value }));
+                    // Hide dropdown after selection
+                    e.currentTarget.parentElement?.classList.remove('visible');
+                  }}
+                >
+                  Bitte wählen
+                </div>
+                <div 
+                  className="cmp-dropdown__option" 
+                  id="1" 
+                  data-value="4. Klasse"
+                  onClick={(e) => {
+                    const value = '4. Klasse';
+                    setFormData(prev => ({ ...prev, className: value }));
+                    // Hide dropdown after selection
+                    e.currentTarget.parentElement?.classList.remove('visible');
+                  }}
+                >
+                  4. Klasse
+                </div>
+                <div 
+                  className="cmp-dropdown__option" 
+                  id="2" 
+                  data-value="5. Klasse"
+                  onClick={(e) => {
+                    const value = '5. Klasse';
+                    setFormData(prev => ({ ...prev, className: value }));
+                    // Hide dropdown after selection
+                    e.currentTarget.parentElement?.classList.remove('visible');
+                  }}
+                >
+                  5. Klasse
+                </div>
+                <div 
+                  className="cmp-dropdown__option" 
+                  id="3" 
+                  data-value="6. Klasse"
+                  onClick={(e) => {
+                    const value = '6. Klasse';
+                    setFormData(prev => ({ ...prev, className: value }));
+                    // Hide dropdown after selection
+                    e.currentTarget.parentElement?.classList.remove('visible');
+                  }}
+                >
+                  6. Klasse
+                </div>
+              </div>
+              <input 
+                type="hidden" 
                 id="className"
-                className="cmp-form-text__text"
                 name="className"
                 value={formData.className}
-                onChange={handleChange}
                 required
                 aria-describedby="className-desc"
-                data-cmphookformtext=""
                 data-cmprequiredmessage="Bitte wählen Sie eine Klasse aus"
-              >
-                <option value="">Bitte wählen</option>
-                <option value="4. Klasse">4. Klasse</option>
-                <option value="5. Klasse">5. Klasse</option>
-                <option value="6. Klasse">6. Klasse</option>
-              </select>
+              />
               <label htmlFor="className">Klasse</label>
             </div>
           </div>
@@ -351,13 +411,19 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
         <div className="text-sm text-grey mb-4">* Alle Felder sind Pflichtfelder, außer Anmerkungen</div>
         
         <div className="flex justify-end">
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="inline-flex items-center justify-center whitespace-nowrap rounded-lg min-w-[160px] bg-[#0479cc] hover:bg-[#035999] text-white font-bold tracking-[0.2px] h-10 px-4 py-2 focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)] disabled:opacity-50 disabled:hover:bg-[#0479cc]"
-          >
-            {isLoading ? 'Wird verarbeitet...' : 'Anmeldung absenden'}
-          </button>
+          <div className="button" role="button">
+            <div className="button cmp-button--secondary">
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="cmp-button"
+              >
+                <span className="cmp-button__text">
+                  {isLoading ? 'Wird verarbeitet...' : 'Anmeldung absenden'}
+                </span>
+              </button>
+            </div>
+          </div>
         </div>
       </form>
     </div>
