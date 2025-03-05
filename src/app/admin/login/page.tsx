@@ -3,6 +3,10 @@
 import { useState } from 'react';
 import { createBrowserClient } from '@supabase/ssr';
 import { useRouter } from 'next/navigation';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('');
@@ -72,100 +76,124 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold mb-6">ZVV-Entdeckungsreise Admin</h1>
-      
-      {error && (
-        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
-          {error}
+    <div className="container flex h-screen w-screen flex-col items-center justify-center">
+      <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+        <div className="flex flex-col space-y-2 text-center">
+          <h1 className="text-2xl font-semibold tracking-tight">
+            ZVV-Entdeckungsreise
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Admin-Bereich
+          </p>
         </div>
-      )}
-      
-      {message && (
-        <div className="mb-4 p-3 bg-green-100 text-green-700 rounded">
-          {message}
-        </div>
-      )}
-      
-      {!showResetForm ? (
-        <>
-          <form onSubmit={handleLogin}>
-            <div className="mb-4">
-              <label htmlFor="email" className="block font-medium mb-1">E-Mail</label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full p-2 border rounded"
-                required
-              />
-            </div>
-            
-            <div className="mb-6">
-              <label htmlFor="password" className="block font-medium mb-1">Passwort</label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full p-2 border rounded"
-                required
-              />
-            </div>
-            
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-[#0479cc] hover:bg-[#035999] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            >
-              {loading ? 'Anmeldung...' : 'Anmelden'}
-            </button>
-          </form>
+
+        <Card>
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-xl">
+              {showResetForm ? 'Passwort zurücksetzen' : 'Anmelden'}
+            </CardTitle>
+            <CardDescription>
+              {showResetForm 
+                ? 'Gib deine E-Mail-Adresse ein, um einen Reset-Link zu erhalten' 
+                : 'Gib deine Anmeldedaten ein, um auf den Admin-Bereich zuzugreifen'}
+            </CardDescription>
+          </CardHeader>
           
-          <div className="mt-4 text-center">
-            <button 
-              onClick={() => setShowResetForm(true)}
-              className="text-[#0479cc] hover:underline"
-            >
-              Passwort vergessen?
-            </button>
-          </div>
-        </>
-      ) : (
-        <>
-          <form onSubmit={handleResetPassword}>
-            <div className="mb-4">
-              <label htmlFor="reset-email" className="block font-medium mb-1">E-Mail für Passwort-Reset</label>
-              <input
-                type="email"
-                id="reset-email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full p-2 border rounded"
-                required
-              />
-            </div>
+          <CardContent>
+            {error && (
+              <div className="mb-4 p-3 bg-red-100 text-red-700 rounded text-sm">
+                {error}
+              </div>
+            )}
             
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-[#0479cc] hover:bg-[#035999] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            >
-              {loading ? 'Senden...' : 'Passwort-Reset-Link senden'}
-            </button>
-          </form>
+            {message && (
+              <div className="mb-4 p-3 bg-green-100 text-green-700 rounded text-sm">
+                {message}
+              </div>
+            )}
+            
+            {!showResetForm ? (
+              <form onSubmit={handleLogin}>
+                <div className="grid gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="email">E-Mail</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="name@zvv.ch"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      autoComplete="email"
+                    />
+                  </div>
+                  
+                  <div className="grid gap-2">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="password">Passwort</Label>
+                    </div>
+                    <Input
+                      id="password"
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      autoComplete="current-password"
+                    />
+                  </div>
+                  
+                  <Button type="submit" className="w-full bg-[#0479cc] hover:bg-[#035999]" disabled={loading}>
+                    {loading ? 'Anmeldung...' : 'Anmelden'}
+                  </Button>
+                </div>
+              </form>
+            ) : (
+              <form onSubmit={handleResetPassword}>
+                <div className="grid gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="reset-email">E-Mail</Label>
+                    <Input
+                      id="reset-email"
+                      type="email"
+                      placeholder="name@zvv.ch"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      autoComplete="email"
+                    />
+                  </div>
+                  
+                  <Button type="submit" className="w-full bg-[#0479cc] hover:bg-[#035999]" disabled={loading}>
+                    {loading ? 'Senden...' : 'Passwort-Reset-Link senden'}
+                  </Button>
+                </div>
+              </form>
+            )}
+          </CardContent>
           
-          <div className="mt-4 text-center">
-            <button 
-              onClick={() => setShowResetForm(false)}
-              className="text-[#0479cc] hover:underline"
-            >
-              Zurück zur Anmeldung
-            </button>
-          </div>
-        </>
-      )}
+          <CardFooter className="flex flex-col">
+            <div className="mt-2 text-center text-sm">
+              {!showResetForm ? (
+                <Button 
+                  variant="link" 
+                  onClick={() => setShowResetForm(true)}
+                  className="text-[#0479cc]"
+                >
+                  Passwort vergessen?
+                </Button>
+              ) : (
+                <Button 
+                  variant="link" 
+                  onClick={() => setShowResetForm(false)}
+                  className="text-[#0479cc]"
+                >
+                  Zurück zur Anmeldung
+                </Button>
+              )}
+            </div>
+          </CardFooter>
+        </Card>
+      </div>
     </div>
   );
 } 

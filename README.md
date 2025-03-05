@@ -21,12 +21,15 @@ Die Infrastruktur ist für hohe Verfügbarkeit und Ausfallsicherheit konzipiert 
 - **Supabase (PostgreSQL)** als **zentrale Datenbank** für Codes und Anmeldungen 📊
 - **Vercel (Next.js)** für die Benutzeroberfläche und API-Endpunkte 🖥️
 - **Resend** für den E-Mail-Versand von Bestätigungen und Benachrichtigungen 📧
+- **shadcn/ui** für moderne, zugängliche UI-Komponenten 🎨
 
 ## Technologie-Stack
 - **Supabase (PostgreSQL)** für Speicherung & Validierung der Codes 🗄️
 - **Next.js** für Frontend und API-Routes 🚀
 - **Vercel** für Hosting und Serverless-Funktionen ☁️
 - **Resend** für transaktionale E-Mails 📨
+- **shadcn/ui** für konsistentes, modernes UI-Design 🎭
+- **Tailwind CSS** für effizientes, responsives Styling 🌈
 
 ## Funktionalitäten
 ### **1. Code-Validierung** ✅
@@ -61,7 +64,8 @@ Die Infrastruktur ist für hohe Verfügbarkeit und Ausfallsicherheit konzipiert 
 ### **5. Admin-Ansicht** 🔐
 - Geschützte Seite unter `/admin` zur Überwachung der Anmeldungen.
 - Tabellarische Übersicht aller Anmeldungen mit wichtigen Informationen.
-- Automatische Weiterleitung von der Root-Route zur Admin-Ansicht.
+- Modernes UI mit shadcn/ui-Komponenten für verbesserte Benutzerfreundlichkeit.
+- Sicherer Login-Bereich mit Supabase Auth.
 
 ## Datenbank-Struktur (Supabase)
 
