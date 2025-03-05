@@ -265,24 +265,6 @@ export default function AdminLoginPage() {
               </Button>
             )}
           </div>
-          
-          <p className="px-8 text-center text-sm text-muted-foreground">
-            Durch die Anmeldung akzeptierst du unsere{" "}
-            <a
-              href="#"
-              className="underline underline-offset-4 hover:text-primary"
-            >
-              Nutzungsbedingungen
-            </a>{" "}
-            und{" "}
-            <a
-              href="#"
-              className="underline underline-offset-4 hover:text-primary"
-            >
-              Datenschutzrichtlinien
-            </a>
-            .
-          </p>
         </div>
       </div>
     </div>
