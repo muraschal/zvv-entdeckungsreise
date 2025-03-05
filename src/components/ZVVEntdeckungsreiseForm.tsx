@@ -286,7 +286,7 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                     setDropdownVisible(false);
                   }}
                 >
-                  4.
+                  4. Klasse
                 </div>
                 <div 
                   className={`cmp-dropdown__option ${formData.className === '5. Klasse' ? 'cmp-dropdown__option--selected' : ''}`} 
@@ -296,7 +296,7 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                     setDropdownVisible(false);
                   }}
                 >
-                  5.
+                  5. Klasse
                 </div>
                 <div 
                   className={`cmp-dropdown__option ${formData.className === '6. Klasse' ? 'cmp-dropdown__option--selected' : ''}`} 
@@ -306,7 +306,7 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                     setDropdownVisible(false);
                   }}
                 >
-                  6.
+                  6. Klasse
                 </div>
               </div>
               <input 
