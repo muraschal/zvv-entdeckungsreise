@@ -1,5 +1,6 @@
 const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
   mode: 'production',
@@ -18,6 +19,12 @@ module.exports = {
       '@': path.resolve(__dirname, 'src'),
     },
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.GITHUB_SHA': JSON.stringify(process.env.GITHUB_SHA || 'local-build'),
+      'process.env.BUILD_DATE': JSON.stringify(new Date().toISOString())
+    }),
+  ],
   module: {
     rules: [
       {
