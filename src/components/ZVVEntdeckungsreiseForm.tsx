@@ -137,7 +137,7 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
       
       <form onSubmit={handleSubmit}>
         {/* Ticketcode */}
-        <div className="cmp-row-container aem-Grid cmp-row-container--spacing">
+        <div className="cmp-row-container aem-Grid cmp-row-container--spacing" style={{ "--cmp-row-vertical-spacing": "8px" } as React.CSSProperties}>
           <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
             <label htmlFor="code">Ticketcode</label>
           </div>
@@ -160,7 +160,7 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
         </div>
         
         {/* Schule */}
-        <div className="cmp-row-container aem-Grid cmp-row-container--spacing">
+        <div className="cmp-row-container aem-Grid cmp-row-container--spacing" style={{ "--cmp-row-vertical-spacing": "8px" } as React.CSSProperties}>
           <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
             <label htmlFor="school">Schule</label>
           </div>
@@ -183,7 +183,7 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
         </div>
         
         {/* Kontaktperson */}
-        <div className="cmp-row-container aem-Grid cmp-row-container--spacing">
+        <div className="cmp-row-container aem-Grid cmp-row-container--spacing" style={{ "--cmp-row-vertical-spacing": "8px" } as React.CSSProperties}>
           <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
             <label htmlFor="contactPerson">Kontaktperson</label>
           </div>
@@ -206,7 +206,7 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
         </div>
         
         {/* E-Mail */}
-        <div className="cmp-row-container aem-Grid cmp-row-container--spacing">
+        <div className="cmp-row-container aem-Grid cmp-row-container--spacing" style={{ "--cmp-row-vertical-spacing": "8px" } as React.CSSProperties}>
           <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
             <label htmlFor="email">E-Mail</label>
           </div>
@@ -230,7 +230,7 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
         </div>
         
         {/* Telefon */}
-        <div className="cmp-row-container aem-Grid cmp-row-container--spacing">
+        <div className="cmp-row-container aem-Grid cmp-row-container--spacing" style={{ "--cmp-row-vertical-spacing": "8px" } as React.CSSProperties}>
           <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
             <label htmlFor="phoneNumber">Telefon</label>
           </div>
@@ -254,7 +254,7 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
         </div>
         
         {/* Klasse */}
-        <div className="cmp-row-container aem-Grid cmp-row-container--spacing">
+        <div className="cmp-row-container aem-Grid cmp-row-container--spacing" style={{ "--cmp-row-vertical-spacing": "8px" } as React.CSSProperties}>
           <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
             <label htmlFor="className" className="cmp-teacher-training-material__classes-dropdown-title">Klasse</label>
           </div>
@@ -326,7 +326,7 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
         </div>
         
         {/* Anzahl Schüler */}
-        <div className="cmp-row-container aem-Grid cmp-row-container--spacing">
+        <div className="cmp-row-container aem-Grid cmp-row-container--spacing" style={{ "--cmp-row-vertical-spacing": "8px" } as React.CSSProperties}>
           <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
             <label htmlFor="studentCount">Anzahl Schüler</label>
           </div>
@@ -351,7 +351,7 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
         </div>
         
         {/* Begleitpersonen */}
-        <div className="cmp-row-container aem-Grid cmp-row-container--spacing">
+        <div className="cmp-row-container aem-Grid cmp-row-container--spacing" style={{ "--cmp-row-vertical-spacing": "8px" } as React.CSSProperties}>
           <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
             <label htmlFor="accompanistCount">Begleitpersonen</label>
           </div>
@@ -376,7 +376,7 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
         </div>
         
         {/* Reisedatum */}
-        <div className="cmp-row-container aem-Grid cmp-row-container--spacing">
+        <div className="cmp-row-container aem-Grid cmp-row-container--spacing" style={{ "--cmp-row-vertical-spacing": "8px" } as React.CSSProperties}>
           <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
             <label htmlFor="travelDate">Reisedatum</label>
           </div>
@@ -401,7 +401,7 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
         </div>
         
         {/* Ankunftszeit */}
-        <div className="cmp-row-container aem-Grid cmp-row-container--spacing">
+        <div className="cmp-row-container aem-Grid cmp-row-container--spacing" style={{ "--cmp-row-vertical-spacing": "8px" } as React.CSSProperties}>
           <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
             <label htmlFor="arrivalTime">Ankunftszeit</label>
           </div>
@@ -425,7 +425,7 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
         </div>
         
         {/* Anmerkungen */}
-        <div className="cmp-row-container aem-Grid cmp-row-container--spacing">
+        <div className="cmp-row-container aem-Grid cmp-row-container--spacing" style={{ "--cmp-row-vertical-spacing": "8px" } as React.CSSProperties}>
           <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
             <label htmlFor="additionalNotes">Anmerkungen</label>
           </div>
