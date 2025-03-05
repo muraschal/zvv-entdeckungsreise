@@ -138,12 +138,9 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
       <div className="teacher-training-material">
         <div className="cmp-teacher-training-material">
           <form onSubmit={handleSubmit} className="cmp-teacher-training-material__filters">
-            <div className="grid gap-6 mb-4">
-              <div className="cmp-form-text__wrapper-outter">
-                <div className="cmp-teacher-training-material__topics-title">
-                  Ticketcode
-                </div>
-                <div className="cmp-form-text__wrapper-inner">
+            <div className="cmp-teacher-training-material__topics-filter">
+              <div className="grid gap-6 mb-4">
+                <div>
                   <div className="cmp-form-text">
                     <input
                       id="code"
@@ -157,15 +154,11 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                       data-cmphookformtext=""
                       data-cmprequiredmessage="Bitte geben Sie einen Ticketcode ein"
                     />
+                    <label htmlFor="code">Ticketcode</label>
                   </div>
                 </div>
-              </div>
-              
-              <div className="cmp-form-text__wrapper-outter">
-                <div className="cmp-teacher-training-material__topics-title">
-                  Schule
-                </div>
-                <div className="cmp-form-text__wrapper-inner">
+                
+                <div>
                   <div className="cmp-form-text">
                     <input
                       id="school"
@@ -179,15 +172,11 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                       data-cmphookformtext=""
                       data-cmprequiredmessage="Bitte geben Sie den Namen der Schule ein"
                     />
+                    <label htmlFor="school">Schule</label>
                   </div>
                 </div>
-              </div>
-              
-              <div className="cmp-form-text__wrapper-outter">
-                <div className="cmp-teacher-training-material__topics-title">
-                  Kontaktperson
-                </div>
-                <div className="cmp-form-text__wrapper-inner">
+                
+                <div>
                   <div className="cmp-form-text">
                     <input
                       id="contactPerson"
@@ -201,15 +190,11 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                       data-cmphookformtext=""
                       data-cmprequiredmessage="Bitte geben Sie den Namen der Kontaktperson ein"
                     />
+                    <label htmlFor="contactPerson">Kontaktperson</label>
                   </div>
                 </div>
-              </div>
-              
-              <div className="cmp-form-text__wrapper-outter">
-                <div className="cmp-teacher-training-material__topics-title">
-                  E-Mail
-                </div>
-                <div className="cmp-form-text__wrapper-inner">
+                
+                <div>
                   <div className="cmp-form-text">
                     <input
                       id="email"
@@ -224,15 +209,11 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                       data-cmphookformtext=""
                       data-cmprequiredmessage="Bitte geben Sie eine gültige E-Mail-Adresse ein"
                     />
+                    <label htmlFor="email">E-Mail</label>
                   </div>
                 </div>
-              </div>
-              
-              <div className="cmp-form-text__wrapper-outter">
-                <div className="cmp-teacher-training-material__topics-title">
-                  Telefon
-                </div>
-                <div className="cmp-form-text__wrapper-inner">
+                
+                <div>
                   <div className="cmp-form-text">
                     <input
                       id="phoneNumber"
@@ -247,84 +228,78 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                       data-cmphookformtext=""
                       data-cmprequiredmessage="Bitte geben Sie eine Telefonnummer ein"
                     />
+                    <label htmlFor="phoneNumber">Telefon</label>
                   </div>
                 </div>
-              </div>
-              
-              <div className="cmp-teacher-training-material__classes-filter">
-                <div className="cmp-teacher-training-material__classes-dropdown-title">
-                  Klasse
-                </div>
-                <div className="cmp-dropdown__wrapper">
-                  <div className="cmp-dropdown">
-                    <div 
-                      tabIndex={0} 
-                      className="cmp-dropdown__label"
-                      onClick={() => setDropdownVisible(!dropdownVisible)}
-                    >
-                      {formData.className || 'Bitte wählen'}
-                    </div>
-                    <div className={`cmp-dropdown__options ${dropdownVisible ? 'visible' : ''}`}>
+                
+                <div className="cmp-teacher-training-material__classes-filter">
+                  <div className="cmp-dropdown__wrapper">
+                    <div className="cmp-dropdown">
                       <div 
-                        className={`cmp-dropdown__option ${!formData.className ? 'cmp-dropdown__option--selected' : ''}`} 
-                        data-value=""
-                        onClick={() => {
-                          setFormData(prev => ({ ...prev, className: '' }));
-                          setDropdownVisible(false);
-                        }}
+                        tabIndex={0} 
+                        className="cmp-dropdown__label"
+                        onClick={() => setDropdownVisible(!dropdownVisible)}
                       >
-                        Bitte wählen
+                        {formData.className || 'Bitte wählen'}
                       </div>
-                      <div 
-                        className={`cmp-dropdown__option ${formData.className === '4. Klasse' ? 'cmp-dropdown__option--selected' : ''}`} 
-                        data-value="klasse-4"
-                        onClick={() => {
-                          setFormData(prev => ({ ...prev, className: '4. Klasse' }));
-                          setDropdownVisible(false);
-                        }}
-                      >
-                        4.
-                      </div>
-                      <div 
-                        className={`cmp-dropdown__option ${formData.className === '5. Klasse' ? 'cmp-dropdown__option--selected' : ''}`} 
-                        data-value="klasse-5"
-                        onClick={() => {
-                          setFormData(prev => ({ ...prev, className: '5. Klasse' }));
-                          setDropdownVisible(false);
-                        }}
-                      >
-                        5.
-                      </div>
-                      <div 
-                        className={`cmp-dropdown__option ${formData.className === '6. Klasse' ? 'cmp-dropdown__option--selected' : ''}`} 
-                        data-value="klasse-6"
-                        onClick={() => {
-                          setFormData(prev => ({ ...prev, className: '6. Klasse' }));
-                          setDropdownVisible(false);
-                        }}
-                      >
-                        6.
+                      <div className={`cmp-dropdown__options ${dropdownVisible ? 'visible' : ''}`}>
+                        <div 
+                          className={`cmp-dropdown__option ${!formData.className ? 'cmp-dropdown__option--selected' : ''}`} 
+                          data-value=""
+                          onClick={() => {
+                            setFormData(prev => ({ ...prev, className: '' }));
+                            setDropdownVisible(false);
+                          }}
+                        >
+                          Bitte wählen
+                        </div>
+                        <div 
+                          className={`cmp-dropdown__option ${formData.className === '4. Klasse' ? 'cmp-dropdown__option--selected' : ''}`} 
+                          data-value="klasse-4"
+                          onClick={() => {
+                            setFormData(prev => ({ ...prev, className: '4. Klasse' }));
+                            setDropdownVisible(false);
+                          }}
+                        >
+                          4.
+                        </div>
+                        <div 
+                          className={`cmp-dropdown__option ${formData.className === '5. Klasse' ? 'cmp-dropdown__option--selected' : ''}`} 
+                          data-value="klasse-5"
+                          onClick={() => {
+                            setFormData(prev => ({ ...prev, className: '5. Klasse' }));
+                            setDropdownVisible(false);
+                          }}
+                        >
+                          5.
+                        </div>
+                        <div 
+                          className={`cmp-dropdown__option ${formData.className === '6. Klasse' ? 'cmp-dropdown__option--selected' : ''}`} 
+                          data-value="klasse-6"
+                          onClick={() => {
+                            setFormData(prev => ({ ...prev, className: '6. Klasse' }));
+                            setDropdownVisible(false);
+                          }}
+                        >
+                          6.
+                        </div>
                       </div>
                     </div>
+                    <div className="cmp-dropdown__spacer"></div>
+                    <input 
+                      type="hidden" 
+                      id="className"
+                      name="className"
+                      value={formData.className}
+                      required
+                      aria-describedby="className-desc"
+                      data-cmprequiredmessage="Bitte wählen Sie eine Klasse aus"
+                    />
+                    <label htmlFor="className" className="cmp-teacher-training-material__classes-dropdown-title">Klasse</label>
                   </div>
-                  <div className="cmp-dropdown__spacer"></div>
-                  <input 
-                    type="hidden" 
-                    id="className"
-                    name="className"
-                    value={formData.className}
-                    required
-                    aria-describedby="className-desc"
-                    data-cmprequiredmessage="Bitte wählen Sie eine Klasse aus"
-                  />
                 </div>
-              </div>
-              
-              <div className="cmp-form-text__wrapper-outter">
-                <div className="cmp-teacher-training-material__topics-title">
-                  Anzahl Schüler
-                </div>
-                <div className="cmp-form-text__wrapper-inner">
+                
+                <div>
                   <div className="cmp-form-text">
                     <input
                       id="studentCount"
@@ -340,15 +315,11 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                       data-cmphookformtext=""
                       data-cmprequiredmessage="Bitte geben Sie die Anzahl der Schüler ein"
                     />
+                    <label htmlFor="studentCount">Anzahl Schüler</label>
                   </div>
                 </div>
-              </div>
-              
-              <div className="cmp-form-text__wrapper-outter">
-                <div className="cmp-teacher-training-material__topics-title">
-                  Begleitpersonen
-                </div>
-                <div className="cmp-form-text__wrapper-inner">
+                
+                <div>
                   <div className="cmp-form-text">
                     <input
                       id="accompanistCount"
@@ -364,15 +335,11 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                       data-cmphookformtext=""
                       data-cmprequiredmessage="Bitte geben Sie die Anzahl der Begleitpersonen ein"
                     />
+                    <label htmlFor="accompanistCount">Begleitpersonen</label>
                   </div>
                 </div>
-              </div>
-              
-              <div className="cmp-form-text__wrapper-outter">
-                <div className="cmp-teacher-training-material__topics-title">
-                  Reisedatum
-                </div>
-                <div className="cmp-form-text__wrapper-inner">
+                
+                <div>
                   <div className="cmp-form-text">
                     <input
                       id="travelDate"
@@ -388,15 +355,11 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                       data-cmphookformtext=""
                       data-cmprequiredmessage="Bitte wählen Sie ein Reisedatum aus"
                     />
+                    <label htmlFor="travelDate">Reisedatum</label>
                   </div>
                 </div>
-              </div>
-              
-              <div className="cmp-form-text__wrapper-outter">
-                <div className="cmp-teacher-training-material__topics-title">
-                  Ankunftszeit
-                </div>
-                <div className="cmp-form-text__wrapper-inner">
+                
+                <div>
                   <div className="cmp-form-text">
                     <input
                       id="arrivalTime"
@@ -411,15 +374,11 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                       data-cmphookformtext=""
                       data-cmprequiredmessage="Bitte wählen Sie eine Ankunftszeit aus"
                     />
+                    <label htmlFor="arrivalTime">Ankunftszeit</label>
                   </div>
                 </div>
-              </div>
-              
-              <div className="cmp-form-text__wrapper-outter">
-                <div className="cmp-teacher-training-material__topics-title">
-                  Anmerkungen
-                </div>
-                <div className="cmp-form-text__wrapper-inner">
+                
+                <div>
                   <div className="cmp-form-text">
                     <textarea
                       id="additionalNotes"
@@ -433,18 +392,19 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                       data-cmphookformtext=""
                       data-cmprequiredmessage=""
                     ></textarea>
+                    <label htmlFor="additionalNotes">Anmerkungen</label>
                   </div>
                 </div>
               </div>
+              
+              <div className="text-sm text-grey mb-4">* Alle Felder sind Pflichtfelder, außer Anmerkungen</div>
+              
+              <button className="cmp-button" type="submit" disabled={isLoading}>
+                <span className="cmp-button__text">
+                  {isLoading ? 'Wird verarbeitet...' : 'Anmeldung absenden'}
+                </span>
+              </button>
             </div>
-            
-            <div className="text-sm text-grey mb-4">* Alle Felder sind Pflichtfelder, außer Anmerkungen</div>
-            
-            <button className="cmp-button" type="submit" disabled={isLoading}>
-              <span className="cmp-button__text">
-                {isLoading ? 'Wird verarbeitet...' : 'Anmeldung absenden'}
-              </span>
-            </button>
           </form>
         </div>
       </div>
