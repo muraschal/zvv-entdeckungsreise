@@ -48,10 +48,29 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
   
+  // Nur für API-Routen CORS-Header hinzufügen
+  if (req.nextUrl.pathname.startsWith('/api/')) {
+    // Hole die Origin aus dem Request-Header
+    const origin = req.headers.get('origin') || '';
+    
+    // Füge CORS-Header hinzu
+    res.headers.set('Access-Control-Allow-Origin', '*');
+    res.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    
+    // Für Preflight-Anfragen (OPTIONS) eine leere 200-Antwort zurückgeben
+    if (req.method === 'OPTIONS') {
+      return new NextResponse(null, {
+        status: 200,
+        headers: res.headers,
+      });
+    }
+  }
+  
   return res;
 }
 
-// Konfiguriere die Middleware, um nur für Admin-Routen zu gelten
+// Konfiguriere die Middleware, um für Admin- und API-Routen zu gelten
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/admin/:path*', '/api/:path*'],
 }; 
