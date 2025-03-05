@@ -12,7 +12,9 @@
 - [Demo-Daten](#demo-daten)
 
 ## Über das Projekt 
-Dieses hochskalierbare Full-Stack-Microservice implementiert ein React-basiertes Anmeldeformular für die ZVV-Entdeckungsreise mit serverless Backend-Architektur. Die Lösung nutzt eine event-driven Datenverarbeitungspipeline mit PostgreSQL als persistente Speicherschicht via **Supabase** und einer **Next.js-Anwendung** mit Server-Side Rendering für optimale Performance und SEO-Metriken.
+Diese hochskalierbare Full-Stack-Microservice-Architektur kombiniert ein serverloses Backend mit einer event-driven Datenverarbeitungspipeline, optimiert für Performance, Skalierbarkeit und Sicherheit.
+Das React-basierte Anmeldeformular für die ZVV-Entdeckungsreise läuft auf einer Next.js-Anwendung mit Server-Side Rendering (SSR) für eine schnelle und effiziente Verarbeitung. Die persistente Datenspeicherung erfolgt über eine PostgreSQL-Datenbank in Supabase, ergänzt durch Row-Level-Security (RLS) und API-gestützte Workflows zur nahtlosen Verwaltung von Bestellcodes.
+Die Architektur setzt auf eine minimalistische, asynchrone Eventsteuerung, wobei Vercel Edge Functions eine niedrige Latenz und schnelle Code-Validierung gewährleisten.
 
 ## Technologie-Stack
 - **Supabase (PostgreSQL)** als zentrale Datenbank für Speicherung & Validierung der Codes 🗄️
