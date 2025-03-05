@@ -256,59 +256,62 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
         {/* Klasse */}
         <div className="cmp-row-container aem-Grid cmp-row-container--spacing">
           <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
-            <label htmlFor="className">Klasse</label>
+            <label htmlFor="className" className="cmp-teacher-training-material__classes-dropdown-title">Klasse</label>
           </div>
           <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--8 aem-GridColumn--vpm--8 aem-GridColumn--vpms--8">
-            <div className="cmp-dropdown">
-              <div 
-                tabIndex={0} 
-                className="cmp-dropdown__label"
-                onClick={() => setDropdownVisible(!dropdownVisible)}
-              >
-                {formData.className || 'Bitte wählen'}
+            <div className="cmp-dropdown__wrapper">
+              <div className={`cmp-dropdown ${dropdownVisible ? 'visible' : ''}`}>
+                <div 
+                  tabIndex={0} 
+                  className="cmp-dropdown__label"
+                  onClick={() => setDropdownVisible(!dropdownVisible)}
+                >
+                  {formData.className || 'Bitte wählen'}
+                </div>
+                <div className="cmp-dropdown__options">
+                  <div 
+                    className={`cmp-dropdown__option ${!formData.className ? 'cmp-dropdown__option--selected' : ''}`} 
+                    data-value=""
+                    onClick={() => {
+                      setFormData(prev => ({ ...prev, className: '' }));
+                      setDropdownVisible(false);
+                    }}
+                  >
+                    Bitte wählen
+                  </div>
+                  <div 
+                    className={`cmp-dropdown__option ${formData.className === '4. Klasse' ? 'cmp-dropdown__option--selected' : ''}`} 
+                    data-value="klasse-4"
+                    onClick={() => {
+                      setFormData(prev => ({ ...prev, className: '4. Klasse' }));
+                      setDropdownVisible(false);
+                    }}
+                  >
+                    4.
+                  </div>
+                  <div 
+                    className={`cmp-dropdown__option ${formData.className === '5. Klasse' ? 'cmp-dropdown__option--selected' : ''}`} 
+                    data-value="klasse-5"
+                    onClick={() => {
+                      setFormData(prev => ({ ...prev, className: '5. Klasse' }));
+                      setDropdownVisible(false);
+                    }}
+                  >
+                    5.
+                  </div>
+                  <div 
+                    className={`cmp-dropdown__option ${formData.className === '6. Klasse' ? 'cmp-dropdown__option--selected' : ''}`} 
+                    data-value="klasse-6"
+                    onClick={() => {
+                      setFormData(prev => ({ ...prev, className: '6. Klasse' }));
+                      setDropdownVisible(false);
+                    }}
+                  >
+                    6.
+                  </div>
+                </div>
               </div>
-              <div className={`cmp-dropdown__options ${dropdownVisible ? 'visible' : ''}`}>
-                <div 
-                  className="cmp-dropdown__option" 
-                  data-value=""
-                  onClick={() => {
-                    setFormData(prev => ({ ...prev, className: '' }));
-                    setDropdownVisible(false);
-                  }}
-                >
-                  Bitte wählen
-                </div>
-                <div 
-                  className="cmp-dropdown__option" 
-                  data-value="klasse-4"
-                  onClick={() => {
-                    setFormData(prev => ({ ...prev, className: '4. Klasse' }));
-                    setDropdownVisible(false);
-                  }}
-                >
-                  4.
-                </div>
-                <div 
-                  className="cmp-dropdown__option" 
-                  data-value="klasse-5"
-                  onClick={() => {
-                    setFormData(prev => ({ ...prev, className: '5. Klasse' }));
-                    setDropdownVisible(false);
-                  }}
-                >
-                  5.
-                </div>
-                <div 
-                  className="cmp-dropdown__option" 
-                  data-value="klasse-6"
-                  onClick={() => {
-                    setFormData(prev => ({ ...prev, className: '6. Klasse' }));
-                    setDropdownVisible(false);
-                  }}
-                >
-                  6.
-                </div>
-              </div>
+              <div className="cmp-dropdown__spacer"></div>
               <input 
                 type="hidden" 
                 id="className"
