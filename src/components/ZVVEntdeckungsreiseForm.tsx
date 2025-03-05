@@ -33,6 +33,7 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -118,9 +119,9 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
         <p className="mb-4">Wir haben deine Anfrage erhalten und eine Bestätigungs-E-Mail an dich gesendet.</p>
         <button
           onClick={() => setSuccess(false)}
-          className="inline-flex items-center justify-center whitespace-nowrap rounded-lg min-w-[160px] bg-[#0479cc] hover:bg-[#035999] text-white font-bold tracking-[0.2px] h-10 px-4 py-2 focus:shadow-[0px_0px_3px_2px_rgba(4,121,204,.32)]"
+          className="cmp-button"
         >
-          Zurück zum Formular
+          <span className="cmp-button__text">Zurück zum Formular</span>
         </button>
       </div>
     );
@@ -134,10 +135,10 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
         </div>
       )}
       
-      <form onSubmit={handleSubmit} className="cmp-newsletter__form">
+      <form onSubmit={handleSubmit} className="cmp-teacher-training-material">
         <div className="grid gap-6 mb-4">
-          <div className="cmp-form-text cmp-newsletter__input-wrapper">
-            <label htmlFor="code">
+          <div className="cmp-newsletter__input-wrapper">
+            <label htmlFor="code" className="cmp-teacher-training-material__topics-title">
               Ticketcode
             </label>
             <div className="cmp-newsletter__input-wrapper-inner">
@@ -156,8 +157,8 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
             </div>
           </div>
           
-          <div className="cmp-form-text cmp-newsletter__input-wrapper">
-            <label htmlFor="school">
+          <div className="cmp-newsletter__input-wrapper">
+            <label htmlFor="school" className="cmp-teacher-training-material__topics-title">
               Schule
             </label>
             <div className="cmp-newsletter__input-wrapper-inner">
@@ -176,8 +177,8 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
             </div>
           </div>
           
-          <div className="cmp-form-text cmp-newsletter__input-wrapper">
-            <label htmlFor="contactPerson">
+          <div className="cmp-newsletter__input-wrapper">
+            <label htmlFor="contactPerson" className="cmp-teacher-training-material__topics-title">
               Kontaktperson
             </label>
             <div className="cmp-newsletter__input-wrapper-inner">
@@ -196,8 +197,8 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
             </div>
           </div>
           
-          <div className="cmp-form-text cmp-newsletter__input-wrapper">
-            <label htmlFor="email">
+          <div className="cmp-newsletter__input-wrapper">
+            <label htmlFor="email" className="cmp-teacher-training-material__topics-title">
               E-Mail
             </label>
             <div className="cmp-newsletter__input-wrapper-inner">
@@ -217,8 +218,8 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
             </div>
           </div>
           
-          <div className="cmp-form-text cmp-newsletter__input-wrapper">
-            <label htmlFor="phoneNumber">
+          <div className="cmp-newsletter__input-wrapper">
+            <label htmlFor="phoneNumber" className="cmp-teacher-training-material__topics-title">
               Telefon
             </label>
             <div className="cmp-newsletter__input-wrapper-inner">
@@ -238,94 +239,77 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
             </div>
           </div>
           
-          <div className="cmp-form-text cmp-newsletter__input-wrapper">
-            <label htmlFor="className">
+          <div className="cmp-newsletter__input-wrapper">
+            <label htmlFor="className" className="cmp-teacher-training-material__classes-dropdown-title">
               Klasse
             </label>
-            <div className="cmp-newsletter__input-wrapper-inner">
-              <div className="cmp-dropdown zone-category">
+            <div className="cmp-dropdown__wrapper">
+              <div className="cmp-dropdown">
                 <div 
-                  tabIndex={1} 
+                  tabIndex={0} 
                   className="cmp-dropdown__label"
-                  onClick={() => {
-                    // Toggle dropdown visibility
-                    const dropdown = document.querySelector('.cmp-dropdown__options');
-                    if (dropdown) {
-                      dropdown.classList.toggle('visible');
-                    }
-                  }}
+                  onClick={() => setDropdownVisible(!dropdownVisible)}
                 >
                   {formData.className || 'Bitte wählen'}
                 </div>
-                <div className="cmp-dropdown__options">
+                <div className={`cmp-dropdown__options ${dropdownVisible ? 'visible' : ''}`}>
                   <div 
-                    className="cmp-dropdown__option" 
-                    id="0" 
+                    className={`cmp-dropdown__option ${!formData.className ? 'cmp-dropdown__option--selected' : ''}`} 
                     data-value=""
-                    onClick={(e) => {
-                      const value = '';
-                      setFormData(prev => ({ ...prev, className: value }));
-                      // Hide dropdown after selection
-                      e.currentTarget.parentElement?.classList.remove('visible');
+                    onClick={() => {
+                      setFormData(prev => ({ ...prev, className: '' }));
+                      setDropdownVisible(false);
                     }}
                   >
                     Bitte wählen
                   </div>
                   <div 
-                    className="cmp-dropdown__option" 
-                    id="1" 
-                    data-value="4. Klasse"
-                    onClick={(e) => {
-                      const value = '4. Klasse';
-                      setFormData(prev => ({ ...prev, className: value }));
-                      // Hide dropdown after selection
-                      e.currentTarget.parentElement?.classList.remove('visible');
+                    className={`cmp-dropdown__option ${formData.className === '4. Klasse' ? 'cmp-dropdown__option--selected' : ''}`} 
+                    data-value="klasse-4"
+                    onClick={() => {
+                      setFormData(prev => ({ ...prev, className: '4. Klasse' }));
+                      setDropdownVisible(false);
                     }}
                   >
-                    4. Klasse
+                    4.
                   </div>
                   <div 
-                    className="cmp-dropdown__option" 
-                    id="2" 
-                    data-value="5. Klasse"
-                    onClick={(e) => {
-                      const value = '5. Klasse';
-                      setFormData(prev => ({ ...prev, className: value }));
-                      // Hide dropdown after selection
-                      e.currentTarget.parentElement?.classList.remove('visible');
+                    className={`cmp-dropdown__option ${formData.className === '5. Klasse' ? 'cmp-dropdown__option--selected' : ''}`} 
+                    data-value="klasse-5"
+                    onClick={() => {
+                      setFormData(prev => ({ ...prev, className: '5. Klasse' }));
+                      setDropdownVisible(false);
                     }}
                   >
-                    5. Klasse
+                    5.
                   </div>
                   <div 
-                    className="cmp-dropdown__option" 
-                    id="3" 
-                    data-value="6. Klasse"
-                    onClick={(e) => {
-                      const value = '6. Klasse';
-                      setFormData(prev => ({ ...prev, className: value }));
-                      // Hide dropdown after selection
-                      e.currentTarget.parentElement?.classList.remove('visible');
+                    className={`cmp-dropdown__option ${formData.className === '6. Klasse' ? 'cmp-dropdown__option--selected' : ''}`} 
+                    data-value="klasse-6"
+                    onClick={() => {
+                      setFormData(prev => ({ ...prev, className: '6. Klasse' }));
+                      setDropdownVisible(false);
                     }}
                   >
-                    6. Klasse
+                    6.
                   </div>
                 </div>
-                <input 
-                  type="hidden" 
-                  id="className"
-                  name="className"
-                  value={formData.className}
-                  required
-                  aria-describedby="className-desc"
-                  data-cmprequiredmessage="Bitte wählen Sie eine Klasse aus"
-                />
               </div>
+              <div className="cmp-dropdown__spacer"></div>
+              <input 
+                type="hidden" 
+                id="className"
+                name="className"
+                value={formData.className}
+                required
+                aria-describedby="className-desc"
+                data-cmprequiredmessage="Bitte wählen Sie eine Klasse aus"
+              />
             </div>
           </div>
           
-          <div className="cmp-form-text cmp-newsletter__input-wrapper">
-            <label htmlFor="studentCount">
+          <div className="cmp-newsletter__input-wrapper">
+            <label htmlFor="studentCount" className="cmp-teacher-training-material__topics-title">
               Anzahl Schüler
             </label>
             <div className="cmp-newsletter__input-wrapper-inner">
@@ -346,8 +330,8 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
             </div>
           </div>
           
-          <div className="cmp-form-text cmp-newsletter__input-wrapper">
-            <label htmlFor="accompanistCount">
+          <div className="cmp-newsletter__input-wrapper">
+            <label htmlFor="accompanistCount" className="cmp-teacher-training-material__topics-title">
               Begleitpersonen
             </label>
             <div className="cmp-newsletter__input-wrapper-inner">
@@ -368,8 +352,8 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
             </div>
           </div>
           
-          <div className="cmp-form-text cmp-newsletter__input-wrapper">
-            <label htmlFor="travelDate">
+          <div className="cmp-newsletter__input-wrapper">
+            <label htmlFor="travelDate" className="cmp-teacher-training-material__topics-title">
               Reisedatum
             </label>
             <div className="cmp-newsletter__input-wrapper-inner">
@@ -390,8 +374,8 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
             </div>
           </div>
           
-          <div className="cmp-form-text cmp-newsletter__input-wrapper">
-            <label htmlFor="arrivalTime">
+          <div className="cmp-newsletter__input-wrapper">
+            <label htmlFor="arrivalTime" className="cmp-teacher-training-material__topics-title">
               Ankunftszeit
             </label>
             <div className="cmp-newsletter__input-wrapper-inner">
@@ -411,8 +395,8 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
             </div>
           </div>
           
-          <div className="cmp-form-text cmp-newsletter__input-wrapper">
-            <label htmlFor="additionalNotes">
+          <div className="cmp-newsletter__input-wrapper">
+            <label htmlFor="additionalNotes" className="cmp-teacher-training-material__topics-title">
               Anmerkungen
             </label>
             <div className="cmp-newsletter__input-wrapper-inner">
@@ -434,13 +418,11 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
         
         <div className="text-sm text-grey mb-4">* Alle Felder sind Pflichtfelder, außer Anmerkungen</div>
         
-        <div className="button">
-          <button className="cmp-button" type="submit" disabled={isLoading}>
-            <span className="cmp-button__text">
-              {isLoading ? 'Wird verarbeitet...' : 'Anmeldung absenden'}
-            </span>
-          </button>
-        </div>
+        <button className="cmp-button" type="submit" disabled={isLoading}>
+          <span className="cmp-button__text">
+            {isLoading ? 'Wird verarbeitet...' : 'Anmeldung absenden'}
+          </span>
+        </button>
       </form>
     </div>
   );
