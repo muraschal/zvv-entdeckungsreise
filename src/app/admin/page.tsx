@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
+import { Download, Search, RefreshCw, LogOut } from 'lucide-react';
+import * as XLSX from 'xlsx';
 import {
   Table,
   TableBody,
@@ -88,6 +90,40 @@ export default function AdminPage() {
     router.push('/admin/login');
   };
 
+  const exportToExcel = () => {
+    const exportData = registrations.map(reg => ({
+      'Anmeldedatum': formatDate(reg.created_at),
+      'Code': reg.code,
+      'Schule': reg.school,
+      'Klasse': reg.class,
+      'Kontaktperson': reg.contact_person,
+      'E-Mail': reg.email,
+      'Telefon': reg.phone_number,
+      'Schüler': reg.student_count,
+      'Begleiter': reg.accompanist_count,
+      'Reisedatum': new Date(reg.travel_date).toLocaleDateString('de-CH'),
+      'Ankunftszeit': reg.arrival_time,
+      'Zusätzliche Notizen': reg.additional_notes || ''
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Anmeldungen');
+    
+    // Setze UTF-8 Encoding
+    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
+    
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ZVV-Anmeldungen-${new Date().toISOString().split('T')[0]}.xlsx`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  };
+
   // Lade die Daten beim ersten Rendern
   useEffect(() => {
     fetchRegistrations();
@@ -130,29 +166,31 @@ export default function AdminPage() {
 
   return (
     <div className="container mx-auto py-6 space-y-6">
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <div>
-            <CardTitle className="text-2xl font-bold">ZVV-Entdeckungsreise Dashboard</CardTitle>
-            <CardDescription>
-              Verwaltung der Anmeldungen
-            </CardDescription>
-          </div>
-          <div className="flex space-x-2">
-            <Button variant="outline" onClick={fetchRegistrations} disabled={loading}>
-              Aktualisieren
-            </Button>
-            <Button variant="outline" onClick={handleLogout}>
-              Abmelden
-            </Button>
-          </div>
-        </CardHeader>
-      </Card>
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold">ZVV-Entdeckungsreise</h1>
+          <p className="text-muted-foreground">Verwaltung der Anmeldungen</p>
+        </div>
+        <div className="flex space-x-2">
+          <Button variant="outline" onClick={fetchRegistrations} disabled={loading}>
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Aktualisieren
+          </Button>
+          <Button variant="outline" onClick={exportToExcel}>
+            <Download className="h-4 w-4 mr-2" />
+            Export
+          </Button>
+          <Button variant="outline" onClick={handleLogout}>
+            <LogOut className="h-4 w-4 mr-2" />
+            Abmelden
+          </Button>
+        </div>
+      </div>
 
       {!loading && !error && (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {Object.entries(getStats()).map(([key, value]) => (
-            <Card key={key}>
+            <Card key={key} className="bg-white shadow-sm">
               <CardContent className="pt-6">
                 <div className="text-2xl font-bold">{value}</div>
                 <div className="text-muted-foreground">
@@ -167,16 +205,19 @@ export default function AdminPage() {
         </div>
       )}
 
-      <Card>
+      <Card className="bg-white shadow-sm">
         <CardHeader>
           <div className="flex justify-between items-center">
             <CardTitle>Anmeldungen</CardTitle>
-            <Input
-              placeholder="Suchen..."
-              className="max-w-sm"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                placeholder="Suchen..."
+                className="pl-10 max-w-sm"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
           </div>
         </CardHeader>
         <CardContent>
