@@ -152,6 +152,7 @@ export async function POST(request: Request) {
     }
 
     // 4. Sende Benachrichtigungs-E-Mail an den Administrator
+    console.log('Sende Admin-Benachrichtigung an:', ADMIN_EMAIL);
     const { success: adminEmailSuccess, error: adminEmailError } = await sendAdminNotificationEmail({
       school,
       studentCount,
@@ -168,6 +169,8 @@ export async function POST(request: Request) {
     if (!adminEmailSuccess) {
       console.error('Fehler beim Senden der Admin-Benachrichtigung:', adminEmailError);
       // Wir setzen den Vorgang trotzdem fort, da die Anmeldung erfolgreich war
+    } else {
+      console.log('Admin-Benachrichtigung erfolgreich gesendet');
     }
 
     // Code erfolgreich eingelöst und Anmeldung gespeichert
