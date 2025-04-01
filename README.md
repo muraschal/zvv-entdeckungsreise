@@ -96,6 +96,48 @@ erDiagram
     }
 ```
 
+#### Sequenzdiagramm des Datenflusses
+
+```mermaid
+sequenceDiagram
+    participant Client as Browser/Widget
+    participant API as Next.js API
+    participant DB as Supabase DB
+    participant Mail as Resend E-Mail
+    participant Admin as Admin-UI
+
+    %% Code-Validierung
+    Client->>API: 1. POST /api/validate
+    API->>DB: 2. Prüfe Code-Status
+    DB-->>API: 3. Code-Status
+    API-->>Client: 4. Validierungsergebnis
+
+    alt Code ist gültig
+        %% Anmeldung
+        Client->>API: 5. POST /api/redeem
+        API->>DB: 6. Speichere Anmeldung
+        API->>DB: 7. Aktualisiere Code (status='used')
+        
+        %% E-Mail-Versand
+        API->>Mail: 8a. Sende Bestätigung an Benutzer
+        API->>Mail: 8b. Sende Benachrichtigung an Admin
+        Mail-->>Client: 9a. Bestätigungs-E-Mail
+        Mail-->>Admin: 9b. Admin-Benachrichtigung
+        
+        %% Erfolgsbestätigung
+        API-->>Client: 10. Erfolgsmeldung
+        
+    else Code ist ungültig/abgelaufen
+        API-->>Client: 5. Fehlermeldung
+    end
+
+    %% Admin-Bereich
+    Admin->>API: A1. GET /api/admin/registrations
+    API->>DB: A2. Lade Anmeldungen
+    DB-->>API: A3. Anmeldungsdaten
+    API-->>Admin: A4. Formatierte Daten
+```
+
 #### Tabellenstruktur
 
 ##### Tabelle: `codes`
@@ -129,6 +171,160 @@ erDiagram
 
 - Ein Code (`codes`) kann höchstens eine Anmeldung (`registrations`) haben (1:0..1)
 - Eine Anmeldung (`registrations`) gehört genau zu einem Code (`codes`) (1:1)
+
+### API-Dokumentation
+
+#### 1. Code-Validierung
+```http
+POST /api/validate
+```
+
+**Request Body:**
+```json
+{
+    "code": "string"
+}
+```
+
+**Erfolgreiche Antwort (200 OK):**
+```json
+{
+    "valid": true,
+    "message": "Code ist gültig."
+}
+```
+
+**Fehlerantworten:**
+- `400 Bad Request`: Code fehlt
+```json
+{
+    "valid": false,
+    "message": "Code ist erforderlich."
+}
+```
+- `404 Not Found`: Code existiert nicht
+```json
+{
+    "valid": false,
+    "message": "Ungültiger Code."
+}
+```
+- `400 Bad Request`: Code bereits verwendet
+```json
+{
+    "valid": false,
+    "message": "Dieser Code wurde bereits verwendet."
+}
+```
+- `400 Bad Request`: Code abgelaufen
+```json
+{
+    "valid": false,
+    "message": "Dieser Code ist abgelaufen."
+}
+```
+
+#### 2. Code-Einlösung
+```http
+POST /api/redeem
+```
+
+**Request Body:**
+```json
+{
+    "code": "string",
+    "school": "string",
+    "studentCount": "number",
+    "travelDate": "string (YYYY-MM-DD)",
+    "additionalNotes": "string?",
+    "email": "string",
+    "className": "string",
+    "contactPerson": "string",
+    "phoneNumber": "string",
+    "accompanistCount": "number",
+    "arrivalTime": "string (HH:mm)"
+}
+```
+
+**Erfolgreiche Antwort (200 OK):**
+```json
+{
+    "success": true,
+    "message": "Anmeldung erfolgreich. Vielen Dank!",
+    "data": {
+        "registrationId": "uuid",
+        "school": "string",
+        "travelDate": "string",
+        "emailSent": true
+    }
+}
+```
+
+**Fehlerantworten:**
+- `400 Bad Request`: Fehlende Pflichtfelder
+```json
+{
+    "success": false,
+    "message": "Alle Pflichtfelder müssen ausgefüllt sein."
+}
+```
+- `400 Bad Request`: Ungültige E-Mail
+```json
+{
+    "success": false,
+    "message": "Bitte gib eine gültige E-Mail-Adresse ein."
+}
+```
+- `500 Internal Server Error`: Datenbankfehler
+```json
+{
+    "success": false,
+    "message": "Ein unerwarteter Fehler ist aufgetreten."
+}
+```
+
+#### 3. Admin-Anmeldungen abrufen
+```http
+GET /api/admin/registrations
+```
+
+**Headers:**
+```http
+Authorization: Bearer <JWT_TOKEN>
+```
+
+**Erfolgreiche Antwort (200 OK):**
+```json
+{
+    "registrations": [
+        {
+            "id": "uuid",
+            "code": "string",
+            "school": "string",
+            "studentCount": "number",
+            "travelDate": "string",
+            "email": "string",
+            "contactPerson": "string",
+            "createdAt": "string"
+        }
+    ],
+    "total": "number"
+}
+```
+
+**Fehlerantworten:**
+- `401 Unauthorized`: Fehlende/ungültige Authentifizierung
+```json
+{
+    "error": "Nicht autorisiert"
+}
+```
+- `403 Forbidden`: Keine Administratorrechte
+```json
+{
+    "error": "Zugriff verweigert"
+}
+```
 
 ## Erste Schritte 🚀
 1. Klone das Repository:
