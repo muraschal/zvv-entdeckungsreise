@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -36,6 +37,7 @@ export default function AdminPage() {
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const router = useRouter();
   
   // Erstelle einen Supabase-Client für den Browser
@@ -91,6 +93,27 @@ export default function AdminPage() {
     fetchRegistrations();
   }, []);
 
+  const getStats = () => {
+    const totalStudents = registrations.reduce((sum, reg) => sum + reg.student_count, 0);
+    const totalAccompanists = registrations.reduce((sum, reg) => sum + reg.accompanist_count, 0);
+    const uniqueSchools = new Set(registrations.map(reg => reg.school)).size;
+    
+    return { totalStudents, totalAccompanists, uniqueSchools, totalRegistrations: registrations.length };
+  };
+
+  const filteredRegistrations = registrations.filter(reg => 
+    reg.school.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    reg.contact_person.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    reg.code.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const groupedRegistrations = filteredRegistrations.reduce((groups, reg) => {
+    const date = new Date(reg.travel_date).toLocaleDateString('de-CH');
+    if (!groups[date]) groups[date] = [];
+    groups[date].push(reg);
+    return groups;
+  }, {} as Record<string, Registration[]>);
+
   // Skeleton-Loader für die Tabelle
   const TableSkeleton = () => (
     <div className="space-y-2">
@@ -110,9 +133,9 @@ export default function AdminPage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <div>
-            <CardTitle className="text-2xl font-bold">ZVV-Entdeckungsreise Anmeldungen</CardTitle>
+            <CardTitle className="text-2xl font-bold">ZVV-Entdeckungsreise Dashboard</CardTitle>
             <CardDescription>
-              Übersicht aller eingegangenen Anmeldungen für die ZVV-Entdeckungsreise
+              Verwaltung der Anmeldungen
             </CardDescription>
           </div>
           <div className="flex space-x-2">
@@ -124,6 +147,38 @@ export default function AdminPage() {
             </Button>
           </div>
         </CardHeader>
+      </Card>
+
+      {!loading && !error && (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {Object.entries(getStats()).map(([key, value]) => (
+            <Card key={key}>
+              <CardContent className="pt-6">
+                <div className="text-2xl font-bold">{value}</div>
+                <div className="text-muted-foreground">
+                  {key === 'totalStudents' && 'Schüler'}
+                  {key === 'totalAccompanists' && 'Begleiter'}
+                  {key === 'uniqueSchools' && 'Schulen'}
+                  {key === 'totalRegistrations' && 'Anmeldungen'}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      <Card>
+        <CardHeader>
+          <div className="flex justify-between items-center">
+            <CardTitle>Anmeldungen</CardTitle>
+            <Input
+              placeholder="Suchen..."
+              className="max-w-sm"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </CardHeader>
         <CardContent>
           {loading ? (
             <TableSkeleton />
@@ -131,44 +186,54 @@ export default function AdminPage() {
             <div className="p-4 bg-destructive/10 text-destructive rounded-md">
               {error}
             </div>
-          ) : registrations.length === 0 ? (
+          ) : filteredRegistrations.length === 0 ? (
             <div className="p-4 text-center">
               <p>Keine Anmeldungen gefunden.</p>
             </div>
           ) : (
-            <div className="rounded-md border">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Datum</TableHead>
-                    <TableHead>Code</TableHead>
-                    <TableHead>Schule</TableHead>
-                    <TableHead>Kontaktperson</TableHead>
-                    <TableHead>E-Mail</TableHead>
-                    <TableHead>Telefon</TableHead>
-                    <TableHead>Klasse</TableHead>
-                    <TableHead className="text-right">Schüler</TableHead>
-                    <TableHead className="text-right">Begleiter</TableHead>
-                    <TableHead>Reisedatum</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {registrations.map((reg) => (
-                    <TableRow key={reg.id}>
-                      <TableCell className="font-medium">{formatDate(reg.created_at)}</TableCell>
-                      <TableCell>{reg.code}</TableCell>
-                      <TableCell>{reg.school}</TableCell>
-                      <TableCell>{reg.contact_person}</TableCell>
-                      <TableCell>{reg.email}</TableCell>
-                      <TableCell>{reg.phone_number}</TableCell>
-                      <TableCell>{reg.class}</TableCell>
-                      <TableCell className="text-right">{reg.student_count}</TableCell>
-                      <TableCell className="text-right">{reg.accompanist_count}</TableCell>
-                      <TableCell>{new Date(reg.travel_date).toLocaleDateString('de-CH')}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+            <div className="space-y-6">
+              {Object.entries(groupedRegistrations).map(([date, regs]) => (
+                <div key={date} className="rounded-md border">
+                  <div className="bg-muted px-4 py-2 font-medium">
+                    Reisedatum: {date} ({regs.length} Anmeldungen)
+                  </div>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Anmeldedatum</TableHead>
+                        <TableHead>Code</TableHead>
+                        <TableHead>Schule</TableHead>
+                        <TableHead>Kontaktperson</TableHead>
+                        <TableHead className="text-right">Schüler</TableHead>
+                        <TableHead className="text-right">Begleiter</TableHead>
+                        <TableHead>Details</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {regs.map((reg) => (
+                        <TableRow key={reg.id}>
+                          <TableCell className="font-medium">
+                            {new Date(reg.created_at).toLocaleDateString('de-CH')}
+                          </TableCell>
+                          <TableCell>{reg.code}</TableCell>
+                          <TableCell>{reg.school}</TableCell>
+                          <TableCell>
+                            <div>{reg.contact_person}</div>
+                            <div className="text-sm text-muted-foreground">{reg.email}</div>
+                          </TableCell>
+                          <TableCell className="text-right">{reg.student_count}</TableCell>
+                          <TableCell className="text-right">{reg.accompanist_count}</TableCell>
+                          <TableCell>
+                            <Button variant="ghost" size="sm">
+                              Details
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              ))}
             </div>
           )}
         </CardContent>
