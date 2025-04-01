@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
 import { Download, Search, RefreshCw, LogOut, ChevronDown } from 'lucide-react';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 import {
   Table,
   TableBody,
@@ -99,30 +99,67 @@ export default function AdminPage() {
     router.push('/admin/login');
   };
 
-  const exportToExcel = () => {
-    const exportData = registrations.map(reg => ({
-      'Anmeldedatum': formatDate(reg.created_at),
-      'Code': reg.code,
-      'Schule': reg.school,
-      'Klasse': reg.class,
-      'Kontaktperson': reg.contact_person,
-      'E-Mail': reg.email,
-      'Telefon': reg.phone_number,
-      'Schüler': reg.student_count,
-      'Begleiter': reg.accompanist_count,
-      'Reisedatum': new Date(reg.travel_date).toLocaleDateString('de-CH'),
-      'Ankunftszeit': reg.arrival_time,
-      'Zusätzliche Notizen': reg.additional_notes || ''
-    }));
+  const exportToExcel = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Anmeldungen');
 
-    const ws = XLSX.utils.json_to_sheet(exportData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Anmeldungen');
-    
-    // Setze UTF-8 Encoding
-    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-    const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
-    
+    // Definiere die Spalten
+    worksheet.columns = [
+      { header: 'Anmeldedatum', key: 'created_at', width: 20 },
+      { header: 'Code', key: 'code', width: 15 },
+      { header: 'Schule', key: 'school', width: 30 },
+      { header: 'Klasse', key: 'class', width: 15 },
+      { header: 'Kontaktperson', key: 'contact_person', width: 25 },
+      { header: 'E-Mail', key: 'email', width: 30 },
+      { header: 'Telefon', key: 'phone_number', width: 20 },
+      { header: 'Schüler', key: 'student_count', width: 10 },
+      { header: 'Begleiter', key: 'accompanist_count', width: 10 },
+      { header: 'Reisedatum', key: 'travel_date', width: 15 },
+      { header: 'Ankunftszeit', key: 'arrival_time', width: 15 },
+      { header: 'Zusätzliche Notizen', key: 'additional_notes', width: 40 }
+    ];
+
+    // Style für den Header
+    worksheet.getRow(1).font = { bold: true };
+    worksheet.getRow(1).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFE0E0E0' }
+    };
+
+    // Füge die Daten hinzu
+    registrations.forEach(reg => {
+      worksheet.addRow({
+        created_at: new Date(reg.created_at).toLocaleDateString('de-CH'),
+        code: reg.code,
+        school: reg.school,
+        class: reg.class,
+        contact_person: reg.contact_person,
+        email: reg.email,
+        phone_number: reg.phone_number,
+        student_count: reg.student_count,
+        accompanist_count: reg.accompanist_count,
+        travel_date: new Date(reg.travel_date).toLocaleDateString('de-CH'),
+        arrival_time: reg.arrival_time,
+        additional_notes: reg.additional_notes || ''
+      });
+    });
+
+    // Rahmen für alle Zellen
+    worksheet.eachRow({ includeEmpty: true }, row => {
+      row.eachCell({ includeEmpty: true }, cell => {
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' }
+        };
+      });
+    });
+
+    // Generiere die Excel-Datei
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -185,7 +222,12 @@ export default function AdminPage() {
             <RefreshCw className="h-4 w-4 mr-2" />
             Aktualisieren
           </Button>
-          <Button variant="outline" onClick={exportToExcel}>
+          <Button 
+            variant="outline" 
+            onClick={() => {
+              exportToExcel().catch(console.error);
+            }}
+          >
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>

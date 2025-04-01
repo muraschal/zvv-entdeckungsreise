@@ -41,7 +41,10 @@ export async function POST(request: Request) {
     // Überprüfe, ob der Code bereits verwendet wurde
     if (data.status === 'used') {
       return NextResponse.json(
-        { valid: false, message: 'Dieser Code wurde bereits verwendet.' },
+        { 
+          valid: false, 
+          message: '<span style="color: #ff0000;">Dieser Code wurde bereits verwendet.</span>' 
+        },
         { status: 400 }
       );
     }

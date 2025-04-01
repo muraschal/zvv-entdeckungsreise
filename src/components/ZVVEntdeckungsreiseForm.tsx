@@ -114,9 +114,8 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
   if (success) {
     return (
       <div className="max-w-md mx-auto p-4 bg-white rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold text-green-600 mb-4">Anmeldung erfolgreich!</h1>
-        <p className="mb-4">Vielen Dank für deine Anmeldung zur ZVV-Entdeckungsreise.</p>
-        <p className="mb-4">Wir haben deine Anfrage erhalten und eine Bestätigungs-E-Mail an dich gesendet.</p>
+        <h1 className="text-2xl font-bold text-green-600 mb-4">Danke für Ihre Ticketbestellung.</h1>
+        <p className="mb-4">Die Tickets werden in den nächsten 7 Arbeitstagen an die angegebene Schulhaus-Adresse verschickt. Wir wünschen Ihrer Klasse schon jetzt viel Spass auf der ZVV-Entdeckungsreise.</p>
         <button
           onClick={() => setSuccess(false)}
           className="cmp-button"
@@ -130,9 +129,10 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
   return (
     <div className="max-w-md mx-auto p-4 bg-white rounded-lg shadow-md">
       {error && (
-        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
-          {error}
-        </div>
+        <div 
+          className="mb-4 p-3 bg-red-100 text-red-700 rounded"
+          dangerouslySetInnerHTML={{ __html: error }}
+        />
       )}
       
       <form onSubmit={handleSubmit}>

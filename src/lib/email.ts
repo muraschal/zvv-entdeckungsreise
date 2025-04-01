@@ -45,16 +45,14 @@ export async function sendConfirmationEmail({
     const { data, error } = await resend.emails.send({
       from: FROM_EMAIL,
       to: [to],
-      replyTo: ADMIN_EMAIL,
-      subject: `Bestätigung deiner Anmeldung zur ZVV-Entdeckungsreise`,
+      replyTo: 'schulinfo@zvv.ch',
+      subject: `Ticketbestellung ZVV-Entdeckungsreise`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-          <h1 style="color: #0066cc;">ZVV-Entdeckungsreise Anmeldung bestätigt</h1>
-          
-          <p>Vielen Dank für deine Anmeldung zur ZVV-Entdeckungsreise!</p>
+          <p>Danke für Ihre Ticketbestellung. Ihre Tickets für die ZVV-Entdeckungsreise werden Ihnen in den nächsten Tagen an Ihre Schulhaus-Adresse verschickt.</p>
           
           <div style="background-color: #f5f5f5; padding: 20px; border-radius: 5px; margin: 20px 0;">
-            <h2 style="margin-top: 0;">Deine Anmeldedaten:</h2>
+            <h2 style="margin-top: 0;">Ihre Bestelldaten:</h2>
             <ul style="padding-left: 20px;">
               <li><strong>Schule:</strong> ${school}</li>
               <li><strong>Kontaktperson:</strong> ${contactPerson}</li>
@@ -64,22 +62,18 @@ export async function sendConfirmationEmail({
               <li><strong>Anzahl Begleitpersonen:</strong> ${accompanistCount}</li>
               <li><strong>Gewünschtes Reisedatum:</strong> ${formattedDate}</li>
               <li><strong>Ankunftszeit:</strong> ${arrivalTime} Uhr</li>
-              <li><strong>Verwendeter Code:</strong> ${code}</li>
+              <li><strong>Bestellnummer:</strong> ${code}</li>
             </ul>
           </div>
           
-          <p>Wir werden uns in Kürze mit weiteren Informationen bei dir melden.</p>
+          <p>Wir wünschen Ihrer Klasse schon jetzt viel Spass auf der ZVV-Entdeckungsreise.</p>
           
-          <p>Bei Fragen kannst du uns jederzeit kontaktieren.</p>
+          <p>Haben Sie Fragen zur ZVV-Entdeckungsreise? Gerne sind wir auf schulinfo@zvv.ch für Sie da.</p>
           
           <p style="margin-top: 30px;">
-            Mit freundlichen Grüßen,<br>
-            Das ZVV-Entdeckungsreise Team
+            Freundliche Grüsse<br>
+            ZVV Schulinfo
           </p>
-          
-          <div style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #666;">
-            <p>Dies ist eine automatisch generierte E-Mail. Bitte antworte nicht auf diese Nachricht.</p>
-          </div>
         </div>
       `,
     });
