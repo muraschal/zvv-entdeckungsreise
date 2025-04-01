@@ -1,0 +1,97 @@
+.zvv-form {
+  font-family: Arial, sans-serif;
+}
+
+.zvv-form__container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.zvv-form__row {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1rem;
+  align-items: center;
+}
+
+.zvv-form__label {
+  font-weight: 500;
+  color: #333;
+}
+
+.zvv-form__input,
+.zvv-form__textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.zvv-form__input:focus,
+.zvv-form__textarea:focus {
+  outline: none;
+  border-color: #0066b3;
+  box-shadow: 0 0 0 2px rgba(0, 102, 179, 0.1);
+}
+
+.zvv-form__textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.zvv-form__dropdown {
+  position: relative;
+}
+
+.zvv-form__dropdown-label {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+}
+
+.zvv-form__dropdown-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: none;
+}
+
+.zvv-form__dropdown.visible .zvv-form__dropdown-options {
+  display: block;
+}
+
+.zvv-form__dropdown-option {
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.zvv-form__dropdown-option:hover {
+  background: #f5f5f5;
+}
+
+.zvv-form__dropdown-option--selected {
+  background: #e6f3ff;
+  color: #0066b3;
+}
+
+@media (max-width: 640px) {
+  .zvv-form__row {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .zvv-form__label {
+    margin-bottom: 0.25rem;
+  }
+} 

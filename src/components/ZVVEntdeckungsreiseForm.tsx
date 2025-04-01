@@ -127,25 +127,25 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
   }
 
   return (
-    <div className="max-w-md mx-auto p-4 bg-white rounded-lg shadow-md">
+    <div className="zvv-form max-w-md mx-auto p-4 bg-white rounded-lg shadow-md">
       {error && (
         <div 
-          className="mb-4 p-3 bg-red-100 text-red-700 rounded"
+          className="zvv-form__error mb-4 p-3 bg-red-100 text-red-700 rounded"
           dangerouslySetInnerHTML={{ __html: error }}
         />
       )}
       
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="zvv-form__container">
         {/* Ticketcode */}
-        <div className="cmp-row-container aem-Grid cmp-row-container--spacing" style={{ "--cmp-row-vertical-spacing": "2px" } as React.CSSProperties}>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
-            <label htmlFor="code">Ticketcode</label>
+        <div className="zvv-form__row">
+          <div className="zvv-form__label-col">
+            <label htmlFor="code" className="zvv-form__label">Ticketcode</label>
           </div>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--8 aem-GridColumn--vpm--8 aem-GridColumn--vpms--8">
-            <div className="cmp-form-text">
+          <div className="zvv-form__input-col">
+            <div className="zvv-form__input-wrapper">
               <input
                 id="code"
-                className="cmp-form-text__text"
+                className="zvv-form__input"
                 style={{ width: "100%" }}
                 placeholder="Ticketcode eingeben"
                 name="code"
@@ -153,23 +153,21 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                 onChange={handleChange}
                 required
                 aria-describedby="code-desc"
-                data-cmphookformtext=""
-                data-cmprequiredmessage="Bitte geben Sie einen Ticketcode ein"
               />
             </div>
           </div>
         </div>
         
         {/* Schule */}
-        <div className="cmp-row-container aem-Grid cmp-row-container--spacing" style={{ "--cmp-row-vertical-spacing": "2px" } as React.CSSProperties}>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
-            <label htmlFor="school">Schule</label>
+        <div className="zvv-form__row">
+          <div className="zvv-form__label-col">
+            <label htmlFor="school" className="zvv-form__label">Schule</label>
           </div>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--8 aem-GridColumn--vpm--8 aem-GridColumn--vpms--8">
-            <div className="cmp-form-text">
+          <div className="zvv-form__input-col">
+            <div className="zvv-form__input-wrapper">
               <input
                 id="school"
-                className="cmp-form-text__text"
+                className="zvv-form__input"
                 style={{ width: "100%" }}
                 placeholder="Name der Schule"
                 name="school"
@@ -177,23 +175,21 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                 onChange={handleChange}
                 required
                 aria-describedby="school-desc"
-                data-cmphookformtext=""
-                data-cmprequiredmessage="Bitte geben Sie den Namen der Schule ein"
               />
             </div>
           </div>
         </div>
         
         {/* Kontaktperson */}
-        <div className="cmp-row-container aem-Grid cmp-row-container--spacing" style={{ "--cmp-row-vertical-spacing": "2px" } as React.CSSProperties}>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
-            <label htmlFor="contactPerson">Kontaktperson</label>
+        <div className="zvv-form__row">
+          <div className="zvv-form__label-col">
+            <label htmlFor="contactPerson" className="zvv-form__label">Kontaktperson</label>
           </div>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--8 aem-GridColumn--vpm--8 aem-GridColumn--vpms--8">
-            <div className="cmp-form-text">
+          <div className="zvv-form__input-col">
+            <div className="zvv-form__input-wrapper">
               <input
                 id="contactPerson"
-                className="cmp-form-text__text"
+                className="zvv-form__input"
                 style={{ width: "100%" }}
                 placeholder="Name der Kontaktperson"
                 name="contactPerson"
@@ -201,23 +197,21 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                 onChange={handleChange}
                 required
                 aria-describedby="contactPerson-desc"
-                data-cmphookformtext=""
-                data-cmprequiredmessage="Bitte geben Sie den Namen der Kontaktperson ein"
               />
             </div>
           </div>
         </div>
         
         {/* E-Mail */}
-        <div className="cmp-row-container aem-Grid cmp-row-container--spacing" style={{ "--cmp-row-vertical-spacing": "2px" } as React.CSSProperties}>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
-            <label htmlFor="email">E-Mail</label>
+        <div className="zvv-form__row">
+          <div className="zvv-form__label-col">
+            <label htmlFor="email" className="zvv-form__label">E-Mail</label>
           </div>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--8 aem-GridColumn--vpm--8 aem-GridColumn--vpms--8">
-            <div className="cmp-form-text">
+          <div className="zvv-form__input-col">
+            <div className="zvv-form__input-wrapper">
               <input
                 id="email"
-                className="cmp-form-text__text"
+                className="zvv-form__input"
                 style={{ width: "100%" }}
                 placeholder="E-Mail-Adresse"
                 name="email"
@@ -226,23 +220,21 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                 onChange={handleChange}
                 required
                 aria-describedby="email-desc"
-                data-cmphookformtext=""
-                data-cmprequiredmessage="Bitte geben Sie eine gültige E-Mail-Adresse ein"
               />
             </div>
           </div>
         </div>
         
         {/* Telefon */}
-        <div className="cmp-row-container aem-Grid cmp-row-container--spacing" style={{ "--cmp-row-vertical-spacing": "2px" } as React.CSSProperties}>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
-            <label htmlFor="phoneNumber">Telefon</label>
+        <div className="zvv-form__row">
+          <div className="zvv-form__label-col">
+            <label htmlFor="phoneNumber" className="zvv-form__label">Telefon</label>
           </div>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--8 aem-GridColumn--vpm--8 aem-GridColumn--vpms--8">
-            <div className="cmp-form-text">
+          <div className="zvv-form__input-col">
+            <div className="zvv-form__input-wrapper">
               <input
                 id="phoneNumber"
-                className="cmp-form-text__text"
+                className="zvv-form__input"
                 style={{ width: "100%" }}
                 placeholder="Telefonnummer"
                 name="phoneNumber"
@@ -251,31 +243,29 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                 onChange={handleChange}
                 required
                 aria-describedby="phoneNumber-desc"
-                data-cmphookformtext=""
-                data-cmprequiredmessage="Bitte geben Sie eine Telefonnummer ein"
               />
             </div>
           </div>
         </div>
         
         {/* Klasse */}
-        <div className="cmp-row-container aem-Grid cmp-row-container--spacing" style={{ "--cmp-row-vertical-spacing": "2px" } as React.CSSProperties}>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
-            <label htmlFor="className" className="cmp-teacher-training-material__classes-dropdown-title">Klasse</label>
+        <div className="zvv-form__row">
+          <div className="zvv-form__label-col">
+            <label htmlFor="className" className="zvv-form__label">Klasse</label>
           </div>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--8 aem-GridColumn--vpm--8 aem-GridColumn--vpms--8">
-            <div className="cmp-dropdown__wrapper">
-              <div className={`cmp-dropdown ${dropdownVisible ? 'visible' : ''}`}>
+          <div className="zvv-form__input-col">
+            <div className="zvv-form__input-wrapper">
+              <div className={`zvv-form__dropdown ${dropdownVisible ? 'visible' : ''}`}>
                 <div 
                   tabIndex={0} 
-                  className="cmp-dropdown__label"
+                  className="zvv-form__dropdown-label"
                   onClick={() => setDropdownVisible(!dropdownVisible)}
                 >
                   {formData.className || 'Bitte wählen'}
                 </div>
-                <div className="cmp-dropdown__options">
+                <div className="zvv-form__dropdown-options">
                   <div 
-                    className={`cmp-dropdown__option ${!formData.className ? 'cmp-dropdown__option--selected' : ''}`} 
+                    className={`zvv-form__dropdown-option ${!formData.className ? 'zvv-form__dropdown-option--selected' : ''}`} 
                     data-value=""
                     onClick={() => {
                       setFormData(prev => ({ ...prev, className: '' }));
@@ -285,7 +275,7 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                     Bitte wählen
                   </div>
                   <div 
-                    className={`cmp-dropdown__option ${formData.className === '4. Klasse' ? 'cmp-dropdown__option--selected' : ''}`} 
+                    className={`zvv-form__dropdown-option ${formData.className === '4. Klasse' ? 'zvv-form__dropdown-option--selected' : ''}`} 
                     data-value="klasse-4"
                     onClick={() => {
                       setFormData(prev => ({ ...prev, className: '4. Klasse' }));
@@ -295,7 +285,7 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                     4.
                   </div>
                   <div 
-                    className={`cmp-dropdown__option ${formData.className === '5. Klasse' ? 'cmp-dropdown__option--selected' : ''}`} 
+                    className={`zvv-form__dropdown-option ${formData.className === '5. Klasse' ? 'zvv-form__dropdown-option--selected' : ''}`} 
                     data-value="klasse-5"
                     onClick={() => {
                       setFormData(prev => ({ ...prev, className: '5. Klasse' }));
@@ -305,7 +295,7 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                     5.
                   </div>
                   <div 
-                    className={`cmp-dropdown__option ${formData.className === '6. Klasse' ? 'cmp-dropdown__option--selected' : ''}`} 
+                    className={`zvv-form__dropdown-option ${formData.className === '6. Klasse' ? 'zvv-form__dropdown-option--selected' : ''}`} 
                     data-value="klasse-6"
                     onClick={() => {
                       setFormData(prev => ({ ...prev, className: '6. Klasse' }));
@@ -316,7 +306,7 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                   </div>
                 </div>
               </div>
-              <div className="cmp-dropdown__spacer"></div>
+              <div className="zvv-form__dropdown-spacer"></div>
               <input 
                 type="hidden" 
                 id="className"
@@ -324,22 +314,21 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                 value={formData.className}
                 required
                 aria-describedby="className-desc"
-                data-cmprequiredmessage="Bitte wählen Sie eine Klasse aus"
               />
             </div>
           </div>
         </div>
         
         {/* Anzahl Schüler */}
-        <div className="cmp-row-container aem-Grid cmp-row-container--spacing" style={{ "--cmp-row-vertical-spacing": "2px" } as React.CSSProperties}>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
-            <label htmlFor="studentCount">Anzahl Schüler</label>
+        <div className="zvv-form__row">
+          <div className="zvv-form__label-col">
+            <label htmlFor="studentCount" className="zvv-form__label">Anzahl Schüler</label>
           </div>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--8 aem-GridColumn--vpm--8 aem-GridColumn--vpms--8">
-            <div className="cmp-form-text">
+          <div className="zvv-form__input-col">
+            <div className="zvv-form__input-wrapper">
               <input
                 id="studentCount"
-                className="cmp-form-text__text"
+                className="zvv-form__input"
                 style={{ width: "100%" }}
                 placeholder="Anzahl der Schüler"
                 name="studentCount"
@@ -349,23 +338,21 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                 onChange={handleChange}
                 required
                 aria-describedby="studentCount-desc"
-                data-cmphookformtext=""
-                data-cmprequiredmessage="Bitte geben Sie die Anzahl der Schüler ein"
               />
             </div>
           </div>
         </div>
         
         {/* Begleitpersonen */}
-        <div className="cmp-row-container aem-Grid cmp-row-container--spacing" style={{ "--cmp-row-vertical-spacing": "2px" } as React.CSSProperties}>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
-            <label htmlFor="accompanistCount">Begleitpersonen</label>
+        <div className="zvv-form__row">
+          <div className="zvv-form__label-col">
+            <label htmlFor="accompanistCount" className="zvv-form__label">Begleitpersonen</label>
           </div>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--8 aem-GridColumn--vpm--8 aem-GridColumn--vpms--8">
-            <div className="cmp-form-text">
+          <div className="zvv-form__input-col">
+            <div className="zvv-form__input-wrapper">
               <input
                 id="accompanistCount"
-                className="cmp-form-text__text"
+                className="zvv-form__input"
                 style={{ width: "100%" }}
                 placeholder="Anzahl der Begleitpersonen"
                 name="accompanistCount"
@@ -375,23 +362,21 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                 onChange={handleChange}
                 required
                 aria-describedby="accompanistCount-desc"
-                data-cmphookformtext=""
-                data-cmprequiredmessage="Bitte geben Sie die Anzahl der Begleitpersonen ein"
               />
             </div>
           </div>
         </div>
         
         {/* Reisedatum */}
-        <div className="cmp-row-container aem-Grid cmp-row-container--spacing" style={{ "--cmp-row-vertical-spacing": "2px" } as React.CSSProperties}>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
-            <label htmlFor="travelDate">Reisedatum</label>
+        <div className="zvv-form__row">
+          <div className="zvv-form__label-col">
+            <label htmlFor="travelDate" className="zvv-form__label">Reisedatum</label>
           </div>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--8 aem-GridColumn--vpm--8 aem-GridColumn--vpms--8">
-            <div className="cmp-form-text">
+          <div className="zvv-form__input-col">
+            <div className="zvv-form__input-wrapper">
               <input
                 id="travelDate"
-                className="cmp-form-text__text"
+                className="zvv-form__input"
                 style={{ width: "100%" }}
                 placeholder="Reisedatum auswählen"
                 name="travelDate"
@@ -401,23 +386,21 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                 onChange={handleChange}
                 required
                 aria-describedby="travelDate-desc"
-                data-cmphookformtext=""
-                data-cmprequiredmessage="Bitte wählen Sie ein Reisedatum aus"
               />
             </div>
           </div>
         </div>
         
         {/* Ankunftszeit */}
-        <div className="cmp-row-container aem-Grid cmp-row-container--spacing" style={{ "--cmp-row-vertical-spacing": "2px" } as React.CSSProperties}>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
-            <label htmlFor="arrivalTime">Ankunftszeit</label>
+        <div className="zvv-form__row">
+          <div className="zvv-form__label-col">
+            <label htmlFor="arrivalTime" className="zvv-form__label">Ankunftszeit</label>
           </div>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--8 aem-GridColumn--vpm--8 aem-GridColumn--vpms--8">
-            <div className="cmp-form-text">
+          <div className="zvv-form__input-col">
+            <div className="zvv-form__input-wrapper">
               <input
                 id="arrivalTime"
-                className="cmp-form-text__text"
+                className="zvv-form__input"
                 style={{ width: "100%" }}
                 placeholder="Ankunftszeit auswählen"
                 name="arrivalTime"
@@ -426,32 +409,27 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
                 onChange={handleChange}
                 required
                 aria-describedby="arrivalTime-desc"
-                data-cmphookformtext=""
-                data-cmprequiredmessage="Bitte wählen Sie eine Ankunftszeit aus"
               />
             </div>
           </div>
         </div>
         
         {/* Anmerkungen */}
-        <div className="cmp-row-container aem-Grid cmp-row-container--spacing" style={{ "--cmp-row-vertical-spacing": "2px" } as React.CSSProperties}>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--4 aem-GridColumn--vpm--4 aem-GridColumn--vpms--4">
-            <label htmlFor="additionalNotes">Anmerkungen</label>
+        <div className="zvv-form__row">
+          <div className="zvv-form__label-col">
+            <label htmlFor="additionalNotes" className="zvv-form__label">Anmerkungen</label>
           </div>
-          <div className="aem-GridColumn aem-GridColumn--vps--12 aem-GridColumn aem-GridColumn--vpl--8 aem-GridColumn--vpm--8 aem-GridColumn--vpms--8">
-            <div className="cmp-form-text">
+          <div className="zvv-form__input-col">
+            <div className="zvv-form__input-wrapper">
               <textarea
                 id="additionalNotes"
-                className="cmp-form-text__text"
-                style={{ width: "100%" }}
+                className="zvv-form__textarea"
                 placeholder="Zusätzliche Anmerkungen"
                 name="additionalNotes"
                 rows={2}
                 value={formData.additionalNotes}
                 onChange={handleChange}
                 aria-describedby="additionalNotes-desc"
-                data-cmphookformtext=""
-                data-cmprequiredmessage=""
               ></textarea>
             </div>
           </div>
