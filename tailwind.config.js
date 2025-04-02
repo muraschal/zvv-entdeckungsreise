@@ -7,6 +7,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        'zvv': ['ZVV Brown Narrow Web', 'Arial', 'sans-serif'],
+        'zvv-s': ['ZVV Brown Narrow S Web', 'Arial', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
