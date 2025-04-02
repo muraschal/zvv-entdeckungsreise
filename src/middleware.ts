@@ -1,10 +1,14 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { toASCII } from './utils/punycode';
 
 // Diese Middleware wird für alle API-Routen ausgeführt
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
+  
+  // Konvertiere Domain-Namen wenn nötig
+  const hostname = toASCII(req.headers.get('host') || '');
   
   // Erstelle einen Supabase-Client mit den Cookies der Anfrage
   const supabase = createServerClient(

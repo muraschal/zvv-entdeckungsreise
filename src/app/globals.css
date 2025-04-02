@@ -1,8 +1,44 @@
+@import '../styles/zvv-form.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import '../styles/zvv-form.css';
+@font-face {
+  font-family: 'ZVVBrownNarrowWeb';
+  src: url('/fonts/ZVVBrownNarrowWeb-Regular.woff2') format('woff2'),
+       url('/fonts/ZVVBrownNarrowWeb-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ZVVBrownNarrowWeb';
+  src: url('/fonts/ZVVBrownNarrowWeb-Bold.woff2') format('woff2'),
+       url('/fonts/ZVVBrownNarrowWeb-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ZVVBrownNarrowSWeb';
+  src: url('/fonts/ZVVBrownNarrowSWeb-Regular.woff2') format('woff2'),
+       url('/fonts/ZVVBrownNarrowSWeb-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ZVVBrownNarrowSWeb';
+  src: url('/fonts/ZVVBrownNarrowSWeb-Bold.woff2') format('woff2'),
+       url('/fonts/ZVVBrownNarrowSWeb-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
 
 @layer base {
   :root {
@@ -74,6 +110,8 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'ZVVBrownNarrowWeb', sans-serif;
+    min-height: 100vh;
   }
 }
 
@@ -92,6 +130,21 @@
 
 .bg-zvv-red {
   background-color: #FF0000;
+}
+
+/* Login Screen Hintergrund */
+.login-background {
+  background-image: 
+    linear-gradient(
+      to bottom,
+      rgba(0, 51, 153, 0.85),
+      rgba(0, 51, 153, 0.95)
+    ),
+    url('/images/zvv-background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
 }
 
 /* Bestehende Stile beibehalten */

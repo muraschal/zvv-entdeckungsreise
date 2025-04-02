@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "description": "Code-Validierung für die ZVV-Entdeckungsreise mit Supabase & Zapier",
   "scripts": {
-    "dev": "next dev",
+    "dev": "set NODE_NO_WARNINGS=1 && next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
