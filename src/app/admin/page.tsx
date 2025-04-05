@@ -133,6 +133,7 @@ const AdminPage = () => {
           throw new Error(errorText || 'Fehler beim Laden der Anmeldungen');
         }
         const data = await response.json();
+        console.log('Geladene Registrierungen:', data.registrations);
         setRegistrations(data.registrations || []);
       } catch (err) {
         console.error('Fehler beim Laden der Anmeldungen:', err);
@@ -158,101 +159,117 @@ const AdminPage = () => {
     <div className="container mx-auto p-6">
       <h1 className="text-3xl font-bold tracking-tight mb-8">Admin Dashboard</h1>
       
-      <div className="grid gap-6 md:grid-cols-3">
-        <Card className="shadow-sm">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Registrierungen</CardTitle>
-            <Users className="h-5 w-5 text-zvv-blue" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-zvv-blue">{registrations.length}</div>
-            <p className="text-xs text-muted-foreground">
-              Letzte am {registrations.length > 0 ? new Date(registrations[0].created_at).toLocaleDateString('de-CH') : '-'}
-            </p>
-          </CardContent>
-          <CardFooter className="pt-0">
-            <Button variant="outline" size="sm" className="btn-zvv-outline">
-              Details
-            </Button>
-          </CardFooter>
-        </Card>
-        
-        <Card className="shadow-sm">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Schulen</CardTitle>
-            <School className="h-5 w-5 text-zvv-blue" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-zvv-blue">
-              {registrations.reduce((sum, reg) => sum + reg.student_count, 0)}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Inklusive {registrations.reduce((sum, reg) => sum + reg.accompanist_count, 0)} Begleitpersonen
-            </p>
-          </CardContent>
-          <CardFooter className="pt-0">
-            <Button variant="outline" size="sm" className="btn-zvv-outline">
-              Details
-            </Button>
-          </CardFooter>
-        </Card>
-        
-        <Card className="shadow-sm">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Kommende Fahrten</CardTitle>
-            <Calendar className="h-5 w-5 text-zvv-blue" />
-          </CardHeader>
-          <CardContent>
-            {(() => {
-              const upcomingTrips = registrations
-                .filter(reg => new Date(reg.travel_date) >= new Date())
-                .sort((a, b) => new Date(a.travel_date).getTime() - new Date(b.travel_date).getTime());
-              
-              if (upcomingTrips.length === 0) {
-                return (
-                  <>
-                    <div className="text-2xl font-bold text-zvv-blue">-</div>
-                    <p className="text-xs text-muted-foreground">
-                      Keine bevorstehenden Reisen
-                    </p>
-                  </>
-                )
-              }
-              
-              return (
-                <>
-                  <div className="text-2xl font-bold text-zvv-blue">
-                    {new Date(upcomingTrips[0].travel_date).toLocaleDateString('de-CH')}
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    {upcomingTrips[0].school}, {upcomingTrips[0].student_count} Schüler
-                  </p>
-                </>
-              )
-            })()}
-          </CardContent>
-          <CardFooter className="pt-0">
-            <Button variant="outline" size="sm" className="btn-zvv-outline">
-              Details
-            </Button>
-          </CardFooter>
-        </Card>
-      </div>
-      
-      <div className="mt-8 space-y-4">
-        <h2 className="text-xl font-bold tracking-tight">Admin-Tools</h2>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          <Link href="/admin/testcodes" className="flex items-center p-4 border rounded-md shadow-sm hover:bg-zvv-light-blue hover:border-zvv-blue transition-colors">
-            <div className="mr-4 rounded-md bg-zvv-light-blue p-2">
-              <Key className="h-5 w-5 text-zvv-blue" />
-            </div>
-            <div>
-              <h3 className="font-semibold">Testcode-Management</h3>
-              <p className="text-sm text-muted-foreground">Testcodes für INT-Umgebung verwalten</p>
-            </div>
-          </Link>
+      {loading ? (
+        <div className="grid gap-6 md:grid-cols-3">
+          <Skeleton className="h-36 w-full" />
+          <Skeleton className="h-36 w-full" />
+          <Skeleton className="h-36 w-full" />
         </div>
-      </div>
+      ) : error ? (
+        <div className="p-4 bg-destructive/15 text-destructive rounded-md">
+          {error}
+        </div>
+      ) : (
+        <>
+          <div className="grid gap-6 md:grid-cols-3">
+            <Card className="shadow-sm">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Registrierungen</CardTitle>
+                <Users className="h-5 w-5 text-zvv-blue" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-zvv-blue">{registrations.length}</div>
+                <p className="text-xs text-muted-foreground">
+                  Letzte am {registrations.length > 0 ? new Date(registrations[0].created_at).toLocaleDateString('de-CH') : '-'}
+                </p>
+              </CardContent>
+              <CardFooter className="pt-0">
+                <Button variant="outline" size="sm" className="btn-zvv-outline">
+                  Details
+                </Button>
+              </CardFooter>
+            </Card>
+            
+            <Card className="shadow-sm">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Schulen</CardTitle>
+                <School className="h-5 w-5 text-zvv-blue" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-zvv-blue">
+                  {registrations.reduce((sum, reg) => sum + reg.student_count, 0)}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Inklusive {registrations.reduce((sum, reg) => sum + reg.accompanist_count, 0)} Begleitpersonen
+                </p>
+              </CardContent>
+              <CardFooter className="pt-0">
+                <Button variant="outline" size="sm" className="btn-zvv-outline">
+                  Details
+                </Button>
+              </CardFooter>
+            </Card>
+            
+            <Card className="shadow-sm">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Kommende Fahrten</CardTitle>
+                <Calendar className="h-5 w-5 text-zvv-blue" />
+              </CardHeader>
+              <CardContent>
+                {(() => {
+                  const upcomingTrips = registrations
+                    .filter(reg => new Date(reg.travel_date) >= new Date())
+                    .sort((a, b) => new Date(a.travel_date).getTime() - new Date(b.travel_date).getTime());
+                  
+                  console.log('Kommende Fahrten:', upcomingTrips);
+                  
+                  if (upcomingTrips.length === 0) {
+                    return (
+                      <>
+                        <div className="text-2xl font-bold text-zvv-blue">-</div>
+                        <p className="text-xs text-muted-foreground">
+                          Keine bevorstehenden Reisen
+                        </p>
+                      </>
+                    )
+                  }
+                  
+                  return (
+                    <>
+                      <div className="text-2xl font-bold text-zvv-blue">
+                        {new Date(upcomingTrips[0].travel_date).toLocaleDateString('de-CH')}
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        {upcomingTrips[0].school}, {upcomingTrips[0].student_count} Schüler
+                      </p>
+                    </>
+                  )
+                })()}
+              </CardContent>
+              <CardFooter className="pt-0">
+                <Button variant="outline" size="sm" className="btn-zvv-outline">
+                  Details
+                </Button>
+              </CardFooter>
+            </Card>
+          </div>
+          
+          <div className="mt-8 space-y-4">
+            <h2 className="text-xl font-bold tracking-tight">Admin-Tools</h2>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <Link href="/admin/testcodes" className="flex items-center p-4 border rounded-md shadow-sm hover:bg-zvv-light-blue hover:border-zvv-blue transition-colors">
+                <div className="mr-4 rounded-md bg-zvv-light-blue p-2">
+                  <Key className="h-5 w-5 text-zvv-blue" />
+                </div>
+                <div>
+                  <h3 className="font-semibold">Testcode-Management</h3>
+                  <p className="text-sm text-muted-foreground">Testcodes für INT-Umgebung verwalten</p>
+                </div>
+              </Link>
+            </div>
+          </div>
+        </>
+      )}
       
       <Sheet open={!!selectedRegistration} onOpenChange={() => setSelectedRegistration(null)}>
         <SheetContent className="sm:max-w-md px-6">
