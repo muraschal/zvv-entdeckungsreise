@@ -184,41 +184,41 @@ const AdminPage = () => {
           
           <TabsContent value="overview" className="space-y-6">
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200 shadow-sm">
+              <Card className="bg-white border shadow-sm">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-xl flex items-center justify-between">
                     <span>Anmeldungen</span>
-                    <Users className="h-5 w-5 text-blue-600" />
+                    <Users className="h-5 w-5 text-[#003399]" />
                   </CardTitle>
                   <CardDescription>Gesamtzahl der Anmeldungen</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-4xl font-bold text-blue-600">{registrations.length}</div>
+                  <div className="text-4xl font-bold text-[#003399]">{registrations.length}</div>
                   <p className="text-sm text-muted-foreground mt-1">Letzte am {registrations.length > 0 ? new Date(registrations[0].created_at).toLocaleDateString('de-CH') : '-'}</p>
                 </CardContent>
               </Card>
               
-              <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200 shadow-sm">
+              <Card className="bg-white border shadow-sm">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-xl flex items-center justify-between">
                     <span>Schüler</span>
-                    <School className="h-5 w-5 text-green-600" />
+                    <School className="h-5 w-5 text-[#003399]" />
                   </CardTitle>
                   <CardDescription>Gesamtzahl der angemeldeten Schüler</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-4xl font-bold text-green-600">
+                  <div className="text-4xl font-bold text-[#003399]">
                     {registrations.reduce((sum, reg) => sum + reg.student_count, 0)}
                   </div>
                   <p className="text-sm text-muted-foreground mt-1">Inklusive {registrations.reduce((sum, reg) => sum + reg.accompanist_count, 0)} Begleitpersonen</p>
                 </CardContent>
               </Card>
               
-              <Card className="bg-gradient-to-br from-amber-50 to-amber-100 border-amber-200 shadow-sm">
+              <Card className="bg-white border shadow-sm">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-xl flex items-center justify-between">
                     <span>Nächste Reise</span>
-                    <Calendar className="h-5 w-5 text-amber-600" />
+                    <Calendar className="h-5 w-5 text-[#003399]" />
                   </CardTitle>
                   <CardDescription>Datum der nächsten Entdeckungsreise</CardDescription>
                 </CardHeader>
@@ -231,7 +231,7 @@ const AdminPage = () => {
                     if (upcomingTrips.length === 0) {
                       return (
                         <>
-                          <div className="text-4xl font-bold text-amber-600">-</div>
+                          <div className="text-4xl font-bold text-[#003399]">-</div>
                           <p className="text-sm text-muted-foreground mt-1">Keine bevorstehenden Reisen</p>
                         </>
                       )
@@ -239,7 +239,7 @@ const AdminPage = () => {
                     
                     return (
                       <>
-                        <div className="text-4xl font-bold text-amber-600">
+                        <div className="text-4xl font-bold text-[#003399]">
                           {new Date(upcomingTrips[0].travel_date).toLocaleDateString('de-CH')}
                         </div>
                         <p className="text-sm text-muted-foreground mt-1">{upcomingTrips[0].school}, {upcomingTrips[0].student_count} Schüler</p>

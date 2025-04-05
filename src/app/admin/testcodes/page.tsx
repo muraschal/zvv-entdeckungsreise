@@ -35,7 +35,11 @@ export default function TestcodesPage() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("/api/admin/testcodes", {
+      // Dynamische Basis-URL für den API-Endpunkt
+      const baseUrl = window.location.origin;
+      console.log('Verwende Basis-URL:', baseUrl);
+      
+      const response = await fetch(`${baseUrl}/api/admin/testcodes`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -63,7 +67,11 @@ export default function TestcodesPage() {
     try {
       console.log('Testcode-Generierungsprozess gestartet');
       
-      const response = await fetch("/api/admin/testcodes/generate", {
+      // Dynamische Basis-URL für den API-Endpunkt
+      const baseUrl = window.location.origin;
+      console.log('Verwende Basis-URL:', baseUrl);
+      
+      const response = await fetch(`${baseUrl}/api/admin/testcodes/generate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -113,7 +121,11 @@ export default function TestcodesPage() {
     try {
       console.log('Bereinigungsprozess gestartet');
       
-      const response = await fetch("/api/admin/testcodes/cleanup", {
+      // Dynamische Basis-URL für den API-Endpunkt
+      const baseUrl = window.location.origin;
+      console.log('Verwende Basis-URL:', baseUrl);
+      
+      const response = await fetch(`${baseUrl}/api/admin/testcodes/cleanup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -171,14 +183,14 @@ export default function TestcodesPage() {
     
     if (status === "unused") {
       return (
-        <Badge variant="outline" className="bg-green-50 text-green-600 border-green-200 flex items-center gap-1">
+        <Badge variant="outline" className="bg-[#e6ecf9] text-[#003399] border-[#c7d4ee] flex items-center gap-1">
           <CheckCircle2 className="h-3.5 w-3.5" />
           <span>Verfügbar</span>
         </Badge>
       );
     } else {
       return (
-        <Badge variant="outline" className="bg-blue-50 text-blue-600 border-blue-200 flex items-center gap-1">
+        <Badge variant="outline" className="bg-[#e6ecf9] text-[#003399] border-[#c7d4ee] flex items-center gap-1">
           <XCircle className="h-3.5 w-3.5" />
           <span>Verwendet</span>
         </Badge>
@@ -199,20 +211,20 @@ export default function TestcodesPage() {
       </div>
       
       <div className="space-y-6">
-        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200 shadow-sm">
+        <Card className="bg-white border shadow-sm">
           <CardHeader>
             <CardTitle>Test-Umgebung</CardTitle>
             <CardDescription>Verwaltung von Testcodes für die Integrationsumgebung</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="mb-4 text-sm">
-              Testcodes werden automatisch im Format <code className="bg-blue-100 px-1.5 py-0.5 rounded">INT_VALID_YYYYMMDD_XXXXX</code> generiert und sind 24 Stunden gültig.
+              Testcodes werden automatisch im Format <code className="bg-[#e6ecf9] px-1.5 py-0.5 rounded">INT_VALID_YYYYMMDD_XXXXX</code> generiert und sind 24 Stunden gültig.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Button 
                 onClick={generateTestCodes} 
                 disabled={generatingCodes} 
-                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+                className="flex items-center gap-2 bg-[#003399] hover:bg-[#00297a]"
               >
                 {generatingCodes ? (
                   <RefreshCw className="h-4 w-4 animate-spin" />
@@ -225,7 +237,7 @@ export default function TestcodesPage() {
                 onClick={cleanupOldTestCodes} 
                 disabled={cleaningCodes} 
                 variant="outline"
-                className="flex items-center gap-2 border-blue-300"
+                className="flex items-center gap-2 border-gray-300 hover:bg-gray-50 hover:text-[#003399]"
               >
                 {cleaningCodes ? (
                   <RefreshCw className="h-4 w-4 animate-spin" />
@@ -238,7 +250,7 @@ export default function TestcodesPage() {
           </CardContent>
         </Card>
         
-        <Card>
+        <Card className="shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span>Testcode Status</span>
@@ -246,7 +258,7 @@ export default function TestcodesPage() {
                 variant="ghost" 
                 size="sm" 
                 onClick={fetchTestCodes}
-                className="h-8 gap-1"
+                className="h-8 gap-1 hover:text-[#003399]"
               >
                 <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Aktualisieren</span>
@@ -276,7 +288,7 @@ export default function TestcodesPage() {
                   disabled={generatingCodes}
                   variant="outline"
                   size="sm"
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 hover:text-[#003399]"
                 >
                   <PlusCircle className="h-4 w-4" />
                   Testcodes generieren
