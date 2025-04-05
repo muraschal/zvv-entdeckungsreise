@@ -61,6 +61,8 @@ export default function TestcodesPage() {
     setGeneratingCodes(true);
     setError(null);
     try {
+      console.log('Testcode-Generierungsprozess gestartet');
+      
       const response = await fetch("/api/admin/testcodes/generate", {
         method: "POST",
         headers: {
@@ -68,17 +70,29 @@ export default function TestcodesPage() {
         },
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Fehler beim Generieren der Testcodes");
+      console.log('Generierungsanfrage abgeschickt, Statuscode:', response.status);
+      
+      const responseText = await response.text();
+      let data;
+      
+      try {
+        // Versuche JSON zu parsen, falls vorhanden
+        data = responseText ? JSON.parse(responseText) : {};
+        console.log('Generierungsantwort erhalten:', data);
+      } catch (parseError) {
+        console.error('Fehler beim Parsen der Antwort:', responseText);
+        throw new Error(`Ungültige Antwort vom Server: ${responseText}`);
       }
 
-      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || `Fehler beim Generieren: ${response.status} ${response.statusText}`);
+      }
+
       await fetchTestCodes(); // Aktualisiere die Liste nach dem Generieren
       
       toast({
         title: "Testcodes generiert",
-        description: `${data.count} neue Testcodes wurden erfolgreich generiert.`,
+        description: `${data.count || 0} neue Testcodes wurden erfolgreich generiert.`,
       });
     } catch (err) {
       console.error("Fehler beim Generieren der Testcodes:", err);
@@ -97,6 +111,8 @@ export default function TestcodesPage() {
     setCleaningCodes(true);
     setError(null);
     try {
+      console.log('Bereinigungsprozess gestartet');
+      
       const response = await fetch("/api/admin/testcodes/cleanup", {
         method: "POST",
         headers: {
@@ -104,17 +120,29 @@ export default function TestcodesPage() {
         },
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Fehler beim Bereinigen der alten Testcodes");
+      console.log('Bereinigungsanfrage abgeschickt, Statuscode:', response.status);
+      
+      const responseText = await response.text();
+      let data;
+      
+      try {
+        // Versuche JSON zu parsen, falls vorhanden
+        data = responseText ? JSON.parse(responseText) : {};
+        console.log('Bereinigungsantwort erhalten:', data);
+      } catch (parseError) {
+        console.error('Fehler beim Parsen der Antwort:', responseText);
+        throw new Error(`Ungültige Antwort vom Server: ${responseText}`);
       }
 
-      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || `Fehler beim Bereinigen: ${response.status} ${response.statusText}`);
+      }
+
       await fetchTestCodes(); // Aktualisiere die Liste nach der Bereinigung
       
       toast({
         title: "Testcodes bereinigt",
-        description: `${data.count} alte Testcodes wurden erfolgreich entfernt.`,
+        description: `${data.count || 0} alte Testcodes wurden erfolgreich entfernt.`,
       });
     } catch (err) {
       console.error("Fehler beim Bereinigen der alten Testcodes:", err);
