@@ -182,6 +182,17 @@ export default function AdminLoginPage() {
                       'Anmelden'
                     )}
                   </Button>
+                  
+                  <div className="text-center text-sm">
+                    <a 
+                      href="/register" 
+                      className="text-blue-600 hover:text-blue-800 hover:underline"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Zum Anmeldeformular für Schulklassen →
+                    </a>
+                  </div>
                 </div>
               </form>
             ) : (
