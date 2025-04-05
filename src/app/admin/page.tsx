@@ -4,10 +4,10 @@ import { useState, useEffect } from 'react';
 import { createBrowserClient } from '@supabase/ssr';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
-import { Download, Search, RefreshCw, LogOut, ChevronDown } from 'lucide-react';
+import { Download, Search, RefreshCw, ChevronRight } from 'lucide-react';
 import ExcelJS from 'exceljs';
 import {
   Table,
@@ -57,12 +57,6 @@ export default function AdminPage() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
 
-  // Funktion zum Formatieren des Datums
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('de-CH') + ' ' + date.toLocaleTimeString('de-CH');
-  };
-
   // Funktion zum Abrufen der Registrierungen
   const fetchRegistrations = async () => {
     setLoading(true);
@@ -91,12 +85,6 @@ export default function AdminPage() {
     } finally {
       setLoading(false);
     }
-  };
-
-  // Abmelden
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.push('/admin/login');
   };
 
   const exportToExcel = async () => {
@@ -211,37 +199,35 @@ export default function AdminPage() {
   );
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
+    <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">ZVV-Entdeckungsreise</h1>
-          <p className="text-muted-foreground">Verwaltung der Anmeldungen</p>
-        </div>
-        <div className="flex space-x-2">
-          <Button variant="outline" onClick={fetchRegistrations} disabled={loading}>
+        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <div className="space-x-2">
+          <Button onClick={fetchRegistrations} disabled={loading} variant="outline" size="sm">
             <RefreshCw className="h-4 w-4 mr-2" />
             Aktualisieren
           </Button>
           <Button 
-            variant="outline" 
-            onClick={() => {
-              exportToExcel().catch(console.error);
-            }}
+            onClick={() => exportToExcel().catch(console.error)}
+            variant="outline"
+            size="sm"
           >
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>
-          <Button variant="outline" onClick={handleLogout}>
-            <LogOut className="h-4 w-4 mr-2" />
-            Abmelden
-          </Button>
         </div>
       </div>
+
+      {error && (
+        <div className="p-4 bg-destructive/10 text-destructive rounded-md">
+          {error}
+        </div>
+      )}
 
       {!loading && !error && (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {Object.entries(getStats()).map(([key, value]) => (
-            <Card key={key} className="bg-white shadow-sm">
+            <Card key={key}>
               <CardContent className="pt-6">
                 <div className="text-2xl font-bold">{value}</div>
                 <div className="text-muted-foreground">
@@ -256,7 +242,7 @@ export default function AdminPage() {
         </div>
       )}
 
-      <Card className="bg-white shadow-sm">
+      <Card>
         <CardHeader>
           <div className="flex justify-between items-center">
             <CardTitle>Anmeldungen</CardTitle>
@@ -291,47 +277,57 @@ export default function AdminPage() {
                     <span className="text-muted-foreground text-sm">{regs.length} Anmeldungen</span>
                   </div>
                   <div className="overflow-x-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead className="w-[180px]">Anmeldedatum</TableHead>
-                          <TableHead className="w-[120px]">Code</TableHead>
-                          <TableHead className="w-[200px]">Schule</TableHead>
-                          <TableHead className="w-[250px]">Kontaktperson</TableHead>
-                          <TableHead className="w-[100px] text-right">Schüler</TableHead>
-                          <TableHead className="w-[100px] text-right">Begleiter</TableHead>
-                          <TableHead className="w-[100px]">Details</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {regs.map((reg) => (
-                          <TableRow key={reg.id}>
-                            <TableCell className="font-medium">
-                              {new Date(reg.created_at).toLocaleDateString('de-CH')}
-                            </TableCell>
-                            <TableCell>{reg.code}</TableCell>
-                            <TableCell>{reg.school}</TableCell>
-                            <TableCell>
-                              <div className="font-medium">{reg.contact_person}</div>
-                              <div className="text-sm text-muted-foreground">{reg.email}</div>
-                            </TableCell>
-                            <TableCell className="text-right">{reg.student_count}</TableCell>
-                            <TableCell className="text-right">{reg.accompanist_count}</TableCell>
-                            <TableCell>
-                              <Button 
-                                variant="ghost" 
-                                size="sm"
-                                onClick={() => setSelectedRegistration(reg)}
-                                className="flex items-center"
-                              >
-                                Details
-                                <ChevronDown className="ml-1 h-4 w-4" />
-                              </Button>
-                            </TableCell>
+                    <div className="min-w-[950px]">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="w-[120px]">Anmeldedatum</TableHead>
+                            <TableHead className="w-[180px]">Code</TableHead>
+                            <TableHead className="w-[180px]">Schule</TableHead>
+                            <TableHead className="w-[200px]">Kontaktperson</TableHead>
+                            <TableHead className="w-[80px] text-right">Schüler</TableHead>
+                            <TableHead className="w-[80px] text-right">Begleiter</TableHead>
+                            <TableHead className="w-[100px]">Details</TableHead>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                        </TableHeader>
+                        <TableBody>
+                          {regs.map((reg) => (
+                            <TableRow key={reg.id}>
+                              <TableCell className="font-medium">
+                                {new Date(reg.created_at).toLocaleDateString('de-CH')}
+                              </TableCell>
+                              <TableCell className="truncate max-w-[180px]" title={reg.code}>
+                                {reg.code}
+                              </TableCell>
+                              <TableCell className="truncate max-w-[180px]" title={reg.school}>
+                                {reg.school}
+                              </TableCell>
+                              <TableCell>
+                                <div className="font-medium truncate max-w-[200px]" title={reg.contact_person}>
+                                  {reg.contact_person}
+                                </div>
+                                <div className="text-sm text-muted-foreground truncate max-w-[200px]" title={reg.email}>
+                                  {reg.email}
+                                </div>
+                              </TableCell>
+                              <TableCell className="text-right">{reg.student_count}</TableCell>
+                              <TableCell className="text-right">{reg.accompanist_count}</TableCell>
+                              <TableCell>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  onClick={() => setSelectedRegistration(reg)}
+                                  className="flex items-center"
+                                >
+                                  Details
+                                  <ChevronRight className="ml-1 h-4 w-4" />
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -341,68 +337,70 @@ export default function AdminPage() {
       </Card>
 
       <Sheet open={!!selectedRegistration} onOpenChange={() => setSelectedRegistration(null)}>
-        <SheetContent>
-          <SheetHeader>
+        <SheetContent className="sm:max-w-md px-6">
+          <SheetHeader className="pb-4 border-b">
             <SheetTitle>Anmeldungsdetails</SheetTitle>
             <SheetDescription>
               Details der Anmeldung von {selectedRegistration?.school}
             </SheetDescription>
           </SheetHeader>
           {selectedRegistration && (
-            <div className="mt-6 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+            <div className="py-6 space-y-8 overflow-y-auto">
+              <div className="grid grid-cols-2 gap-y-6 gap-x-8">
                 <div>
-                  <div className="text-sm font-medium text-muted-foreground">Code</div>
-                  <div>{selectedRegistration.code}</div>
+                  <div className="text-sm font-medium text-muted-foreground mb-1.5">Code</div>
+                  <div className="truncate font-medium" title={selectedRegistration.code}>{selectedRegistration.code}</div>
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-muted-foreground">Anmeldedatum</div>
-                  <div>{new Date(selectedRegistration.created_at).toLocaleDateString('de-CH')}</div>
+                  <div className="text-sm font-medium text-muted-foreground mb-1.5">Anmeldedatum</div>
+                  <div className="font-medium">{new Date(selectedRegistration.created_at).toLocaleDateString('de-CH')}</div>
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-muted-foreground">Schule</div>
-                  <div>{selectedRegistration.school}</div>
+                  <div className="text-sm font-medium text-muted-foreground mb-1.5">Schule</div>
+                  <div className="font-medium">{selectedRegistration.school}</div>
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-muted-foreground">Klasse</div>
-                  <div>{selectedRegistration.class}</div>
+                  <div className="text-sm font-medium text-muted-foreground mb-1.5">Klasse</div>
+                  <div className="font-medium">{selectedRegistration.class}</div>
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-muted-foreground">Kontaktperson</div>
-                  <div>{selectedRegistration.contact_person}</div>
+                  <div className="text-sm font-medium text-muted-foreground mb-1.5">Kontaktperson</div>
+                  <div className="font-medium">{selectedRegistration.contact_person}</div>
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-muted-foreground">E-Mail</div>
-                  <div>{selectedRegistration.email}</div>
+                  <div className="text-sm font-medium text-muted-foreground mb-1.5">E-Mail</div>
+                  <div className="truncate font-medium" title={selectedRegistration.email}>{selectedRegistration.email}</div>
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-muted-foreground">Telefon</div>
-                  <div>{selectedRegistration.phone_number}</div>
+                  <div className="text-sm font-medium text-muted-foreground mb-1.5">Telefon</div>
+                  <div className="font-medium">{selectedRegistration.phone_number}</div>
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-muted-foreground">Reisedatum</div>
-                  <div>{new Date(selectedRegistration.travel_date).toLocaleDateString('de-CH')}</div>
+                  <div className="text-sm font-medium text-muted-foreground mb-1.5">Reisedatum</div>
+                  <div className="font-medium">{new Date(selectedRegistration.travel_date).toLocaleDateString('de-CH')}</div>
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-muted-foreground">Ankunftszeit</div>
-                  <div>{selectedRegistration.arrival_time}</div>
+                  <div className="text-sm font-medium text-muted-foreground mb-1.5">Ankunftszeit</div>
+                  <div className="font-medium">{selectedRegistration.arrival_time}</div>
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-muted-foreground">Anzahl Schüler</div>
-                  <div>{selectedRegistration.student_count}</div>
+                  <div className="text-sm font-medium text-muted-foreground mb-1.5">Anzahl Schüler</div>
+                  <div className="font-medium">{selectedRegistration.student_count}</div>
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-muted-foreground">Anzahl Begleiter</div>
-                  <div>{selectedRegistration.accompanist_count}</div>
+                  <div className="text-sm font-medium text-muted-foreground mb-1.5">Anzahl Begleiter</div>
+                  <div className="font-medium">{selectedRegistration.accompanist_count}</div>
                 </div>
               </div>
               {selectedRegistration.additional_notes && (
                 <div>
-                  <div className="text-sm font-medium text-muted-foreground">Zusätzliche Notizen</div>
-                  <div className="mt-1 text-sm">{selectedRegistration.additional_notes}</div>
+                  <div className="text-sm font-medium text-muted-foreground mb-2">Zusätzliche Anmerkungen</div>
+                  <div className="p-4 bg-muted rounded-md">
+                    {selectedRegistration.additional_notes}
+                  </div>
                 </div>
               )}
-              <div className="pt-4">
+              <div className="pt-4 mt-auto">
                 <SheetClose asChild>
                   <Button className="w-full">Schließen</Button>
                 </SheetClose>
