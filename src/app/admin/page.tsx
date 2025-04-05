@@ -123,35 +123,35 @@ function AdminContent() {
   const [selectedRegistration, setSelectedRegistration] = useState<Registration | null>(null);
   const searchParams = useSearchParams();
 
-  useEffect(() => {
-    const fetchRegistrations = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await fetch('/api/admin/registrations');
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || 'Fehler beim Laden der Anmeldungen');
-        }
-        const data = await response.json();
-        console.log('Geladene Registrierungen:', data.registrations);
-        console.log('Anzahl Registrierungen:', data.registrations.length);
-        
-        // Berechne Gesamtzahl der Schüler und Begleitpersonen
-        const studentCount = data.registrations.reduce((sum: number, reg: Registration) => sum + reg.student_count, 0);
-        const accompanistCount = data.registrations.reduce((sum: number, reg: Registration) => sum + reg.accompanist_count, 0);
-        console.log('Gesamtzahl Schüler:', studentCount);
-        console.log('Gesamtzahl Begleitpersonen:', accompanistCount);
-        
-        setRegistrations(data.registrations || []);
-      } catch (err) {
-        console.error('Fehler beim Laden der Anmeldungen:', err);
-        setError((err as Error).message);
-      } finally {
-        setLoading(false);
+  const fetchRegistrations = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch('/api/admin/registrations');
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Fehler beim Laden der Anmeldungen');
       }
-    };
+      const data = await response.json();
+      console.log('Geladene Registrierungen:', data.registrations);
+      console.log('Anzahl Registrierungen:', data.registrations.length);
+      
+      // Berechne Gesamtzahl der Schüler und Begleitpersonen
+      const studentCount = data.registrations.reduce((sum: number, reg: Registration) => sum + reg.student_count, 0);
+      const accompanistCount = data.registrations.reduce((sum: number, reg: Registration) => sum + reg.accompanist_count, 0);
+      console.log('Gesamtzahl Schüler:', studentCount);
+      console.log('Gesamtzahl Begleitpersonen:', accompanistCount);
+      
+      setRegistrations(data.registrations || []);
+    } catch (err) {
+      console.error('Fehler beim Laden der Anmeldungen:', err);
+      setError((err as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchRegistrations();
 
     const regId = searchParams.get('reg');
@@ -266,6 +266,60 @@ function AdminContent() {
                 </Button>
               </CardFooter>
             </Card>
+          </div>
+          
+          <div className="mt-8">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold tracking-tight">Registrierungen</h2>
+              <div className="flex gap-2">
+                <ExportButton registrations={registrations} />
+                <Button variant="outline" size="sm" className="h-8 gap-1 hover:text-zvv-blue" onClick={() => fetchRegistrations()}>
+                  <RefreshCw className="h-3.5 w-3.5" />
+                  <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Aktualisieren</span>
+                </Button>
+              </div>
+            </div>
+            <div className="border rounded-md">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Code</TableHead>
+                    <TableHead>Schule</TableHead>
+                    <TableHead>Klasse</TableHead>
+                    <TableHead>Schüler</TableHead>
+                    <TableHead>Reisedatum</TableHead>
+                    <TableHead>Anmeldedatum</TableHead>
+                    <TableHead></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {registrations.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={7} className="text-center text-muted-foreground py-6">
+                        Keine Registrierungen gefunden
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    registrations.map((reg) => (
+                      <TableRow key={reg.id} className="cursor-pointer hover:bg-muted/50" onClick={() => setSelectedRegistration(reg)}>
+                        <TableCell className="font-medium">{reg.code}</TableCell>
+                        <TableCell>{reg.school}</TableCell>
+                        <TableCell>{reg.class}</TableCell>
+                        <TableCell>{reg.student_count} (+{reg.accompanist_count})</TableCell>
+                        <TableCell>{new Date(reg.travel_date).toLocaleDateString('de-CH')}</TableCell>
+                        <TableCell>{new Date(reg.created_at).toLocaleDateString('de-CH')}</TableCell>
+                        <TableCell>
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <ChevronRight className="h-4 w-4" />
+                            <span className="sr-only">Details</span>
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
           </div>
           
           <div className="mt-8 space-y-4">
