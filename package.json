@@ -6,7 +6,8 @@
     "dev": "set NODE_NO_WARNINGS=1 && next dev",
     "build": "NEXT_PUBLIC_GIT_COMMIT_DATE=$(git log -1 --format=%cd --date=format:'%d.%m.%y') NEXT_PUBLIC_GIT_COMMIT_SHA=$(git rev-parse --short HEAD) next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "next lint --max-warnings=0",
+    "cache-clean": "rm -rf .next && rm -rf node_modules/.cache",
     "build:widget": "next build && next export -o widget && cp -r .next/static widget/static",
     "build:standalone": "webpack --config webpack.widget.config.js && mkdir -p public && cp dist/zvv-entdeckungsreise-widget.js public/"
   },
@@ -68,5 +69,12 @@
     "typescript": "^5.3.3",
     "webpack": "^5.90.1",
     "webpack-cli": "^5.1.4"
-  }
+  },
+  "engines": {
+    "node": ">=18.17.0"
+  },
+  "cacheDirectories": [
+    "node_modules/.cache",
+    ".next/cache"
+  ]
 }
