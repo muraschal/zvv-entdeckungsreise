@@ -1,20 +1,45 @@
 import { Resend } from 'resend';
 
-// Initialisiere Resend mit dem API-Key aus den Umgebungsvariablen
+// Initialisiere den Resend-Client
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// E-Mail-Absender
+// E-Mail-Konfiguration
 const FROM_EMAIL = {
   from: process.env.EMAIL_FROM || 'noreply@zvv.ch',
-  name: 'Zürcher Verkehrsverbund (ZVV)'
+  name: 'ZVV-Entdeckungsreise'
 };
 
-// Admin-E-Mail-Adresse
-export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'ict@zvv.zh.ch';
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'ict@zvv.zh.ch';
 
-/**
- * Sendet eine Bestätigungs-E-Mail nach erfolgreicher Anmeldung
- */
+// Interface für die E-Mail-Parameter
+interface EmailParams {
+  to: string;
+  school: string;
+  studentCount: number;
+  travelDate: string;
+  code: string;
+  className: string;
+  contactPerson: string;
+  phoneNumber: string;
+  accompanistCount: number;
+  arrivalTime: string;
+}
+
+// Interface für die Admin-Benachrichtigung
+interface AdminNotificationParams {
+  school: string;
+  studentCount: number;
+  travelDate: string;
+  code: string;
+  additionalNotes?: string;
+  className: string;
+  contactPerson: string;
+  phoneNumber: string;
+  accompanistCount: number;
+  arrivalTime: string;
+}
+
+// Funktion zum Senden der Bestätigungs-E-Mail
 export async function sendConfirmationEmail({
   to,
   school,
@@ -26,30 +51,12 @@ export async function sendConfirmationEmail({
   phoneNumber,
   accompanistCount,
   arrivalTime
-}: {
-  to: string;
-  school: string;
-  studentCount: number;
-  travelDate: string;
-  code: string;
-  className: string;
-  contactPerson: string;
-  phoneNumber: string;
-  accompanistCount: number;
-  arrivalTime: string;
-}) {
+}: EmailParams) {
   try {
-    // Formatiere das Datum für die Anzeige
-    const formattedDate = new Date(travelDate).toLocaleDateString('de-CH', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
-
     const { data, error } = await resend.emails.send({
       from: `${FROM_EMAIL.name} <${FROM_EMAIL.from}>`,
       to: [to],
-      reply_to: 'schulinfo@zvv.ch',
+      replyTo: 'schulinfo@zvv.ch',
       subject: `Ticketbestellung ZVV-Entdeckungsreise`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
@@ -59,27 +66,22 @@ export async function sendConfirmationEmail({
             <h2 style="margin-top: 0;">Ihre Bestelldaten:</h2>
             <ul style="padding-left: 20px;">
               <li><strong>Schule:</strong> ${school}</li>
-              <li><strong>Kontaktperson:</strong> ${contactPerson}</li>
-              <li><strong>Telefonnummer:</strong> ${phoneNumber}</li>
               <li><strong>Klasse:</strong> ${className}</li>
+              <li><strong>Kontaktperson:</strong> ${contactPerson}</li>
+              <li><strong>Telefon:</strong> ${phoneNumber}</li>
               <li><strong>Anzahl Schüler:</strong> ${studentCount}</li>
-              <li><strong>Anzahl Begleitpersonen:</strong> ${accompanistCount}</li>
-              <li><strong>Gewünschtes Reisedatum:</strong> ${formattedDate}</li>
-              <li><strong>Ankunftszeit:</strong> ${arrivalTime} Uhr</li>
-              <li><strong>Bestellnummer:</strong> ${code}</li>
+              <li><strong>Anzahl Begleiter:</strong> ${accompanistCount}</li>
+              <li><strong>Reisedatum:</strong> ${new Date(travelDate).toLocaleDateString('de-CH')}</li>
+              <li><strong>Ankunftszeit:</strong> ${arrivalTime}</li>
+              <li><strong>Code:</strong> ${code}</li>
             </ul>
           </div>
           
-          <p>Wir wünschen Ihrer Klasse schon jetzt viel Spass auf der ZVV-Entdeckungsreise.</p>
+          <p>Bei Fragen können Sie uns jederzeit kontaktieren.</p>
           
-          <p>Haben Sie Fragen zur ZVV-Entdeckungsreise? Gerne sind wir auf schulinfo@zvv.ch für Sie da.</p>
-          
-          <p style="margin-top: 30px;">
-            Freundliche Grüsse<br>
-            ZVV Schulinfo
-          </p>
+          <p>Mit freundlichen Grüssen<br>Ihr ZVV-Team</p>
         </div>
-      `,
+      `
     });
 
     if (error) {
@@ -94,9 +96,7 @@ export async function sendConfirmationEmail({
   }
 }
 
-/**
- * Sendet eine Benachrichtigungs-E-Mail an den Administrator
- */
+// Funktion zum Senden der Admin-Benachrichtigung
 export async function sendAdminNotificationEmail({
   school,
   studentCount,
@@ -108,72 +108,46 @@ export async function sendAdminNotificationEmail({
   phoneNumber,
   accompanistCount,
   arrivalTime
-}: {
-  school: string;
-  studentCount: number;
-  travelDate: string;
-  code: string;
-  additionalNotes?: string;
-  className: string;
-  contactPerson: string;
-  phoneNumber: string;
-  accompanistCount: number;
-  arrivalTime: string;
-}) {
+}: AdminNotificationParams) {
   try {
-    // Formatiere das Datum für die Anzeige
-    const formattedDate = new Date(travelDate).toLocaleDateString('de-CH', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
-
     const { data, error } = await resend.emails.send({
       from: `${FROM_EMAIL.name} <${FROM_EMAIL.from}>`,
       to: [ADMIN_EMAIL],
-      reply_to: 'schulinfo@zvv.ch',
       subject: `Neue Anmeldung zur ZVV-Entdeckungsreise: ${school}`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-          <p>Neue Anmeldung zur ZVV-Entdeckungsreise: ${school}</p>
+          <h2>Neue Anmeldung zur ZVV-Entdeckungsreise</h2>
           
           <div style="background-color: #f5f5f5; padding: 20px; border-radius: 5px; margin: 20px 0;">
-            <h2 style="margin-top: 0;">Ihre Bestelldaten:</h2>
+            <h3 style="margin-top: 0;">Anmeldedaten:</h3>
             <ul style="padding-left: 20px;">
               <li><strong>Schule:</strong> ${school}</li>
-              <li><strong>Kontaktperson:</strong> ${contactPerson}</li>
-              <li><strong>Telefonnummer:</strong> ${phoneNumber}</li>
               <li><strong>Klasse:</strong> ${className}</li>
+              <li><strong>Kontaktperson:</strong> ${contactPerson}</li>
+              <li><strong>Telefon:</strong> ${phoneNumber}</li>
+              <li><strong>E-Mail:</strong> ${contactPerson}</li>
               <li><strong>Anzahl Schüler:</strong> ${studentCount}</li>
-              <li><strong>Anzahl Begleitpersonen:</strong> ${accompanistCount}</li>
-              <li><strong>Gewünschtes Reisedatum:</strong> ${formattedDate}</li>
-              <li><strong>Ankunftszeit:</strong> ${arrivalTime} Uhr</li>
-              <li><strong>Bestellnummer:</strong> ${code}</li>
+              <li><strong>Anzahl Begleiter:</strong> ${accompanistCount}</li>
+              <li><strong>Reisedatum:</strong> ${new Date(travelDate).toLocaleDateString('de-CH')}</li>
+              <li><strong>Ankunftszeit:</strong> ${arrivalTime}</li>
+              <li><strong>Code:</strong> ${code}</li>
+              ${additionalNotes ? `<li><strong>Zusätzliche Notizen:</strong> ${additionalNotes}</li>` : ''}
             </ul>
           </div>
           
-          <p>Zusätzliche Notizen: ${additionalNotes || 'Keine Notizen'}</p>
-          
-          <p>Wir wünschen Ihrer Klasse schon jetzt viel Spass auf der ZVV-Entdeckungsreise.</p>
-          
-          <p>Haben Sie Fragen zur ZVV-Entdeckungsreise? Gerne sind wir auf schulinfo@zvv.ch für Sie da.</p>
-          
-          <p style="margin-top: 30px;">
-            Freundliche Grüsse<br>
-            ZVV Schulinfo
-          </p>
+          <p>Diese E-Mail wurde automatisch generiert.</p>
         </div>
-      `,
+      `
     });
 
     if (error) {
-      console.error('Fehler beim Senden der E-Mail:', error);
+      console.error('Fehler beim Senden der Admin-Benachrichtigung:', error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error('Unerwarteter Fehler beim Senden der E-Mail:', error);
+    console.error('Unerwarteter Fehler beim Senden der Admin-Benachrichtigung:', error);
     return { success: false, error };
   }
 }
