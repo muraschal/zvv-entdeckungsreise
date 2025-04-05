@@ -21,13 +21,14 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL('https://ticketcode.zvv.ch'),
   title: 'ZVV-Entdeckungsreise | Ticketcode Validierung',
-  description: 'API für die Validierung und das Einlösen von Ticketcodes für die ZVV-Entdeckungsreise',
-  icons: {
-    icon: [
-      { url: '/icon.svg', type: 'image/svg+xml' },
-    ],
-    apple: { url: '/apple-icon.svg', type: 'image/svg+xml' },
-  },
+  description: 'Validiere deinen Ticketcode für die ZVV-Entdeckungsreise',
+  icons: [
+    { rel: 'icon', url: '/favicon.ico' },
+    { rel: 'icon', url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+    { rel: 'icon', url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    { rel: 'apple-touch-icon', url: '/apple-touch-icon.png', sizes: '180x180' },
+    { rel: 'manifest', url: '/site.webmanifest' }
+  ],
   robots: {
     index: false,
     follow: false,
