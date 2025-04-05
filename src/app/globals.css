@@ -45,26 +45,37 @@
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
 
+    /* ZVV Farbschema */
+    --zvv-blue: 219 100% 30%; /* #003399 */
+    --zvv-light-blue: 220 70% 94%; /* #e6ecf9 */
+    --zvv-dark-blue: 219 100% 24%; /* #00297a */
+    --zvv-green: 164 84% 37%; /* #0fb87a */
+    --zvv-red: 0 84% 60%; /* #f03e3e */
+    --zvv-black: 0 0% 0%; /* #000000 */
+    
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
 
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
+    --primary: var(--zvv-blue);
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: var(--zvv-light-blue);
+    --secondary-foreground: var(--zvv-blue);
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: var(--zvv-light-blue);
+    --accent-foreground: var(--zvv-blue);
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: var(--zvv-red);
     --destructive-foreground: 210 40% 98%;
+
+    --success: var(--zvv-green);
+    --success-foreground: 210 40% 98%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
@@ -83,7 +94,7 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
+    --primary: var(--zvv-blue);
     --primary-foreground: 222.2 47.4% 11.2%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -95,7 +106,7 @@
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: var(--zvv-red);
     --destructive-foreground: 210 40% 98%;
 
     --border: 217.2 32.6% 17.5%;
@@ -272,5 +283,60 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* ZVV-spezifische Klassen */
+@layer components {
+  .bg-zvv-blue {
+    background-color: hsl(var(--zvv-blue));
+  }
+  
+  .bg-zvv-light-blue {
+    background-color: hsl(var(--zvv-light-blue));
+  }
+  
+  .bg-zvv-dark-blue {
+    background-color: hsl(var(--zvv-dark-blue));
+  }
+  
+  .bg-zvv-green {
+    background-color: hsl(var(--zvv-green));
+  }
+  
+  .bg-zvv-red {
+    background-color: hsl(var(--zvv-red));
+  }
+  
+  .text-zvv-blue {
+    color: hsl(var(--zvv-blue));
+  }
+  
+  .text-zvv-dark-blue {
+    color: hsl(var(--zvv-dark-blue));
+  }
+  
+  .text-zvv-green {
+    color: hsl(var(--zvv-green));
+  }
+  
+  .text-zvv-red {
+    color: hsl(var(--zvv-red));
+  }
+  
+  .border-zvv-blue {
+    border-color: hsl(var(--zvv-blue));
+  }
+  
+  .border-zvv-light-blue {
+    border-color: hsl(var(--zvv-light-blue));
+  }
+  
+  .hover\:bg-zvv-dark-blue:hover {
+    background-color: hsl(var(--zvv-dark-blue));
+  }
+  
+  .hover\:text-zvv-blue:hover {
+    color: hsl(var(--zvv-blue));
   }
 } 

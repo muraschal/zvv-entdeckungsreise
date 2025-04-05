@@ -188,12 +188,12 @@ const AdminPage = () => {
                 <CardHeader className="pb-2">
                   <CardTitle className="text-xl flex items-center justify-between">
                     <span>Anmeldungen</span>
-                    <Users className="h-5 w-5 text-[#003399]" />
+                    <Users className="h-5 w-5 text-zvv-blue" />
                   </CardTitle>
                   <CardDescription>Gesamtzahl der Anmeldungen</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-4xl font-bold text-[#003399]">{registrations.length}</div>
+                  <div className="text-4xl font-bold text-zvv-blue">{registrations.length}</div>
                   <p className="text-sm text-muted-foreground mt-1">Letzte am {registrations.length > 0 ? new Date(registrations[0].created_at).toLocaleDateString('de-CH') : '-'}</p>
                 </CardContent>
               </Card>
@@ -202,12 +202,12 @@ const AdminPage = () => {
                 <CardHeader className="pb-2">
                   <CardTitle className="text-xl flex items-center justify-between">
                     <span>Schüler</span>
-                    <School className="h-5 w-5 text-[#003399]" />
+                    <School className="h-5 w-5 text-zvv-blue" />
                   </CardTitle>
                   <CardDescription>Gesamtzahl der angemeldeten Schüler</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-4xl font-bold text-[#003399]">
+                  <div className="text-4xl font-bold text-zvv-blue">
                     {registrations.reduce((sum, reg) => sum + reg.student_count, 0)}
                   </div>
                   <p className="text-sm text-muted-foreground mt-1">Inklusive {registrations.reduce((sum, reg) => sum + reg.accompanist_count, 0)} Begleitpersonen</p>
@@ -218,7 +218,7 @@ const AdminPage = () => {
                 <CardHeader className="pb-2">
                   <CardTitle className="text-xl flex items-center justify-between">
                     <span>Nächste Reise</span>
-                    <Calendar className="h-5 w-5 text-[#003399]" />
+                    <Calendar className="h-5 w-5 text-zvv-blue" />
                   </CardTitle>
                   <CardDescription>Datum der nächsten Entdeckungsreise</CardDescription>
                 </CardHeader>
@@ -231,7 +231,7 @@ const AdminPage = () => {
                     if (upcomingTrips.length === 0) {
                       return (
                         <>
-                          <div className="text-4xl font-bold text-[#003399]">-</div>
+                          <div className="text-4xl font-bold text-zvv-blue">-</div>
                           <p className="text-sm text-muted-foreground mt-1">Keine bevorstehenden Reisen</p>
                         </>
                       )
@@ -239,7 +239,7 @@ const AdminPage = () => {
                     
                     return (
                       <>
-                        <div className="text-4xl font-bold text-[#003399]">
+                        <div className="text-4xl font-bold text-zvv-blue">
                           {new Date(upcomingTrips[0].travel_date).toLocaleDateString('de-CH')}
                         </div>
                         <p className="text-sm text-muted-foreground mt-1">{upcomingTrips[0].school}, {upcomingTrips[0].student_count} Schüler</p>

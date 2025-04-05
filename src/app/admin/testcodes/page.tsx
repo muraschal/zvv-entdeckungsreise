@@ -183,14 +183,14 @@ export default function TestcodesPage() {
     
     if (status === "unused") {
       return (
-        <Badge variant="outline" className="bg-[#e6ecf9] text-[#003399] border-[#c7d4ee] flex items-center gap-1">
+        <Badge variant="outline" className="bg-zvv-light-blue text-zvv-blue border-zvv-light-blue flex items-center gap-1">
           <CheckCircle2 className="h-3.5 w-3.5" />
           <span>Verfügbar</span>
         </Badge>
       );
     } else {
       return (
-        <Badge variant="outline" className="bg-[#e6ecf9] text-[#003399] border-[#c7d4ee] flex items-center gap-1">
+        <Badge variant="outline" className="bg-zvv-light-blue text-zvv-blue border-zvv-light-blue flex items-center gap-1">
           <XCircle className="h-3.5 w-3.5" />
           <span>Verwendet</span>
         </Badge>
@@ -218,13 +218,13 @@ export default function TestcodesPage() {
           </CardHeader>
           <CardContent>
             <p className="mb-4 text-sm">
-              Testcodes werden automatisch im Format <code className="bg-[#e6ecf9] px-1.5 py-0.5 rounded">INT_VALID_YYYYMMDD_XXXXX</code> generiert und sind 24 Stunden gültig.
+              Testcodes werden automatisch im Format <code className="bg-zvv-light-blue px-1.5 py-0.5 rounded">INT_VALID_YYYYMMDD_XXXXX</code> generiert und sind 24 Stunden gültig.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Button 
                 onClick={generateTestCodes} 
                 disabled={generatingCodes} 
-                className="flex items-center gap-2 bg-[#003399] hover:bg-[#00297a]"
+                className="flex items-center gap-2 bg-zvv-blue hover:bg-zvv-dark-blue"
               >
                 {generatingCodes ? (
                   <RefreshCw className="h-4 w-4 animate-spin" />
@@ -237,7 +237,7 @@ export default function TestcodesPage() {
                 onClick={cleanupOldTestCodes} 
                 disabled={cleaningCodes} 
                 variant="outline"
-                className="flex items-center gap-2 border-gray-300 hover:bg-gray-50 hover:text-[#003399]"
+                className="flex items-center gap-2 border-gray-300 hover:bg-gray-50 hover:text-zvv-blue"
               >
                 {cleaningCodes ? (
                   <RefreshCw className="h-4 w-4 animate-spin" />
@@ -258,7 +258,7 @@ export default function TestcodesPage() {
                 variant="ghost" 
                 size="sm" 
                 onClick={fetchTestCodes}
-                className="h-8 gap-1 hover:text-[#003399]"
+                className="h-8 gap-1 hover:text-zvv-blue"
               >
                 <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Aktualisieren</span>
@@ -288,7 +288,7 @@ export default function TestcodesPage() {
                   disabled={generatingCodes}
                   variant="outline"
                   size="sm"
-                  className="flex items-center gap-2 hover:text-[#003399]"
+                  className="flex items-center gap-2 hover:text-zvv-blue"
                 >
                   <PlusCircle className="h-4 w-4" />
                   Testcodes generieren
