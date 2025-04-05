@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -115,7 +115,8 @@ const ExportButton = ({ registrations }: { registrations: Registration[] }) => {
   );
 };
 
-const AdminPage = () => {
+// AdminContent Komponente für den Inhalt der Admin-Seite
+function AdminContent() {
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -285,80 +286,107 @@ const AdminPage = () => {
       )}
       
       <Sheet open={!!selectedRegistration} onOpenChange={() => setSelectedRegistration(null)}>
-        <SheetContent className="sm:max-w-md px-6">
-          <SheetHeader className="pb-4 border-b">
-            <SheetTitle>Anmeldungsdetails</SheetTitle>
-            <SheetDescription>
-              Details der Anmeldung von {selectedRegistration?.school}
-            </SheetDescription>
+        <SheetContent className="sm:max-w-xl">
+          <SheetHeader>
+            <SheetTitle>Registrierungsdetails</SheetTitle>
+            <SheetDescription>Details zur Anmeldung</SheetDescription>
           </SheetHeader>
           {selectedRegistration && (
-            <div className="py-6 space-y-8 overflow-y-auto">
-              <div className="grid grid-cols-2 gap-y-6 gap-x-8">
-                <div>
-                  <div className="text-sm font-medium text-muted-foreground mb-1.5">Code</div>
-                  <div className="truncate font-medium" title={selectedRegistration.code}>{selectedRegistration.code}</div>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-muted-foreground mb-1.5">Anmeldedatum</div>
-                  <div className="font-medium">{new Date(selectedRegistration.created_at).toLocaleDateString('de-CH')}</div>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-muted-foreground mb-1.5">Schule</div>
-                  <div className="font-medium">{selectedRegistration.school}</div>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-muted-foreground mb-1.5">Klasse</div>
-                  <div className="font-medium">{selectedRegistration.class}</div>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-muted-foreground mb-1.5">Kontaktperson</div>
-                  <div className="font-medium">{selectedRegistration.contact_person}</div>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-muted-foreground mb-1.5">E-Mail</div>
-                  <div className="truncate font-medium" title={selectedRegistration.email}>{selectedRegistration.email}</div>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-muted-foreground mb-1.5">Telefon</div>
-                  <div className="font-medium">{selectedRegistration.phone_number}</div>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-muted-foreground mb-1.5">Reisedatum</div>
-                  <div className="font-medium">{new Date(selectedRegistration.travel_date).toLocaleDateString('de-CH')}</div>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-muted-foreground mb-1.5">Ankunftszeit</div>
-                  <div className="font-medium">{selectedRegistration.arrival_time}</div>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-muted-foreground mb-1.5">Anzahl Schüler</div>
-                  <div className="font-medium">{selectedRegistration.student_count}</div>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-muted-foreground mb-1.5">Anzahl Begleiter</div>
-                  <div className="font-medium">{selectedRegistration.accompanist_count}</div>
-                </div>
-              </div>
-              {selectedRegistration.additional_notes && (
-                <div>
-                  <div className="text-sm font-medium text-muted-foreground mb-2">Zusätzliche Anmerkungen</div>
-                  <div className="p-4 bg-muted rounded-md">
-                    {selectedRegistration.additional_notes}
+            <div className="mt-6 space-y-6">
+              <div className="space-y-1">
+                <h3 className="text-sm font-medium">Grundinformationen</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <p className="text-muted-foreground">Code</p>
+                    <p className="font-medium">{selectedRegistration.code}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Anmeldedatum</p>
+                    <p className="font-medium">
+                      {new Date(selectedRegistration.created_at).toLocaleDateString('de-CH')}
+                    </p>
                   </div>
                 </div>
-              )}
-              <div className="pt-4 mt-auto">
-                <SheetClose asChild>
-                  <Button className="w-full">Schließen</Button>
-                </SheetClose>
               </div>
+              
+              <div className="space-y-1">
+                <h3 className="text-sm font-medium">Schulinformationen</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="col-span-2">
+                    <p className="text-muted-foreground">Schule</p>
+                    <p className="font-medium">{selectedRegistration.school}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Klasse</p>
+                    <p className="font-medium">{selectedRegistration.class}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Kontaktperson</p>
+                    <p className="font-medium">{selectedRegistration.contact_person}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">E-Mail</p>
+                    <p className="font-medium break-all">{selectedRegistration.email}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Telefon</p>
+                    <p className="font-medium">{selectedRegistration.phone_number}</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="space-y-1">
+                <h3 className="text-sm font-medium">Reiseinformationen</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <p className="text-muted-foreground">Reisedatum</p>
+                    <p className="font-medium">
+                      {new Date(selectedRegistration.travel_date).toLocaleDateString('de-CH')}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Ankunftszeit</p>
+                    <p className="font-medium">
+                      {selectedRegistration.arrival_time.slice(0, 5)} Uhr
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Anzahl Schüler</p>
+                    <p className="font-medium">{selectedRegistration.student_count}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Anzahl Begleitpersonen</p>
+                    <p className="font-medium">{selectedRegistration.accompanist_count}</p>
+                  </div>
+                </div>
+              </div>
+              
+              {selectedRegistration.additional_notes && (
+                <div className="space-y-1">
+                  <h3 className="text-sm font-medium">Anmerkungen</h3>
+                  <p className="text-sm border p-3 rounded-md bg-muted/50 whitespace-pre-wrap">
+                    {selectedRegistration.additional_notes}
+                  </p>
+                </div>
+              )}
             </div>
           )}
+          <div className="mt-6">
+            <SheetClose asChild>
+              <Button variant="outline" className="w-full">Schließen</Button>
+            </SheetClose>
+          </div>
         </SheetContent>
       </Sheet>
     </div>
   );
-};
+}
 
-export default AdminPage; 
+// AdminPage Komponente mit Suspense
+export default function AdminPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center p-6"><div className="h-8 w-8 rounded-full border-2 border-t-zvv-blue animate-spin"></div></div>}>
+      <AdminContent />
+    </Suspense>
+  );
+} 
