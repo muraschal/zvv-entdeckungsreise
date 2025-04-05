@@ -134,6 +134,14 @@ const AdminPage = () => {
         }
         const data = await response.json();
         console.log('Geladene Registrierungen:', data.registrations);
+        console.log('Anzahl Registrierungen:', data.registrations.length);
+        
+        // Berechne Gesamtzahl der Schüler und Begleitpersonen
+        const studentCount = data.registrations.reduce((sum: number, reg: Registration) => sum + reg.student_count, 0);
+        const accompanistCount = data.registrations.reduce((sum: number, reg: Registration) => sum + reg.accompanist_count, 0);
+        console.log('Gesamtzahl Schüler:', studentCount);
+        console.log('Gesamtzahl Begleitpersonen:', accompanistCount);
+        
         setRegistrations(data.registrations || []);
       } catch (err) {
         console.error('Fehler beim Laden der Anmeldungen:', err);
@@ -178,9 +186,13 @@ const AdminPage = () => {
                 <Users className="h-5 w-5 text-zvv-blue" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-zvv-blue">{registrations.length}</div>
+                <div className="text-2xl font-bold text-zvv-blue" data-testid="registrations-count">
+                  {registrations.length}
+                </div>
                 <p className="text-xs text-muted-foreground">
-                  Letzte am {registrations.length > 0 ? new Date(registrations[0].created_at).toLocaleDateString('de-CH') : '-'}
+                  {registrations.length > 0 
+                    ? `Letzte am ${new Date(registrations[0].created_at).toLocaleDateString('de-CH')}` 
+                    : 'Keine Registrierungen vorhanden'}
                 </p>
               </CardContent>
               <CardFooter className="pt-0">
@@ -196,7 +208,7 @@ const AdminPage = () => {
                 <School className="h-5 w-5 text-zvv-blue" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-zvv-blue">
+                <div className="text-2xl font-bold text-zvv-blue" data-testid="student-count">
                   {registrations.reduce((sum, reg) => sum + reg.student_count, 0)}
                 </div>
                 <p className="text-xs text-muted-foreground">
@@ -222,11 +234,12 @@ const AdminPage = () => {
                     .sort((a, b) => new Date(a.travel_date).getTime() - new Date(b.travel_date).getTime());
                   
                   console.log('Kommende Fahrten:', upcomingTrips);
+                  console.log('Anzahl kommende Fahrten:', upcomingTrips.length);
                   
                   if (upcomingTrips.length === 0) {
                     return (
                       <>
-                        <div className="text-2xl font-bold text-zvv-blue">-</div>
+                        <div className="text-2xl font-bold text-zvv-blue" data-testid="upcoming-trips-empty">-</div>
                         <p className="text-xs text-muted-foreground">
                           Keine bevorstehenden Reisen
                         </p>
@@ -236,7 +249,7 @@ const AdminPage = () => {
                   
                   return (
                     <>
-                      <div className="text-2xl font-bold text-zvv-blue">
+                      <div className="text-2xl font-bold text-zvv-blue" data-testid="upcoming-trips-date">
                         {new Date(upcomingTrips[0].travel_date).toLocaleDateString('de-CH')}
                       </div>
                       <p className="text-xs text-muted-foreground">
