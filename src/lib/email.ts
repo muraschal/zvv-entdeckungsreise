@@ -9,7 +9,7 @@ const FROM_EMAIL = {
   name: 'ZVV-Entdeckungsreise'
 };
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'ict@zvv.zh.ch';
+export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'ict@zvv.zh.ch';
 
 // Interface für die E-Mail-Parameter
 interface EmailParams {
