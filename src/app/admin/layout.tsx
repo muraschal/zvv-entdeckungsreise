@@ -34,6 +34,9 @@ export default function AdminLayout({
   const pathname = usePathname();
   const router = useRouter();
 
+  // Überprüfe, ob der aktuelle Pfad die Login- oder Reset-Password-Seite ist
+  const isAuthPage = pathname === '/admin/login' || pathname === '/admin/reset-password';
+
   // Vereinfachter Loading-State ohne Router-Events
   const [loading, setLoading] = useState(false);
 
@@ -41,6 +44,11 @@ export default function AdminLayout({
     // Einfache Weiterleitung auf Login-Seite
     router.push('/admin/login');
   };
+  
+  // Wenn es die Login-Seite oder Reset-Password-Seite ist, zeige nur den Inhalt ohne Navigation
+  if (isAuthPage) {
+    return <>{children}</>;
+  }
   
   return (
     <div className="min-h-screen bg-background flex">
