@@ -49,8 +49,8 @@
     --zvv-blue: 219 100% 30%; /* #003399 */
     --zvv-light-blue: 220 70% 94%; /* #e6ecf9 */
     --zvv-dark-blue: 219 100% 24%; /* #00297a */
-    --zvv-green: 164 84% 37%; /* #0fb87a */
-    --zvv-red: 0 84% 60%; /* #f03e3e */
+    --zvv-green: 142 64% 38%; /* #24b164 */
+    --zvv-red: 0 100% 50%; /* #FF0000 */
     --zvv-black: 0 0% 0%; /* #000000 */
     
     --card: 0 0% 100%;
@@ -338,5 +338,36 @@ body {
   
   .hover\:text-zvv-blue:hover {
     color: hsl(var(--zvv-blue));
+  }
+
+  /* ZVV Button Stile */
+  .btn-zvv-primary {
+    @apply bg-zvv-blue text-white hover:bg-zvv-dark-blue rounded-md py-2 px-4 font-medium transition-colors;
+  }
+
+  .btn-zvv-secondary {
+    @apply bg-white text-zvv-blue border border-zvv-blue hover:bg-zvv-light-blue rounded-md py-2 px-4 font-medium transition-colors;
+  }
+
+  .btn-zvv-outline {
+    @apply bg-transparent text-zvv-blue border border-gray-300 hover:border-zvv-blue hover:bg-zvv-light-blue rounded-md py-2 px-4 transition-colors;
+  }
+
+  /* ZVV Formulare */
+  .input-zvv {
+    @apply border border-gray-300 rounded-md py-2 px-3 focus:border-zvv-blue focus:ring-1 focus:ring-zvv-blue focus:outline-none;
+  }
+
+  /* ZVV Tabellen */
+  .table-zvv th {
+    @apply text-left p-3 bg-zvv-light-blue text-zvv-blue font-medium text-sm border-b border-gray-200;
+  }
+
+  .table-zvv td {
+    @apply p-3 border-b border-gray-200 text-sm;
+  }
+
+  .table-zvv tr:hover {
+    @apply bg-gray-50;
   }
 } 

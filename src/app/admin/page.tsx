@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
-import { Download, Search, RefreshCw, ChevronRight, Users, Calendar, School, FileSpreadsheet } from 'lucide-react';
+import { Download, Search, RefreshCw, ChevronRight, Users, Calendar, School, FileSpreadsheet, Key } from 'lucide-react';
 import ExcelJS from 'exceljs';
 import {
   Table,
@@ -155,233 +155,104 @@ const AdminPage = () => {
   }, [searchParams]);
 
   return (
-    <div className="container mx-auto p-6 space-y-8">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold tracking-tight">Admin Dashboard</h1>
-        <UserButton />
+    <div className="container mx-auto p-6">
+      <h1 className="text-3xl font-bold tracking-tight mb-8">Admin Dashboard</h1>
+      
+      <div className="grid gap-6 md:grid-cols-3">
+        <Card className="shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Registrierungen</CardTitle>
+            <Users className="h-5 w-5 text-zvv-blue" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-zvv-blue">{registrations.length}</div>
+            <p className="text-xs text-muted-foreground">
+              Letzte am {registrations.length > 0 ? new Date(registrations[0].created_at).toLocaleDateString('de-CH') : '-'}
+            </p>
+          </CardContent>
+          <CardFooter className="pt-0">
+            <Button variant="outline" size="sm" className="btn-zvv-outline">
+              Details
+            </Button>
+          </CardFooter>
+        </Card>
+        
+        <Card className="shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Schulen</CardTitle>
+            <School className="h-5 w-5 text-zvv-blue" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-zvv-blue">
+              {registrations.reduce((sum, reg) => sum + reg.student_count, 0)}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Inklusive {registrations.reduce((sum, reg) => sum + reg.accompanist_count, 0)} Begleitpersonen
+            </p>
+          </CardContent>
+          <CardFooter className="pt-0">
+            <Button variant="outline" size="sm" className="btn-zvv-outline">
+              Details
+            </Button>
+          </CardFooter>
+        </Card>
+        
+        <Card className="shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Kommende Fahrten</CardTitle>
+            <Calendar className="h-5 w-5 text-zvv-blue" />
+          </CardHeader>
+          <CardContent>
+            {(() => {
+              const upcomingTrips = registrations
+                .filter(reg => new Date(reg.travel_date) >= new Date())
+                .sort((a, b) => new Date(a.travel_date).getTime() - new Date(b.travel_date).getTime());
+              
+              if (upcomingTrips.length === 0) {
+                return (
+                  <>
+                    <div className="text-2xl font-bold text-zvv-blue">-</div>
+                    <p className="text-xs text-muted-foreground">
+                      Keine bevorstehenden Reisen
+                    </p>
+                  </>
+                )
+              }
+              
+              return (
+                <>
+                  <div className="text-2xl font-bold text-zvv-blue">
+                    {new Date(upcomingTrips[0].travel_date).toLocaleDateString('de-CH')}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {upcomingTrips[0].school}, {upcomingTrips[0].student_count} Schüler
+                  </p>
+                </>
+              )
+            })()}
+          </CardContent>
+          <CardFooter className="pt-0">
+            <Button variant="outline" size="sm" className="btn-zvv-outline">
+              Details
+            </Button>
+          </CardFooter>
+        </Card>
       </div>
       
-      {loading ? (
-        <div className="space-y-4">
-          <Skeleton className="h-10 w-full max-w-md" />
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <Skeleton className="h-32 w-full" />
-            <Skeleton className="h-32 w-full" />
-            <Skeleton className="h-32 w-full" />
-          </div>
-          <Skeleton className="h-64 w-full" />
-        </div>
-      ) : error ? (
-        <div className="p-4 mt-4 bg-destructive/10 text-destructive rounded-md">
-          {error}
-        </div>
-      ) : (
-        <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full max-w-md grid-cols-2 mb-8">
-            <TabsTrigger value="overview">Übersicht</TabsTrigger>
-            <TabsTrigger value="registrations">Anmeldungen</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="overview" className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              <Card className="bg-white border shadow-sm">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-xl flex items-center justify-between">
-                    <span>Anmeldungen</span>
-                    <Users className="h-5 w-5 text-zvv-blue" />
-                  </CardTitle>
-                  <CardDescription>Gesamtzahl der Anmeldungen</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-4xl font-bold text-zvv-blue">{registrations.length}</div>
-                  <p className="text-sm text-muted-foreground mt-1">Letzte am {registrations.length > 0 ? new Date(registrations[0].created_at).toLocaleDateString('de-CH') : '-'}</p>
-                </CardContent>
-              </Card>
-              
-              <Card className="bg-white border shadow-sm">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-xl flex items-center justify-between">
-                    <span>Schüler</span>
-                    <School className="h-5 w-5 text-zvv-blue" />
-                  </CardTitle>
-                  <CardDescription>Gesamtzahl der angemeldeten Schüler</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-4xl font-bold text-zvv-blue">
-                    {registrations.reduce((sum, reg) => sum + reg.student_count, 0)}
-                  </div>
-                  <p className="text-sm text-muted-foreground mt-1">Inklusive {registrations.reduce((sum, reg) => sum + reg.accompanist_count, 0)} Begleitpersonen</p>
-                </CardContent>
-              </Card>
-              
-              <Card className="bg-white border shadow-sm">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-xl flex items-center justify-between">
-                    <span>Nächste Reise</span>
-                    <Calendar className="h-5 w-5 text-zvv-blue" />
-                  </CardTitle>
-                  <CardDescription>Datum der nächsten Entdeckungsreise</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {(() => {
-                    const upcomingTrips = registrations
-                      .filter(reg => new Date(reg.travel_date) >= new Date())
-                      .sort((a, b) => new Date(a.travel_date).getTime() - new Date(b.travel_date).getTime());
-                    
-                    if (upcomingTrips.length === 0) {
-                      return (
-                        <>
-                          <div className="text-4xl font-bold text-zvv-blue">-</div>
-                          <p className="text-sm text-muted-foreground mt-1">Keine bevorstehenden Reisen</p>
-                        </>
-                      )
-                    }
-                    
-                    return (
-                      <>
-                        <div className="text-4xl font-bold text-zvv-blue">
-                          {new Date(upcomingTrips[0].travel_date).toLocaleDateString('de-CH')}
-                        </div>
-                        <p className="text-sm text-muted-foreground mt-1">{upcomingTrips[0].school}, {upcomingTrips[0].student_count} Schüler</p>
-                      </>
-                    )
-                  })()}
-                </CardContent>
-              </Card>
+      <div className="mt-8 space-y-4">
+        <h2 className="text-xl font-bold tracking-tight">Admin-Tools</h2>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <Link href="/admin/testcodes" className="flex items-center p-4 border rounded-md shadow-sm hover:bg-zvv-light-blue hover:border-zvv-blue transition-colors">
+            <div className="mr-4 rounded-md bg-zvv-light-blue p-2">
+              <Key className="h-5 w-5 text-zvv-blue" />
             </div>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl">Neueste Anmeldungen</CardTitle>
-                <CardDescription>Die 5 neuesten Anmeldungen im System</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="overflow-x-auto">
-                  <table className="w-full min-w-[950px] text-sm">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="text-left font-medium p-2 w-[180px]">Code</th>
-                        <th className="text-left font-medium p-2 w-[220px]">Schule</th>
-                        <th className="text-left font-medium p-2 w-[120px]">Anmeldedatum</th>
-                        <th className="text-left font-medium p-2 w-[120px]">Reisedatum</th>
-                        <th className="text-left font-medium p-2 w-[80px]">Schüler</th>
-                        <th className="text-right font-medium p-2 w-[100px]"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {registrations.slice(0, 5).map((reg) => (
-                        <tr key={reg.id} className="border-b hover:bg-muted/40">
-                          <td className="p-2 truncate max-w-[180px]" title={reg.code}>{reg.code}</td>
-                          <td className="p-2 truncate max-w-[220px]" title={reg.school}>{reg.school}</td>
-                          <td className="p-2">{new Date(reg.created_at).toLocaleDateString('de-CH')}</td>
-                          <td className="p-2">{new Date(reg.travel_date).toLocaleDateString('de-CH')}</td>
-                          <td className="p-2">{reg.student_count}</td>
-                          <td className="p-2 text-right">
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              asChild
-                            >
-                              <Link href={`/admin?reg=${reg.id}`} className="flex items-center">
-                                Details
-                                <ChevronRight className="ml-1 h-4 w-4" />
-                              </Link>
-                            </Button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </CardContent>
-              <CardFooter className="flex justify-between">
-                <Button variant="outline" size="sm" asChild>
-                  <Link href="/admin/testcodes">
-                    Testcodes verwalten
-                  </Link>
-                </Button>
-                <Button variant="default" size="sm" asChild>
-                  <Link href="#registrations">
-                    Alle anzeigen
-                  </Link>
-                </Button>
-              </CardFooter>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="registrations" className="space-y-6" id="registrations">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl flex items-center justify-between">
-                  <span>Anmeldungen</span>
-                  <div className="flex space-x-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-8 gap-1"
-                      onClick={() => window.location.reload()}
-                    >
-                      <RefreshCw className="h-3.5 w-3.5" />
-                      <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Aktualisieren</span>
-                    </Button>
-                    <ExportButton registrations={registrations} />
-                  </div>
-                </CardTitle>
-                <CardDescription>Alle Anmeldungen für die ZVV-Entdeckungsreise</CardDescription>
-                <div className="mt-4 w-full max-w-sm">
-                  <div className="relative">
-                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Suche nach Schule, Code..."
-                      className="pl-8"
-                    />
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="overflow-x-auto">
-                  <table className="w-full min-w-[950px] text-sm">
-                    <thead>
-                      <tr className="border-b bg-muted/50">
-                        <th className="text-left font-medium p-2 w-[180px]">Code</th>
-                        <th className="text-left font-medium p-2 w-[220px]">Schule</th>
-                        <th className="text-left font-medium p-2 w-[180px]">Kontaktperson</th>
-                        <th className="text-left font-medium p-2 w-[120px]">Anmeldedatum</th>
-                        <th className="text-left font-medium p-2 w-[120px]">Reisedatum</th>
-                        <th className="text-left font-medium p-2 w-[80px]">Schüler</th>
-                        <th className="text-right font-medium p-2 w-[100px]"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {registrations.map((reg) => (
-                        <tr key={reg.id} className="border-b hover:bg-muted/40">
-                          <td className="p-2 truncate max-w-[180px]" title={reg.code}>{reg.code}</td>
-                          <td className="p-2 truncate max-w-[220px]" title={reg.school}>{reg.school}</td>
-                          <td className="p-2 truncate max-w-[180px]" title={reg.contact_person}>{reg.contact_person}</td>
-                          <td className="p-2">{new Date(reg.created_at).toLocaleDateString('de-CH')}</td>
-                          <td className="p-2">{new Date(reg.travel_date).toLocaleDateString('de-CH')}</td>
-                          <td className="p-2">{reg.student_count}</td>
-                          <td className="p-2 text-right">
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              onClick={() => setSelectedRegistration(reg)}
-                              className="flex items-center"
-                            >
-                              Details
-                              <ChevronRight className="ml-1 h-4 w-4" />
-                            </Button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      )}
+            <div>
+              <h3 className="font-semibold">Testcode-Management</h3>
+              <p className="text-sm text-muted-foreground">Testcodes für INT-Umgebung verwalten</p>
+            </div>
+          </Link>
+        </div>
+      </div>
       
       <Sheet open={!!selectedRegistration} onOpenChange={() => setSelectedRegistration(null)}>
         <SheetContent className="sm:max-w-md px-6">

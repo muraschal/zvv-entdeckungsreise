@@ -201,7 +201,7 @@ export default function TestcodesPage() {
   return (
     <div className="container mx-auto p-6 space-y-8">
       <div className="flex items-center space-x-2">
-        <Button variant="outline" size="sm" asChild>
+        <Button variant="outline" size="sm" asChild className="hover:bg-zvv-light-blue">
           <Link href="/admin" className="flex items-center gap-1">
             <ArrowLeft className="h-4 w-4" />
             <span>Zurück</span>
@@ -224,12 +224,12 @@ export default function TestcodesPage() {
               <Button 
                 onClick={generateTestCodes} 
                 disabled={generatingCodes} 
-                className="flex items-center gap-2 bg-zvv-blue hover:bg-zvv-dark-blue"
+                className="btn-zvv-primary"
               >
                 {generatingCodes ? (
-                  <RefreshCw className="h-4 w-4 animate-spin" />
+                  <RefreshCw className="h-4 w-4 animate-spin mr-2" />
                 ) : (
-                  <PlusCircle className="h-4 w-4" />
+                  <PlusCircle className="h-4 w-4 mr-2" />
                 )}
                 Neue Testcodes generieren
               </Button>
@@ -237,12 +237,12 @@ export default function TestcodesPage() {
                 onClick={cleanupOldTestCodes} 
                 disabled={cleaningCodes} 
                 variant="outline"
-                className="flex items-center gap-2 border-gray-300 hover:bg-gray-50 hover:text-zvv-blue"
+                className="btn-zvv-outline"
               >
                 {cleaningCodes ? (
-                  <RefreshCw className="h-4 w-4 animate-spin" />
+                  <RefreshCw className="h-4 w-4 animate-spin mr-2" />
                 ) : (
-                  <Trash2 className="h-4 w-4" />
+                  <Trash2 className="h-4 w-4 mr-2" />
                 )}
                 Alte Codes bereinigen
               </Button>
@@ -288,34 +288,34 @@ export default function TestcodesPage() {
                   disabled={generatingCodes}
                   variant="outline"
                   size="sm"
-                  className="flex items-center gap-2 hover:text-zvv-blue"
+                  className="hover:text-zvv-blue"
                 >
-                  <PlusCircle className="h-4 w-4" />
+                  <PlusCircle className="h-4 w-4 mr-2" />
                   Testcodes generieren
                 </Button>
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[700px] text-sm">
+                <table className="w-full min-w-[700px] table-zvv">
                   <thead>
-                    <tr className="border-b bg-muted/50">
-                      <th className="text-left font-medium p-2 w-[250px]">Code</th>
-                      <th className="text-left font-medium p-2 w-[100px]">Status</th>
-                      <th className="text-left font-medium p-2 w-[150px]">Erstellt am</th>
-                      <th className="text-left font-medium p-2 w-[150px]">Gültig bis</th>
+                    <tr>
+                      <th className="w-[250px]">Code</th>
+                      <th className="w-[100px]">Status</th>
+                      <th className="w-[150px]">Erstellt am</th>
+                      <th className="w-[150px]">Gültig bis</th>
                     </tr>
                   </thead>
                   <tbody>
                     {testCodes.map((code) => (
-                      <tr key={code.code} className="border-b hover:bg-muted/40">
-                        <td className="p-2 font-mono text-xs truncate max-w-[250px]" title={code.code}>
+                      <tr key={code.code}>
+                        <td className="font-mono text-xs truncate max-w-[250px]" title={code.code}>
                           {code.code}
                         </td>
-                        <td className="p-2">
+                        <td>
                           {getStatusBadge(code.status, code.expires_at)}
                         </td>
-                        <td className="p-2">{new Date(code.created_at).toLocaleString('de-CH')}</td>
-                        <td className="p-2">{new Date(code.expires_at).toLocaleString('de-CH')}</td>
+                        <td>{new Date(code.created_at).toLocaleString('de-CH')}</td>
+                        <td>{new Date(code.expires_at).toLocaleString('de-CH')}</td>
                       </tr>
                     ))}
                   </tbody>

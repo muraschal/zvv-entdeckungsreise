@@ -1,256 +1,227 @@
 'use client';
 
-import { ReactNode, useEffect, useState } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
+import { ReactNode } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { createBrowserClient } from '@supabase/ssr';
-import { 
-  Home, 
-  TicketCheck, 
-  LogOut, 
-  Menu, 
+import {
+  Menu,
   X,
+  Home,
+  LogOut,
+  TicketCheck,
   AlertTriangle,
-  InfoIcon
+  BookOpen
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import Image from 'next/image';
+import { cn } from '@/lib/utils';
 
 interface AdminLayoutProps {
   children: ReactNode;
 }
 
-export default function AdminLayout({ children }: AdminLayoutProps) {
+const navItems = [
+  { label: 'Dashboard', href: '/admin', icon: Home },
+  { label: 'Testcodes', href: '/admin/testcodes', icon: BookOpen },
+];
+
+export default function AdminLayout({
+  children,
+}: AdminLayoutProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
   const pathname = usePathname();
   const router = useRouter();
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
-
+  // Loading state to handle transitions
+  const [loading, setLoading] = useState(false);
+  
+  // Detect route changes to show loading state
   useEffect(() => {
-    const checkSession = async () => {
-      setLoading(true);
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error) throw error;
-        
-        if (session) {
-          setIsAuthenticated(true);
-        } else {
-          // Nur zur Login-Seite weiterleiten, wenn wir nicht bereits dort sind
-          if (!pathname?.includes('/admin/login')) {
-            router.push('/admin/login');
-          }
-        }
-      } catch (error) {
-        console.error('Fehler beim Prüfen der Authentifizierung:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    const handleStart = () => setLoading(true);
+    const handleComplete = () => setLoading(false);
 
-    checkSession();
-  }, [pathname]);
+    router.events?.on?.('routeChangeStart', handleStart);
+    router.events?.on?.('routeChangeComplete', handleComplete);
+    router.events?.on?.('routeChangeError', handleComplete);
+
+    return () => {
+      router.events?.off?.('routeChangeStart', handleStart);
+      router.events?.off?.('routeChangeComplete', handleComplete);
+      router.events?.off?.('routeChangeError', handleComplete);
+    };
+  }, [router]);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    // Einfache Weiterleitung auf Login-Seite
     router.push('/admin/login');
   };
-
-  // Login-Seite benötigt keinen Admin-Layout
-  if (pathname?.includes('/admin/login') || pathname?.includes('/admin/reset-password')) {
-    return <>{children}</>;
-  }
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="w-8 h-8 border-t-2 border-zvv-blue border-solid rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return null; // Nichts rendern, wird zur Login-Seite weitergeleitet
-  }
-
-  const navItems = [
-    { 
-      href: '/admin', 
-      label: 'Dashboard', 
-      icon: <Home className="w-5 h-5 mr-3" />,
-      isActive: pathname === '/admin'
-    },
-    { 
-      href: '/admin/testcodes', 
-      label: 'Testcodes', 
-      icon: <TicketCheck className="w-5 h-5 mr-3" />,
-      isActive: pathname?.includes('/admin/testcodes')
-    },
-  ];
-
+  
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Sidebar für Desktop */}
-      <aside className="hidden md:flex md:flex-col md:w-64 bg-white shadow-md">
-        <div className="p-5 bg-zvv-blue text-white">
-          <div className="flex items-center space-x-2">
-            <div className="relative w-8 h-8 overflow-hidden">
+    <div className="min-h-screen bg-background flex">
+      {/* Sidebar for desktop */}
+      <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
+        <div className="flex flex-col flex-1 bg-zvv-blue">
+          <div className="flex items-center justify-between h-16 px-4 bg-zvv-dark-blue">
+            <div className="flex items-center">
               <Image 
-                src="/apple-touch-icon.png" 
+                src="/zvv-logo-white.svg" 
+                width={80} 
+                height={40} 
                 alt="ZVV Logo" 
-                width={32} 
-                height={32} 
-                priority
-                className="object-contain"
+                className="h-8 w-auto" 
               />
+              <span className="ml-2 text-white font-semibold">Admin</span>
             </div>
-            <h1 className="text-xl font-bold">ZVV Admin</h1>
           </div>
-        </div>
-        
-        <nav className="flex-1 py-6 px-3 space-y-1">
-          {navItems.map((item) => (
-            <Link 
-              key={item.href} 
-              href={item.href}
-              className={`flex items-center px-4 py-3 rounded-md transition-colors ${
-                item.isActive 
-                  ? 'bg-zvv-light-blue text-zvv-blue font-medium' 
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              {item.icon}
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-        
-        <div className="p-4 mt-auto">
-          <Button 
-            variant="outline" 
-            className="w-full justify-start text-gray-600 border-gray-200 hover:bg-gray-100 hover:text-gray-800"
-            onClick={handleLogout}
-          >
-            <LogOut className="w-4 h-4 mr-2" />
-            Abmelden
-          </Button>
-        </div>
-        
-        <div className="p-4 text-xs text-gray-500 bg-gray-50">
-          <div className="flex items-center">
-            <InfoIcon className="w-3 h-3 mr-1" />
-            <span>
-              ZVV-Entdeckungsreise v2.0
-            </span>
-          </div>
-        </div>
-      </aside>
-
-      {/* Mobile Header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-20 bg-zvv-blue text-white px-4 py-3 flex justify-between items-center shadow-md">
-        <div className="flex items-center space-x-2">
-          <div className="relative w-6 h-6 overflow-hidden">
-            <Image 
-              src="/apple-touch-icon.png" 
-              alt="ZVV Logo" 
-              width={24} 
-              height={24} 
-              className="object-contain"
-            />
-          </div>
-          <h1 className="text-lg font-bold">ZVV Admin</h1>
-        </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-white hover:bg-zvv-dark-blue"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </Button>
-      </div>
-
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 z-10 bg-gray-800 bg-opacity-75" onClick={() => setIsMobileMenuOpen(false)}>
-          <div className="fixed left-0 top-0 bottom-0 w-64 bg-white shadow-lg" onClick={(e) => e.stopPropagation()}>
-            <div className="p-5 bg-zvv-blue text-white">
-              <div className="flex items-center space-x-2">
-                <div className="relative w-8 h-8 overflow-hidden">
-                  <Image 
-                    src="/apple-touch-icon.png" 
-                    alt="ZVV Logo" 
-                    width={32} 
-                    height={32} 
-                    className="object-contain"
-                  />
-                </div>
-                <h1 className="text-xl font-bold">ZVV Admin</h1>
-              </div>
-            </div>
-            
-            <nav className="py-6 px-3 space-y-1">
-              {navItems.map((item) => (
-                <Link 
-                  key={item.href} 
-                  href={item.href}
-                  className={`flex items-center px-4 py-3 rounded-md transition-colors ${
-                    item.isActive 
-                      ? 'bg-zvv-light-blue text-zvv-blue font-medium' 
-                      : 'text-gray-600 hover:bg-gray-100'
-                  }`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {item.icon}
-                  {item.label}
-                </Link>
-              ))}
+          <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
+            <nav className="flex-1 px-2 space-y-1">
+              {navItems.map((item) => {
+                const isActive = pathname === item.href;
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      "group flex items-center px-2 py-2 text-sm font-medium rounded-md",
+                      isActive ? "bg-zvv-light-blue text-zvv-blue" : "text-white hover:bg-zvv-dark-blue"
+                    )}
+                  >
+                    <Icon 
+                      className={cn(
+                        "mr-3 flex-shrink-0 h-5 w-5",
+                        isActive ? "text-zvv-blue" : "text-white"
+                      )} 
+                    />
+                    {item.label}
+                  </Link>
+                );
+              })}
             </nav>
-            
-            <div className="p-4 mt-auto">
-              <Button 
-                variant="outline" 
-                className="w-full justify-start text-gray-600 border-gray-200 hover:bg-gray-100 hover:text-gray-800"
-                onClick={handleLogout}
-              >
-                <LogOut className="w-4 h-4 mr-2" />
-                Abmelden
-              </Button>
-            </div>
-            
-            <div className="p-4 text-xs text-gray-500 bg-gray-50">
-              <div className="flex items-center">
-                <InfoIcon className="w-3 h-3 mr-1" />
-                <span>
-                  ZVV-Entdeckungsreise v2.0
-                </span>
+            <div className="px-2 mt-6 mb-2">
+              <div className="flex items-center px-2 py-2">
+                <LogOut className="mr-3 flex-shrink-0 h-5 w-5 text-white/80" />
+                <button 
+                  onClick={handleLogout}
+                  className="text-white/90 text-sm hover:text-white focus:outline-none"
+                >
+                  Abmelden
+                </button>
               </div>
             </div>
+          </div>
+          <div className="p-2 text-xs text-white/60 text-center">
+            Version 1.0.0
+          </div>
+        </div>
+      </div>
+      
+      {/* Mobile header */}
+      <div className="md:hidden flex items-center justify-between h-16 bg-zvv-blue px-4">
+        <div className="flex items-center">
+          <button
+            onClick={() => setIsMobileMenuOpen(true)}
+            className="text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+          >
+            <Menu className="h-6 w-6" />
+          </button>
+          <Image 
+            src="/zvv-logo-white.svg" 
+            width={80} 
+            height={40} 
+            alt="ZVV Logo" 
+            className="ml-2 h-8 w-auto" 
+          />
+        </div>
+        <div>
+          {/* Platzhalter für UserButton */}
+        </div>
+      </div>
+      
+      {/* Mobile sidebar */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 flex z-40 md:hidden">
+          <div className="fixed inset-0 bg-gray-600 bg-opacity-75" onClick={() => setIsMobileMenuOpen(false)}></div>
+          <div className="relative flex-1 flex flex-col max-w-xs w-full bg-zvv-blue">
+            <div className="absolute top-0 right-0 -mr-12 pt-2">
+              <button
+                type="button"
+                className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <span className="sr-only">Sidebar schließen</span>
+                <X className="h-6 w-6 text-white" />
+              </button>
+            </div>
+            <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
+              <div className="flex-shrink-0 flex items-center px-4">
+                <Image 
+                  src="/zvv-logo-white.svg" 
+                  width={80} 
+                  height={40} 
+                  alt="ZVV Logo" 
+                  className="h-8 w-auto" 
+                />
+                <span className="ml-2 text-white font-semibold">Admin</span>
+              </div>
+              <nav className="mt-5 px-2 space-y-1">
+                {navItems.map((item) => {
+                  const isActive = pathname === item.href;
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={cn(
+                        "group flex items-center px-2 py-2 text-base font-medium rounded-md",
+                        isActive ? "bg-zvv-light-blue text-zvv-blue" : "text-white hover:bg-zvv-dark-blue"
+                      )}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <Icon 
+                        className={cn(
+                          "mr-4 flex-shrink-0 h-6 w-6",
+                          isActive ? "text-zvv-blue" : "text-white"
+                        )} 
+                      />
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </nav>
+            </div>
+            <div className="flex-shrink-0 flex border-t border-white/10 p-4">
+              <div className="flex items-center w-full">
+                <LogOut className="h-6 w-6 text-white/80" />
+                <button 
+                  onClick={handleLogout}
+                  className="ml-3 flex-1 flex items-center text-white/90 text-sm hover:text-white focus:outline-none"
+                >
+                  Abmelden
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="flex-shrink-0 w-14">
+            {/* Force sidebar to shrink to fit close icon */}
           </div>
         </div>
       )}
-
-      {/* Main Content */}
-      <main className="flex-1 overflow-y-auto p-4 md:p-6 pt-16 md:pt-6">
-        {process.env.VERCEL_ENV === 'preview' && (
-          <Alert className="mb-4 border-amber-300 bg-amber-50 text-amber-800">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertTitle>INT-Umgebung</AlertTitle>
-            <AlertDescription>
-              Dies ist die Integrationsumgebung. Alle Änderungen betreffen nur Testdaten.
-            </AlertDescription>
-          </Alert>
-        )}
-        {children}
-      </main>
+      
+      {/* Main content */}
+      <div className="md:pl-64 flex flex-col flex-1">
+        <main className="flex-1">
+          {loading ? (
+            <div className="flex items-center justify-center h-screen">
+              <div className="h-8 w-8 rounded-full border-2 border-t-zvv-blue animate-spin"></div>
+            </div>
+          ) : (
+            children
+          )}
+        </main>
+      </div>
     </div>
   );
 } 
