@@ -14,6 +14,10 @@ if (!supabaseKey) {
 }
 
 // Erstelle den Supabase-Client
-const supabase = createClient<Database>(supabaseUrl, supabaseKey);
+const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
+  auth: {
+    persistSession: false
+  }
+});
 
 export default supabase; 

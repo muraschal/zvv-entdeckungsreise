@@ -25,6 +25,8 @@ export async function middleware(req: NextRequest) {
             value,
             ...options,
             path: '/',
+            sameSite: 'lax',
+            secure: process.env.NODE_ENV === 'production'
           });
         },
         remove: (name, options) => {
@@ -33,6 +35,7 @@ export async function middleware(req: NextRequest) {
             value: '',
             ...options,
             path: '/',
+            maxAge: -1
           });
         },
       },
