@@ -126,21 +126,106 @@
   }
 }
 
-/* ZVV-spezifische Stile */
-.zvv-blue {
-  color: #003399;
-}
+/* ZVV-spezifische Klassen */
+@layer components {
+  .bg-zvv-blue {
+    background-color: hsl(var(--zvv-blue));
+  }
+  
+  .bg-zvv-light-blue {
+    background-color: hsl(var(--zvv-light-blue));
+  }
+  
+  .bg-zvv-dark-blue {
+    background-color: hsl(var(--zvv-dark-blue));
+  }
+  
+  .bg-zvv-green {
+    background-color: hsl(var(--zvv-green));
+  }
+  
+  .bg-zvv-red {
+    background-color: hsl(var(--zvv-red));
+  }
+  
+  .text-zvv-blue {
+    color: hsl(var(--zvv-blue));
+  }
+  
+  .text-zvv-light-blue {
+    color: hsl(var(--zvv-light-blue));
+  }
+  
+  .text-zvv-dark-blue {
+    color: hsl(var(--zvv-dark-blue));
+  }
+  
+  .text-zvv-green {
+    color: hsl(var(--zvv-green));
+  }
+  
+  .text-zvv-red {
+    color: hsl(var(--zvv-red));
+  }
+  
+  .border-zvv-blue {
+    border-color: hsl(var(--zvv-blue));
+  }
+  
+  .border-zvv-light-blue {
+    border-color: hsl(var(--zvv-light-blue));
+  }
+  
+  .hover\:bg-zvv-light-blue:hover {
+    background-color: hsl(var(--zvv-light-blue));
+  }
+  
+  .hover\:bg-zvv-dark-blue:hover {
+    background-color: hsl(var(--zvv-dark-blue));
+  }
+  
+  .hover\:text-zvv-blue:hover {
+    color: hsl(var(--zvv-blue));
+  }
 
-.zvv-red {
-  color: #FF0000;
-}
+  .hover\:border-zvv-blue:hover {
+    border-color: hsl(var(--zvv-blue));
+  }
 
-.bg-zvv-blue {
-  background-color: #003399;
-}
+  /* ZVV Button Stile */
+  .btn-zvv-primary {
+    @apply bg-zvv-blue text-white hover:bg-zvv-dark-blue rounded-md py-2 px-4 font-medium transition-colors flex items-center gap-2;
+  }
 
-.bg-zvv-red {
-  background-color: #FF0000;
+  .btn-zvv-secondary {
+    @apply bg-white text-zvv-blue border border-zvv-blue hover:bg-zvv-light-blue rounded-md py-2 px-4 font-medium transition-colors flex items-center gap-2;
+  }
+
+  .btn-zvv-outline {
+    @apply bg-transparent text-zvv-blue border border-gray-300 hover:border-zvv-blue hover:bg-zvv-light-blue rounded-md py-2 px-4 transition-colors flex items-center gap-2;
+  }
+
+  /* ZVV Formulare */
+  .input-zvv {
+    @apply border border-gray-300 rounded-md py-2 px-3 focus:border-zvv-blue focus:ring-1 focus:ring-zvv-blue focus:outline-none;
+  }
+
+  /* ZVV Tabellen */
+  .table-zvv {
+    @apply w-full border-collapse text-left text-sm;
+  }
+
+  .table-zvv th {
+    @apply text-left p-3 bg-zvv-light-blue text-zvv-blue font-medium border-b border-gray-200;
+  }
+
+  .table-zvv td {
+    @apply p-3 border-b border-gray-200;
+  }
+
+  .table-zvv tr:hover {
+    @apply bg-gray-50;
+  }
 }
 
 /* Login Screen Hintergrund */

@@ -34,24 +34,8 @@ export default function AdminLayout({
   const pathname = usePathname();
   const router = useRouter();
 
-  // Loading state to handle transitions
+  // Vereinfachter Loading-State ohne Router-Events
   const [loading, setLoading] = useState(false);
-  
-  // Detect route changes to show loading state
-  useEffect(() => {
-    const handleStart = () => setLoading(true);
-    const handleComplete = () => setLoading(false);
-
-    router.events?.on?.('routeChangeStart', handleStart);
-    router.events?.on?.('routeChangeComplete', handleComplete);
-    router.events?.on?.('routeChangeError', handleComplete);
-
-    return () => {
-      router.events?.off?.('routeChangeStart', handleStart);
-      router.events?.off?.('routeChangeComplete', handleComplete);
-      router.events?.off?.('routeChangeError', handleComplete);
-    };
-  }, [router]);
 
   const handleLogout = async () => {
     // Einfache Weiterleitung auf Login-Seite
