@@ -170,7 +170,7 @@ export default function TestcodesPage() {
         <h1 className="text-3xl font-bold tracking-tight">Testcode Management</h1>
       </div>
       
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="space-y-6">
         <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200 shadow-sm">
           <CardHeader>
             <CardTitle>Test-Umgebung</CardTitle>
