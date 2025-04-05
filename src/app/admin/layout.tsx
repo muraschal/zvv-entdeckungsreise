@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ReactNode } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -50,7 +50,7 @@ export default function AdminLayout({
           <div className="flex items-center justify-between h-16 px-4 bg-zvv-dark-blue">
             <div className="flex items-center">
               <Image 
-                src="/zvv-logo-white.svg" 
+                src="/zvv-logo-white.png" 
                 width={80} 
                 height={40} 
                 alt="ZVV Logo" 
@@ -112,7 +112,7 @@ export default function AdminLayout({
             <Menu className="h-6 w-6" />
           </button>
           <Image 
-            src="/zvv-logo-white.svg" 
+            src="/zvv-logo-white.png" 
             width={80} 
             height={40} 
             alt="ZVV Logo" 
@@ -142,7 +142,7 @@ export default function AdminLayout({
             <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
               <div className="flex-shrink-0 flex items-center px-4">
                 <Image 
-                  src="/zvv-logo-white.svg" 
+                  src="/zvv-logo-white.png" 
                   width={80} 
                   height={40} 
                   alt="ZVV Logo" 
