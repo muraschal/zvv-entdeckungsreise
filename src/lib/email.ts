@@ -49,7 +49,7 @@ export async function sendConfirmationEmail({
     const { data, error } = await resend.emails.send({
       from: `${FROM_EMAIL.name} <${FROM_EMAIL.from}>`,
       to: [to],
-      replyTo: 'schulinfo@zvv.ch',
+      reply_to: 'schulinfo@zvv.ch',
       subject: `Ticketbestellung ZVV-Entdeckungsreise`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
@@ -131,7 +131,7 @@ export async function sendAdminNotificationEmail({
     const { data, error } = await resend.emails.send({
       from: `${FROM_EMAIL.name} <${FROM_EMAIL.from}>`,
       to: [ADMIN_EMAIL],
-      replyTo: 'schulinfo@zvv.ch',
+      reply_to: 'schulinfo@zvv.ch',
       subject: `Neue Anmeldung zur ZVV-Entdeckungsreise: ${school}`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">

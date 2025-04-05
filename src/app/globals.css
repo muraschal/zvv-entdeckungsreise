@@ -147,6 +147,21 @@
   min-height: 100vh;
 }
 
+/* Integration-Umgebung Overlay */
+.integration-overlay {
+  background-image: 
+    linear-gradient(
+      to bottom,
+      rgba(255, 0, 0, 0.85),
+      rgba(255, 0, 0, 0.95)
+    ),
+    url('/images/zvv-background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+}
+
 /* Bestehende Stile beibehalten */
 body {
   color: rgb(var(--foreground-rgb));
