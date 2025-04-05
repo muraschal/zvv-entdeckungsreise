@@ -27,11 +27,12 @@ export const metadata: Metadata = {
     { rel: 'icon', url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
     { rel: 'icon', url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
     { rel: 'apple-touch-icon', url: '/apple-touch-icon.png', sizes: '180x180' },
-    { rel: 'manifest', url: '/site.webmanifest' }
+    { rel: 'manifest', url: '/site.webmanifest' },
+    { rel: 'manifest', url: '/manifest.json' }
   ],
   robots: {
     index: false,
-    follow: false,
+    follow: true,
     nocache: true,
     googleBot: {
       index: false,
