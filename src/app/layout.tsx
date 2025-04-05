@@ -2,6 +2,7 @@ import './globals.css';
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { Analytics } from "@vercel/analytics/react";
+import { VersionInfo } from '@/components/VersionInfo';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -77,6 +78,7 @@ export default function RootLayout({
     <html lang="de">
       <body className={inter.className}>
         {children}
+        <VersionInfo />
         <Analytics />
       </body>
     </html>
