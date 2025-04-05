@@ -22,6 +22,9 @@ const config: Config = {
     },
   },
   plugins: [require("tailwindcss-animate")],
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
 };
 
 export default config; 

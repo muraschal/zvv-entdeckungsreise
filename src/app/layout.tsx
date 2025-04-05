@@ -1,11 +1,19 @@
 import './globals.css';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { Analytics } from "@vercel/analytics/react";
 
 const inter = Inter({ subsets: ['latin'] });
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  themeColor: '#003399',
+};
+
 export const metadata: Metadata = {
+  metadataBase: new URL('https://ticketcode.zvv.ch'),
   title: 'ZVV Ticketcode-Validierung',
   description: 'API für die Validierung und das Einlösen von Ticketcodes für die ZVV-Entdeckungsreise',
   icons: {
@@ -46,12 +54,6 @@ export const metadata: Metadata = {
     description: 'API für die Validierung und das Einlösen von Ticketcodes für die ZVV-Entdeckungsreise',
     images: ['/images/zvv-logo.png'],
   },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-  },
-  themeColor: '#003399',
   manifest: '/manifest.json',
   keywords: ['ZVV', 'Ticketcode', 'Validierung', 'Entdeckungsreise', 'API'],
   authors: [{ name: 'ZVV' }],

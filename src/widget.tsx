@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { ZVVEntdeckungsreiseForm } from './components/ZVVEntdeckungsreiseForm';
 
 // Aktuelle Version und Build-Datum ausgeben
@@ -10,32 +10,32 @@ const formattedTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.g
 const gitHash = process.env.GITHUB_SHA || '84449bf';
 console.log(`ZVV-Entdeckungsreise Widget v${version} | Build: ${gitHash} | ${formattedDate} - ${formattedTime}`);
 
-// Funktion zum Initialisieren des Widgets
-window.initZVVEntdeckungsreiseWidget = (containerId: string, options = {}) => {
-  const container = document.getElementById(containerId);
-  if (!container) {
-    console.error(`Container mit ID "${containerId}" nicht gefunden.`);
-    return;
-  }
+interface Config {
+  apiBaseUrl: string;
+}
 
-  // Optionen mit Standardwerten
-  const config = {
-    apiBaseUrl: options.apiBaseUrl || 'https://entdeckungsreise.zvv.ch',
-    ...options
-  };
-
-  // Widget rendern
-  ReactDOM.render(
-    <React.StrictMode>
-      <ZVVEntdeckungsreiseForm apiBaseUrl={config.apiBaseUrl} />
-    </React.StrictMode>,
-    container
-  );
-};
-
-// TypeScript-Deklaration für das globale Window-Objekt
 declare global {
   interface Window {
-    initZVVEntdeckungsreiseWidget: (containerId: string, options?: any) => void;
+    ZVVEntdeckungsreiseWidget: {
+      init: (config: Config) => void;
+    };
   }
-} 
+}
+
+// Widget initialisieren
+window.ZVVEntdeckungsreiseWidget = {
+  init: (config: Config) => {
+    // Container erstellen
+    const container = document.createElement('div');
+    container.id = 'zvv-entdeckungsreise-widget';
+    document.body.appendChild(container);
+
+    // Widget rendern
+    const root = createRoot(container);
+    root.render(
+      <React.StrictMode>
+        <ZVVEntdeckungsreiseForm apiBaseUrl={config.apiBaseUrl} />
+      </React.StrictMode>
+    );
+  },
+}; 
