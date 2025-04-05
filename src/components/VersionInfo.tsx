@@ -5,14 +5,11 @@ interface VersionInfoProps {
   className?: string;
 }
 
-export function VersionInfo({ className }: VersionInfoProps) {
-  const today = new Date();
-  const formattedDate = today.toLocaleDateString('de-CH', {
-    day: '2-digit',
-    month: '2-digit',
-    year: '2-digit'
-  });
+// Das Build-Datum wird zur Build-Zeit gesetzt
+const BUILD_DATE = process.env.NEXT_PUBLIC_BUILD_DATE || '15.02.24';
+const GIT_COMMIT_DATE = process.env.NEXT_PUBLIC_GIT_COMMIT_DATE || BUILD_DATE;
 
+export function VersionInfo({ className }: VersionInfoProps) {
   return (
     <div className={cn(
       'fixed bottom-2 right-2 bg-white/80 backdrop-blur-sm rounded-lg shadow-sm px-3 py-2 flex flex-col gap-1 border border-gray-200',
@@ -21,7 +18,7 @@ export function VersionInfo({ className }: VersionInfoProps) {
       <div className="flex items-center gap-2">
         <Info className="w-4 h-4 text-gray-400" />
         <div className="text-xs font-medium text-gray-600">
-          Integration | {formattedDate}
+          Integration | {GIT_COMMIT_DATE}
         </div>
       </div>
       <div className="text-[10px] text-gray-500 pl-6">

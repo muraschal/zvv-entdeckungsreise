@@ -4,7 +4,7 @@
   "description": "Code-Validierung für die ZVV-Entdeckungsreise mit Supabase & Zapier",
   "scripts": {
     "dev": "set NODE_NO_WARNINGS=1 && next dev",
-    "build": "next build",
+    "build": "NEXT_PUBLIC_GIT_COMMIT_DATE=$(git log -1 --format=%cd --date=format:'%d.%m.%y') next build",
     "start": "next start",
     "lint": "next lint",
     "build:widget": "next build && next export -o widget && cp -r .next/static widget/static",
