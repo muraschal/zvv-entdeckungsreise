@@ -22,7 +22,7 @@ export function VersionInfo({ className }: VersionInfoProps) {
         </div>
       </div>
       <div className="text-[10px] text-gray-500 pl-6">
-        Next.js 14.1.0 • Supabase SSR 0.6.1 • Resend 4.2.0
+        Next.js 15.2.4 • Supabase SSR 0.6.1 • Resend 4.2.0
       </div>
     </div>
   );
