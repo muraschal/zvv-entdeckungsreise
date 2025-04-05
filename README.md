@@ -434,6 +434,26 @@ Ein vollständiges Beispiel für die Integration findest du in der Datei `exampl
 
 Der Admin-Bereich ist unter `/admin` erreichbar und bietet eine Übersicht über alle Anmeldungen.
 
+### Funktionen des Admin-Bereichs
+
+Der Admin-Bereich bietet folgende Funktionalitäten:
+
+- **Anmeldungsübersicht**: Tabellarische Darstellung aller eingegangenen Anmeldungen
+  - Sortier- und filterbare Tabelle mit allen wichtigen Informationen
+  - Detailansicht für jede Anmeldung mit allen eingereichten Daten
+  - Konsistente Spaltenbreiten und optimierte Darstellung für lange Inhalte
+  - Horizontales Scrolling für bessere Übersicht auf kleineren Bildschirmen
+
+- **Testcode-Verwaltung** (nur im INT-Environment): Verwaltung von Testcodes für Entwicklungs- und Testzwecke
+  - Generierung von neuen Testcodes mit einem Klick
+  - Automatische Bereinigung von Testcodes, die älter als 24 Stunden sind
+  - Testcodes folgen dem Format `INT_VALID_YYYYMMDD_XXXXX`
+  - Strikte Umgebungsprüfung: Funktionalität nur im INT-Environment verfügbar
+
+- **Export-Funktionalität**: Export der Anmeldungsdaten als Excel-Datei
+  - Vollständiger Export aller Anmeldungsdaten
+  - Formatierte Excel-Datei mit allen relevanten Feldern
+
 ### Authentifizierung
 
 Die Authentifizierung erfolgt über **Supabase Auth** mit folgenden Merkmalen:
@@ -446,6 +466,25 @@ Um Admin-Benutzer zu erstellen:
 1. Gehe zum Supabase Dashboard → Authentication → Users
 2. Klicke auf "Add User" und gib E-Mail und Passwort ein
 3. Der Benutzer erhält eine Einladungs-E-Mail zur Bestätigung
+
+### E-Mail-Konfiguration und Tests
+
+Die Anwendung verwendet **Resend** für den zuverlässigen Versand von E-Mails. Zum Testen der E-Mail-Funktionalität:
+
+```bash
+# Führe den E-Mail-Test aus
+npm run test:email
+```
+
+Der Test sendet sowohl eine Bestätigungs-E-Mail als auch eine Admin-Benachrichtigung an die in den Umgebungsvariablen konfigurierten Adressen. Dies ist nützlich, um das E-Mail-Layout und die Zustellung zu überprüfen.
+
+#### E-Mail-Layout
+
+Die E-Mail-Templates bieten:
+- Professionelles Layout mit ZVV-Branding und Farbschema
+- Klare Struktur mit Überschriften "Danke für Ihre Ticketbestellung"
+- Übersichtliche Darstellung aller Bestelldaten in einem strukturierten Format
+- Responsives Design für optimale Anzeige auf allen Geräten
 
 ## Best Practices
 - **Supabase Row-Level Security (RLS)** aktivieren, um Datenzugriff abzusichern 🔒
