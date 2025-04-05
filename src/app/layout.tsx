@@ -20,10 +20,13 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://ticketcode.zvv.ch'),
-  title: `ZVV-Entdeckungsreise | Admin-Bereich ${envSuffix}`,
+  title: 'ZVV-Entdeckungsreise | Ticketcode Validierung',
   description: 'API für die Validierung und das Einlösen von Ticketcodes für die ZVV-Entdeckungsreise',
   icons: {
-    icon: '/favicons/icon-192x192.png',
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
+    apple: { url: '/apple-icon.svg', type: 'image/svg+xml' },
   },
   robots: {
     index: false,
