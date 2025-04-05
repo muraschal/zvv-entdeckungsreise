@@ -6,6 +6,10 @@ import { VersionInfo } from '@/components/VersionInfo';
 
 const inter = Inter({ subsets: ['latin'] });
 
+// Bestimme die Umgebung basierend auf der URL oder Umgebungsvariable
+const isIntegration = process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview' || process.env.NODE_ENV === 'development';
+const envSuffix = isIntegration ? '(INT)' : '(PRD)';
+
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
@@ -15,7 +19,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://ticketcode.zvv.ch'),
-  title: 'ZVV Ticketcode-Validierung',
+  title: `ZVV-Entdeckungsreise | Admin-Bereich ${envSuffix}`,
   description: 'API für die Validierung und das Einlösen von Ticketcodes für die ZVV-Entdeckungsreise',
   icons: {
     icon: '/favicons/icon-192x192.png',
@@ -34,7 +38,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: 'ZVV Ticketcode-Validierung',
+    title: `ZVV-Entdeckungsreise | Admin-Bereich ${envSuffix}`,
     description: 'API für die Validierung und das Einlösen von Ticketcodes für die ZVV-Entdeckungsreise',
     url: 'https://ticketcode.zvv.ch',
     siteName: 'ZVV Ticketcode-Validierung',
@@ -51,7 +55,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ZVV Ticketcode-Validierung',
+    title: `ZVV-Entdeckungsreise | Admin-Bereich ${envSuffix}`,
     description: 'API für die Validierung und das Einlösen von Ticketcodes für die ZVV-Entdeckungsreise',
     images: ['/images/zvv-logo.png'],
   },
