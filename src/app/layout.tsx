@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { Analytics } from "@vercel/analytics/react";
 import { VersionInfo } from '@/components/VersionInfo';
+import { Toaster } from '@/components/ui/toaster';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -84,6 +85,7 @@ export default function RootLayout({
         {children}
         <VersionInfo />
         <Analytics />
+        <Toaster />
       </body>
     </html>
   );
