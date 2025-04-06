@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { fetchWithCache } from '../widget';
 
 // Hilfsfunktion zur Formatierung des Datums für die Anzeige
 const formatDateForDisplay = (dateString: string) => {
@@ -79,9 +80,7 @@ export function ZVVEntdeckungsreiseForm({
       // Zuerst den Code validieren
       let validateData;
       try {
-        // Importiere die fetchWithCache-Funktion dynamisch
-        const { fetchWithCache } = await import('../widget');
-        
+        // Verwende die importierte fetchWithCache-Funktion
         validateData = await fetchWithCache(
           `${apiBaseUrl}/api/validate`, 
           {
@@ -95,7 +94,7 @@ export function ZVVEntdeckungsreiseForm({
           cacheTimeout
         );
       } catch (cacheError) {
-        // Fallback auf normalen fetch, wenn fetchWithCache nicht verfügbar ist
+        // Fallback auf normalen fetch, wenn fetchWithCache fehlschlägt
         const validateResponse = await fetch(`${apiBaseUrl}/api/validate`, {
           method: 'POST',
           headers: { 
