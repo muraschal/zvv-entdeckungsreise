@@ -225,13 +225,6 @@ function AdminContent() {
                     : 'Keine Registrierungen vorhanden'}
                 </p>
               </CardContent>
-              <CardFooter className="pt-0">
-                <Link href="/admin/bestellungen">
-                  <Button variant="outline" size="sm" className="btn-zvv-outline">
-                    Details
-                  </Button>
-                </Link>
-              </CardFooter>
             </Card>
             
             <Card className="shadow-sm">
@@ -267,13 +260,6 @@ function AdminContent() {
                   </>
                 )}
               </CardContent>
-              <CardFooter className="pt-0">
-                <Link href="/admin/bestellungen">
-                  <Button variant="outline" size="sm" className="btn-zvv-outline">
-                    Details
-                  </Button>
-                </Link>
-              </CardFooter>
             </Card>
             
             <Card className="shadow-sm">
@@ -313,13 +299,6 @@ function AdminContent() {
                   )
                 })()}
               </CardContent>
-              <CardFooter className="pt-0">
-                <Link href="/admin/bestellungen">
-                  <Button variant="outline" size="sm" className="btn-zvv-outline">
-                    Details
-                  </Button>
-                </Link>
-              </CardFooter>
             </Card>
           </div>
           
@@ -453,12 +432,6 @@ function AdminContent() {
                 </div>
                 
                 <div className="mt-4">
-                  <Link href="/admin/codes">
-                    <Button variant="outline" size="sm" className="btn-zvv-outline">
-                      Alle Codes anzeigen
-                      <ChevronRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </Link>
                 </div>
               </>
             )}
