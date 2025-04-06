@@ -38,7 +38,7 @@ export function VersionInfo({ className }: VersionInfoProps) {
   return (
     <div className={cn(
       'fixed bottom-2 right-2 backdrop-blur-sm rounded-lg shadow-sm px-3 py-2 flex flex-col gap-1 border',
-      isIntegrationEnv ? 'bg-zvv-integration-light-red/80 border-zvv-integration-red text-zvv-integration-red' : 'bg-zvv-light-blue/80 border-zvv-blue text-zvv-blue',
+      isIntegrationEnv ? 'bg-zvv-integration-light-red/30 border-zvv-integration-red text-zvv-integration-red' : 'bg-zvv-light-blue/30 border-zvv-blue text-zvv-blue',
       className
     )}>
       <div className="flex items-center gap-2">
