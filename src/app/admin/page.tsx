@@ -7,11 +7,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
-import { Download, Search, RefreshCw, ChevronRight, Users, Calendar, School, FileSpreadsheet, Key, ShoppingCart, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
+import { Download, Search, RefreshCw, ChevronRight, Users, Calendar, School, FileSpreadsheet, Key, ShoppingCart, CheckCircle, Clock, AlertTriangle, PieChart, BarChart } from 'lucide-react';
 import ExcelJS from 'exceljs';
 import Link from 'next/link';
 import DetailView from '@/components/admin/DetailView';
 import { Progress } from '@/components/ui/progress';
+import { PieChart as RechartPieChart, Pie, Cell, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart as RechartBarChart, Bar } from 'recharts';
 
 // Typdefinition für eine Registrierung
 interface Registration {
@@ -132,6 +133,52 @@ function AdminContent() {
     ? Math.ceil((new Date(nextExpiringCode.expires_at).getTime() - today.getTime()) / (1000 * 60 * 60 * 24)) 
     : 0;
 
+  // Daten für das Kuchendiagramm vorbereiten
+  const pieChartData = [
+    { name: 'Verfügbar', value: availableCodes, color: '#22c55e' },
+    { name: 'Verwendet', value: usedCodes, color: '#3b82f6' },
+    { name: 'Abgelaufen', value: expiredCodes, color: '#f59e0b' }
+  ];
+
+  // Daten für das Bestellungsverlaufsdiagramm vorbereiten
+  const prepareRegistrationChartData = () => {
+    if (registrations.length === 0) return [];
+
+    // Kopieren und sortieren der Registrierungen nach Datum
+    const sortedRegistrations = [...registrations]
+      .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+
+    // Gruppiere Registrierungen nach Monat
+    const monthlyData: Record<string, { count: number, students: number }> = {};
+    
+    sortedRegistrations.forEach(reg => {
+      const date = new Date(reg.created_at);
+      const monthKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+      
+      if (!monthlyData[monthKey]) {
+        monthlyData[monthKey] = { count: 0, students: 0 };
+      }
+      
+      monthlyData[monthKey].count += 1;
+      monthlyData[monthKey].students += reg.student_count;
+    });
+
+    // Umwandlung in Array für Recharts
+    return Object.entries(monthlyData).map(([month, data]) => {
+      const [year, monthNum] = month.split('-');
+      const monthNames = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
+      const monthName = monthNames[parseInt(monthNum) - 1];
+      
+      return {
+        name: `${monthName} ${year}`,
+        Bestellungen: data.count,
+        Schüler: data.students
+      };
+    });
+  };
+
+  const registrationChartData = prepareRegistrationChartData();
+
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-3xl font-bold tracking-tight mb-8">Admin Dashboard</h1>
@@ -242,7 +289,60 @@ function AdminContent() {
             </Card>
           </div>
           
-          {/* Neue Code-Statistiken */}
+          {/* Bestellungsverlauf-Diagramm */}
+          {registrationChartData.length > 0 && (
+            <div className="mt-8">
+              <h2 className="text-xl font-bold tracking-tight mb-4">Bestellungsverlauf</h2>
+              <Card className="shadow-sm p-4">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Entwicklung der Bestellungen und Schülerzahlen</CardTitle>
+                  <BarChart className="h-5 w-5 text-zvv-blue" />
+                </CardHeader>
+                <CardContent className="pt-4">
+                  <div className="h-80 w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <RechartBarChart
+                        data={registrationChartData}
+                        margin={{ top: 5, right: 30, left: 20, bottom: 40 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis 
+                          dataKey="name" 
+                          angle={-30} 
+                          textAnchor="end" 
+                          height={70}
+                          tick={{ fontSize: 12 }}
+                        />
+                        <YAxis yAxisId="left" orientation="left" stroke="#3b82f6" />
+                        <YAxis yAxisId="right" orientation="right" stroke="#22c55e" />
+                        <Tooltip 
+                          formatter={(value, name) => [value, name === 'Bestellungen' ? 'Bestellungen' : 'Schüler']}
+                          labelFormatter={(label) => `Zeitraum: ${label}`}
+                        />
+                        <Legend />
+                        <Bar 
+                          yAxisId="left" 
+                          dataKey="Bestellungen" 
+                          fill="#3b82f6" 
+                          name="Bestellungen"
+                          radius={[4, 4, 0, 0]} 
+                        />
+                        <Bar 
+                          yAxisId="right" 
+                          dataKey="Schüler" 
+                          fill="#22c55e" 
+                          name="Anzahl Schüler" 
+                          radius={[4, 4, 0, 0]}
+                        />
+                      </RechartBarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+          
+          {/* Code-Statistiken */}
           <div className="mt-8">
             <h2 className="text-xl font-bold tracking-tight mb-4">Code-Übersicht</h2>
             {loadingCodes ? (
@@ -279,21 +379,51 @@ function AdminContent() {
                   
                   <Card className="shadow-sm">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Verfügbar</CardTitle>
-                      <CheckCircle className="h-5 w-5 text-green-600" />
+                      <CardTitle className="text-sm font-medium">Code-Status</CardTitle>
+                      <PieChart className="h-5 w-5 text-zvv-blue" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold text-green-600" data-testid="available-codes">
-                        {availableCodes}
-                      </div>
-                      <div className="mt-2 space-y-2">
-                        <div className="flex justify-between text-xs">
-                          <span>Noch nutzbar</span>
-                          <span className="font-medium">{Math.round(availableCodes/totalCodes*100)}% aller Codes</span>
+                      <div className="flex justify-center mt-1">
+                        <div className="h-44 w-44">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <RechartPieChart>
+                              <Pie
+                                data={pieChartData}
+                                dataKey="value"
+                                nameKey="name"
+                                cx="50%"
+                                cy="50%"
+                                outerRadius={60}
+                                innerRadius={40}
+                                paddingAngle={2}
+                                label={({ name, percent }) => `${name} ${Math.round(percent * 100)}%`}
+                                labelLine={false}
+                                isAnimationActive={true}
+                              >
+                                {pieChartData.map((entry, index) => (
+                                  <Cell key={`cell-${index}`} fill={entry.color} />
+                                ))}
+                              </Pie>
+                              <Tooltip 
+                                formatter={(value, name) => [`${value} Codes`, name]}
+                              />
+                            </RechartPieChart>
+                          </ResponsiveContainer>
                         </div>
-                        <Progress value={availableCodes/totalCodes*100} className="h-1 bg-gray-100">
-                          <div className="h-full bg-green-600" style={{ width: `${availableCodes/totalCodes*100}%` }}></div>
-                        </Progress>
+                      </div>
+                      <div className="flex justify-between mt-2 text-xs">
+                        <div className="flex items-center">
+                          <div className="w-3 h-3 bg-green-500 rounded-full mr-1"></div>
+                          <span>Verfügbar</span>
+                        </div>
+                        <div className="flex items-center">
+                          <div className="w-3 h-3 bg-blue-500 rounded-full mr-1"></div>
+                          <span>Verwendet</span>
+                        </div>
+                        <div className="flex items-center">
+                          <div className="w-3 h-3 bg-amber-500 rounded-full mr-1"></div>
+                          <span>Abgelaufen</span>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
