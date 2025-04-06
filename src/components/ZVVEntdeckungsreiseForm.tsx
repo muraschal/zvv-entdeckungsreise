@@ -175,255 +175,334 @@ export function ZVVEntdeckungsreiseForm({
 
   if (success) {
     return (
-      <div className="cmp-container">
-        <div className="cmp-container__content">
-          <div className="cmp-text">
-            <h1>Danke für Ihre Ticketbestellung.</h1>
-            <p>Die Tickets werden in den nächsten 7 Arbeitstagen an die angegebene Schulhaus-Adresse verschickt. Wir wünschen Ihrer Klasse schon jetzt viel Spass auf der ZVV-Entdeckungsreise.</p>
-          </div>
-          <button
-            onClick={() => setSuccess(false)}
-            className="cmp-button"
-          >
-            <span className="cmp-button__text">Zurück zum Formular</span>
-          </button>
-        </div>
+      <div className="zvv-form max-w-md mx-auto p-4 bg-white rounded-lg shadow-md">
+        <h1 className="text-2xl font-bold text-green-600 mb-4">Danke für Ihre Ticketbestellung.</h1>
+        <p className="mb-4">Die Tickets werden in den nächsten 7 Arbeitstagen an die angegebene Schulhaus-Adresse verschickt. Wir wünschen Ihrer Klasse schon jetzt viel Spass auf der ZVV-Entdeckungsreise.</p>
+        <button
+          onClick={() => setSuccess(false)}
+          className="zvv-form__button"
+        >
+          Zurück zum Formular
+        </button>
       </div>
     );
   }
 
   return (
-    <div className="cmp-container">
-      <div className="cmp-container__content">
-        {error && (
-          <div className="cmp-alert cmp-alert--error">
-            <div className="cmp-alert__content">
-              <p>{error}</p>
+    <div className="zvv-form max-w-md mx-auto p-4 bg-white rounded-lg shadow-md">
+      {error && (
+        <div 
+          className="zvv-form__error mb-4 p-3 bg-red-100 text-red-700 rounded"
+          dangerouslySetInnerHTML={{ __html: error }}
+        />
+      )}
+      
+      <form onSubmit={handleSubmit} className="zvv-form__container">
+        {/* Ticketcode */}
+        <div className="zvv-form__row">
+          <div className="zvv-form__label-col">
+            <label htmlFor="code" className="zvv-form__label">Ticketcode</label>
+          </div>
+          <div className="zvv-form__input-col">
+            <div className="zvv-form__input-wrapper">
+              <input
+                id="code"
+                className="zvv-form__input"
+                style={{ width: "100%" }}
+                placeholder="Ticketcode eingeben"
+                name="code"
+                value={formData.code}
+                onChange={handleChange}
+                required
+                aria-describedby="code-desc"
+              />
             </div>
           </div>
-        )}
+        </div>
         
-        <form onSubmit={handleSubmit} className="cmp-form">
-          <div className="cmp-form__content">
-            {/* Ticketcode */}
-            <div className="cmp-form__item">
-              <div className="cmp-form__label-wrapper">
-                <label htmlFor="code" className="cmp-form__label">Ticketcode</label>
-              </div>
-              <div className="cmp-form__field-wrapper">
-                <input
-                  id="code"
-                  className="cmp-form__field cmp-form__field--text"
-                  placeholder="Ticketcode eingeben"
-                  name="code"
-                  value={formData.code}
-                  onChange={handleChange}
-                  required
-                  aria-describedby="code-desc"
-                />
-              </div>
-            </div>
-            
-            {/* Schule */}
-            <div className="cmp-form__item">
-              <div className="cmp-form__label-wrapper">
-                <label htmlFor="school" className="cmp-form__label">Schule</label>
-              </div>
-              <div className="cmp-form__field-wrapper">
-                <input
-                  id="school"
-                  className="cmp-form__field cmp-form__field--text"
-                  placeholder="Name der Schule"
-                  name="school"
-                  value={formData.school}
-                  onChange={handleChange}
-                  required
-                  aria-describedby="school-desc"
-                />
-              </div>
-            </div>
-            
-            {/* Kontaktperson */}
-            <div className="cmp-form__item">
-              <div className="cmp-form__label-wrapper">
-                <label htmlFor="contactPerson" className="cmp-form__label">Kontaktperson</label>
-              </div>
-              <div className="cmp-form__field-wrapper">
-                <input
-                  id="contactPerson"
-                  className="cmp-form__field cmp-form__field--text"
-                  placeholder="Name der Kontaktperson"
-                  name="contactPerson"
-                  value={formData.contactPerson}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
-
-            {/* E-Mail */}
-            <div className="cmp-form__item">
-              <div className="cmp-form__label-wrapper">
-                <label htmlFor="email" className="cmp-form__label">E-Mail</label>
-              </div>
-              <div className="cmp-form__field-wrapper">
-                <input
-                  id="email"
-                  type="email"
-                  className="cmp-form__field cmp-form__field--text"
-                  placeholder="E-Mail-Adresse"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Telefon */}
-            <div className="cmp-form__item">
-              <div className="cmp-form__label-wrapper">
-                <label htmlFor="phoneNumber" className="cmp-form__label">Telefon</label>
-              </div>
-              <div className="cmp-form__field-wrapper">
-                <input
-                  id="phoneNumber"
-                  className="cmp-form__field cmp-form__field--text"
-                  placeholder="Telefonnummer"
-                  name="phoneNumber"
-                  value={formData.phoneNumber}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Klasse */}
-            <div className="cmp-form__item">
-              <div className="cmp-form__label-wrapper">
-                <label htmlFor="className" className="cmp-form__label">Klasse</label>
-              </div>
-              <div className="cmp-form__field-wrapper">
-                <input
-                  id="className"
-                  className="cmp-form__field cmp-form__field--text"
-                  placeholder="Klassenbezeichnung"
-                  name="className"
-                  value={formData.className}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Anzahl Schüler */}
-            <div className="cmp-form__item">
-              <div className="cmp-form__label-wrapper">
-                <label htmlFor="studentCount" className="cmp-form__label">Anzahl Schüler</label>
-              </div>
-              <div className="cmp-form__field-wrapper">
-                <input
-                  id="studentCount"
-                  type="number"
-                  className="cmp-form__field cmp-form__field--text"
-                  placeholder="Anzahl Schüler"
-                  name="studentCount"
-                  value={formData.studentCount}
-                  onChange={handleChange}
-                  required
-                  min="1"
-                />
-              </div>
-            </div>
-
-            {/* Anzahl Begleitpersonen */}
-            <div className="cmp-form__item">
-              <div className="cmp-form__label-wrapper">
-                <label htmlFor="accompanistCount" className="cmp-form__label">Anzahl Begleitpersonen</label>
-              </div>
-              <div className="cmp-form__field-wrapper">
-                <input
-                  id="accompanistCount"
-                  type="number"
-                  className="cmp-form__field cmp-form__field--text"
-                  placeholder="Anzahl Begleitpersonen"
-                  name="accompanistCount"
-                  value={formData.accompanistCount}
-                  onChange={handleChange}
-                  required
-                  min="1"
-                />
-              </div>
-            </div>
-
-            {/* Reisedatum */}
-            <div className="cmp-form__item">
-              <div className="cmp-form__label-wrapper">
-                <label htmlFor="travelDate" className="cmp-form__label">Reisedatum</label>
-              </div>
-              <div className="cmp-form__field-wrapper">
-                <input
-                  id="travelDate"
-                  type="date"
-                  className="cmp-form__field cmp-form__field--text"
-                  name="travelDate"
-                  value={formData.travelDate}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Abfahrtszeit */}
-            <div className="cmp-form__item">
-              <div className="cmp-form__label-wrapper">
-                <label htmlFor="arrivalTime" className="cmp-form__label">Abfahrtszeit</label>
-              </div>
-              <div className="cmp-form__field-wrapper">
-                <input
-                  id="arrivalTime"
-                  type="time"
-                  className="cmp-form__field cmp-form__field--text"
-                  name="arrivalTime"
-                  value={formData.arrivalTime}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Bemerkungen */}
-            <div className="cmp-form__item">
-              <div className="cmp-form__label-wrapper">
-                <label htmlFor="additionalNotes" className="cmp-form__label">Bemerkungen</label>
-              </div>
-              <div className="cmp-form__field-wrapper">
-                <textarea
-                  id="additionalNotes"
-                  className="cmp-form__field cmp-form__field--textarea"
-                  placeholder="Zusätzliche Bemerkungen"
-                  name="additionalNotes"
-                  value={formData.additionalNotes}
-                  onChange={handleChange}
-                  rows={4}
-                />
-              </div>
-            </div>
-
-            <div className="cmp-form__item cmp-form__item--button-wrapper">
-              <button
-                type="submit"
-                className="cmp-button cmp-button--primary"
-                disabled={isLoading}
-              >
-                <span className="cmp-button__text">
-                  {isLoading ? 'Wird gesendet...' : 'Absenden'}
-                </span>
-              </button>
+        {/* Schule */}
+        <div className="zvv-form__row">
+          <div className="zvv-form__label-col">
+            <label htmlFor="school" className="zvv-form__label">Schule</label>
+          </div>
+          <div className="zvv-form__input-col">
+            <div className="zvv-form__input-wrapper">
+              <input
+                id="school"
+                className="zvv-form__input"
+                style={{ width: "100%" }}
+                placeholder="Name der Schule"
+                name="school"
+                value={formData.school}
+                onChange={handleChange}
+                required
+                aria-describedby="school-desc"
+              />
             </div>
           </div>
-        </form>
-      </div>
+        </div>
+        
+        {/* Kontaktperson */}
+        <div className="zvv-form__row">
+          <div className="zvv-form__label-col">
+            <label htmlFor="contactPerson" className="zvv-form__label">Kontaktperson</label>
+          </div>
+          <div className="zvv-form__input-col">
+            <div className="zvv-form__input-wrapper">
+              <input
+                id="contactPerson"
+                className="zvv-form__input"
+                style={{ width: "100%" }}
+                placeholder="Name der Kontaktperson"
+                name="contactPerson"
+                value={formData.contactPerson}
+                onChange={handleChange}
+                required
+                aria-describedby="contactPerson-desc"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* E-Mail */}
+        <div className="zvv-form__row">
+          <div className="zvv-form__label-col">
+            <label htmlFor="email" className="zvv-form__label">E-Mail</label>
+          </div>
+          <div className="zvv-form__input-col">
+            <div className="zvv-form__input-wrapper">
+              <input
+                id="email"
+                className="zvv-form__input"
+                style={{ width: "100%" }}
+                placeholder="E-Mail-Adresse"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                aria-describedby="email-desc"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Telefon */}
+        <div className="zvv-form__row">
+          <div className="zvv-form__label-col">
+            <label htmlFor="phoneNumber" className="zvv-form__label">Telefon</label>
+          </div>
+          <div className="zvv-form__input-col">
+            <div className="zvv-form__input-wrapper">
+              <input
+                id="phoneNumber"
+                className="zvv-form__input"
+                style={{ width: "100%" }}
+                placeholder="Telefonnummer"
+                name="phoneNumber"
+                type="tel"
+                value={formData.phoneNumber}
+                onChange={handleChange}
+                required
+                aria-describedby="phoneNumber-desc"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Klasse */}
+        <div className="zvv-form__row">
+          <div className="zvv-form__label-col">
+            <label htmlFor="className" className="zvv-form__label">Klasse</label>
+          </div>
+          <div className="zvv-form__input-col">
+            <div className="zvv-form__input-wrapper">
+              <div className={`zvv-form__dropdown ${dropdownVisible ? 'visible' : ''}`}>
+                <div 
+                  tabIndex={0} 
+                  className="zvv-form__dropdown-label"
+                  onClick={() => setDropdownVisible(!dropdownVisible)}
+                >
+                  {formData.className || 'Bitte wählen'}
+                </div>
+                <div className="zvv-form__dropdown-options">
+                  <div 
+                    className={`zvv-form__dropdown-option ${!formData.className ? 'zvv-form__dropdown-option--selected' : ''}`} 
+                    data-value=""
+                    onClick={() => {
+                      setFormData(prev => ({ ...prev, className: '' }));
+                      setDropdownVisible(false);
+                    }}
+                  >
+                    Bitte wählen
+                  </div>
+                  <div 
+                    className={`zvv-form__dropdown-option ${formData.className === '4. Klasse' ? 'zvv-form__dropdown-option--selected' : ''}`} 
+                    data-value="klasse-4"
+                    onClick={() => {
+                      setFormData(prev => ({ ...prev, className: '4. Klasse' }));
+                      setDropdownVisible(false);
+                    }}
+                  >
+                    4.
+                  </div>
+                  <div 
+                    className={`zvv-form__dropdown-option ${formData.className === '5. Klasse' ? 'zvv-form__dropdown-option--selected' : ''}`} 
+                    data-value="klasse-5"
+                    onClick={() => {
+                      setFormData(prev => ({ ...prev, className: '5. Klasse' }));
+                      setDropdownVisible(false);
+                    }}
+                  >
+                    5.
+                  </div>
+                  <div 
+                    className={`zvv-form__dropdown-option ${formData.className === '6. Klasse' ? 'zvv-form__dropdown-option--selected' : ''}`} 
+                    data-value="klasse-6"
+                    onClick={() => {
+                      setFormData(prev => ({ ...prev, className: '6. Klasse' }));
+                      setDropdownVisible(false);
+                    }}
+                  >
+                    6.
+                  </div>
+                </div>
+              </div>
+              <div className="zvv-form__dropdown-spacer"></div>
+              <input 
+                type="hidden" 
+                id="className"
+                name="className"
+                value={formData.className}
+                required
+                aria-describedby="className-desc"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Anzahl Schüler */}
+        <div className="zvv-form__row">
+          <div className="zvv-form__label-col">
+            <label htmlFor="studentCount" className="zvv-form__label">Anzahl Schüler</label>
+          </div>
+          <div className="zvv-form__input-col">
+            <div className="zvv-form__input-wrapper">
+              <input
+                id="studentCount"
+                className="zvv-form__input"
+                style={{ width: "100%" }}
+                placeholder="Anzahl der Schüler"
+                name="studentCount"
+                type="number"
+                min="1"
+                value={formData.studentCount}
+                onChange={handleChange}
+                required
+                aria-describedby="studentCount-desc"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Begleitpersonen */}
+        <div className="zvv-form__row">
+          <div className="zvv-form__label-col">
+            <label htmlFor="accompanistCount" className="zvv-form__label">Begleitpersonen</label>
+          </div>
+          <div className="zvv-form__input-col">
+            <div className="zvv-form__input-wrapper">
+              <input
+                id="accompanistCount"
+                className="zvv-form__input"
+                style={{ width: "100%" }}
+                placeholder="Anzahl der Begleitpersonen"
+                name="accompanistCount"
+                type="number"
+                min="1"
+                value={formData.accompanistCount}
+                onChange={handleChange}
+                required
+                aria-describedby="accompanistCount-desc"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Reisedatum */}
+        <div className="zvv-form__row">
+          <div className="zvv-form__label-col">
+            <label htmlFor="travelDate" className="zvv-form__label">Reisedatum</label>
+          </div>
+          <div className="zvv-form__input-col">
+            <div className="zvv-form__input-wrapper">
+              <input
+                id="travelDate"
+                className="zvv-form__input"
+                style={{ width: "100%" }}
+                placeholder="Reisedatum auswählen"
+                name="travelDate"
+                type="date"
+                min={new Date().toISOString().split('T')[0]}
+                value={formData.travelDate}
+                onChange={handleChange}
+                required
+                aria-describedby="travelDate-desc"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Ankunftszeit */}
+        <div className="zvv-form__row">
+          <div className="zvv-form__label-col">
+            <label htmlFor="arrivalTime" className="zvv-form__label">Ankunftszeit</label>
+          </div>
+          <div className="zvv-form__input-col">
+            <div className="zvv-form__input-wrapper">
+              <input
+                id="arrivalTime"
+                className="zvv-form__input"
+                style={{ width: "100%" }}
+                placeholder="Ankunftszeit auswählen"
+                name="arrivalTime"
+                type="time"
+                value={formData.arrivalTime}
+                onChange={handleChange}
+                required
+                aria-describedby="arrivalTime-desc"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Anmerkungen */}
+        <div className="zvv-form__row">
+          <div className="zvv-form__label-col">
+            <label htmlFor="additionalNotes" className="zvv-form__label">Anmerkungen</label>
+          </div>
+          <div className="zvv-form__input-col">
+            <div className="zvv-form__input-wrapper">
+              <textarea
+                id="additionalNotes"
+                className="zvv-form__textarea"
+                placeholder="Zusätzliche Anmerkungen"
+                name="additionalNotes"
+                rows={2}
+                value={formData.additionalNotes}
+                onChange={handleChange}
+                aria-describedby="additionalNotes-desc"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div className="text-sm text-grey mb-4">* Alle Felder sind Pflichtfelder, ausser Anmerkungen</div>
+
+        <button className="zvv-form__button" type="submit" disabled={isLoading}>
+          {isLoading ? 'Wird verarbeitet...' : 'Anmeldung absenden'}
+        </button>
+      </form>
     </div>
   );
 } 
