@@ -16,7 +16,15 @@ const formatTimeForDisplay = (timeString: string) => {
 };
 
 // Exportierbare Komponente für die Integration in externe Websites
-export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: string }) {
+export function ZVVEntdeckungsreiseForm({ 
+  apiBaseUrl = '', 
+  environment = 'PRD',
+  cacheTimeout = 300000
+}: { 
+  apiBaseUrl?: string; 
+  environment?: 'INT' | 'PRD';
+  cacheTimeout?: number;
+}) {
   const [formData, setFormData] = useState({
     code: '',
     school: '',
@@ -34,6 +42,12 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
+
+  // Log environment and render timestamp on component mount
+  useState(() => {
+    console.log(`ZVVEntdeckungsreiseForm Komponente initialisiert - Umgebung: ${environment}`);
+    console.log(`Render-Zeitstempel: ${new Date().toISOString()}`);
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -63,13 +77,35 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
 
     try {
       // Zuerst den Code validieren
-      const validateResponse = await fetch(`${apiBaseUrl}/api/validate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: formData.code }),
-      });
-
-      const validateData = await validateResponse.json();
+      let validateData;
+      try {
+        // Importiere die fetchWithCache-Funktion dynamisch
+        const { fetchWithCache } = await import('../widget');
+        
+        validateData = await fetchWithCache(
+          `${apiBaseUrl}/api/validate`, 
+          {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'X-Environment': environment // Umgebungsparameter hinzufügen
+            },
+            body: JSON.stringify({ code: formData.code }),
+          },
+          cacheTimeout
+        );
+      } catch (cacheError) {
+        // Fallback auf normalen fetch, wenn fetchWithCache nicht verfügbar ist
+        const validateResponse = await fetch(`${apiBaseUrl}/api/validate`, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'X-Environment': environment
+          },
+          body: JSON.stringify({ code: formData.code }),
+        });
+        validateData = await validateResponse.json();
+      }
 
       if (!validateData.valid) {
         setError(validateData.message || 'Ungültiger Code');
@@ -80,7 +116,10 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
       // Wenn der Code gültig ist, das Formular einreichen
       const response = await fetch(`${apiBaseUrl}/api/redeem`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-Environment': environment // Umgebungsparameter hinzufügen
+        },
         body: JSON.stringify({
           code: formData.code,
           school: formData.school,
@@ -131,8 +170,9 @@ export function ZVVEntdeckungsreiseForm({ apiBaseUrl = '' }: { apiBaseUrl?: stri
       {error && (
         <div 
           className="zvv-form__error mb-4 p-3 bg-red-100 text-red-700 rounded"
-          dangerouslySetInnerHTML={{ __html: error }}
-        />
+        >
+          {error}
+        </div>
       )}
       
       <form onSubmit={handleSubmit} className="zvv-form__container">
