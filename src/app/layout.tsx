@@ -1,19 +1,38 @@
 import './globals.css';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { Analytics } from "@vercel/analytics/react";
+import { VersionInfo } from '@/components/VersionInfo';
+import { Toaster } from '@/components/ui/toaster';
 
 const inter = Inter({ subsets: ['latin'] });
 
+// Bestimme die Umgebung basierend auf der URL oder Umgebungsvariable
+const isIntegration = process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview' || process.env.NODE_ENV === 'development';
+const envSuffix = isIntegration ? '(INT)' : '(PRD)';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  themeColor: '#003399',
+};
+
 export const metadata: Metadata = {
-  title: 'ZVV Ticketcode-Validierung',
-  description: 'API für die Validierung und das Einlösen von Ticketcodes für die ZVV-Entdeckungsreise',
-  icons: {
-    icon: '/favicons/icon-192x192.png',
-  },
+  metadataBase: new URL('https://ticketcode.zvv.ch'),
+  title: 'ZVV-Entdeckungsreise | Ticketcode Validierung',
+  description: 'Validiere deinen Ticketcode für die ZVV-Entdeckungsreise',
+  icons: [
+    { rel: 'icon', url: '/favicon.ico' },
+    { rel: 'icon', url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+    { rel: 'icon', url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    { rel: 'apple-touch-icon', url: '/apple-touch-icon.png', sizes: '180x180' },
+    { rel: 'manifest', url: '/site.webmanifest' },
+    { rel: 'manifest', url: '/manifest.json' }
+  ],
   robots: {
     index: false,
-    follow: false,
+    follow: true,
     nocache: true,
     googleBot: {
       index: false,
@@ -25,7 +44,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: 'ZVV Ticketcode-Validierung',
+    title: `ZVV-Entdeckungsreise | Admin-Bereich ${envSuffix}`,
     description: 'API für die Validierung und das Einlösen von Ticketcodes für die ZVV-Entdeckungsreise',
     url: 'https://ticketcode.zvv.ch',
     siteName: 'ZVV Ticketcode-Validierung',
@@ -42,16 +61,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ZVV Ticketcode-Validierung',
+    title: `ZVV-Entdeckungsreise | Admin-Bereich ${envSuffix}`,
     description: 'API für die Validierung und das Einlösen von Ticketcodes für die ZVV-Entdeckungsreise',
     images: ['/images/zvv-logo.png'],
   },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-  },
-  themeColor: '#003399',
   manifest: '/manifest.json',
   keywords: ['ZVV', 'Ticketcode', 'Validierung', 'Entdeckungsreise', 'API'],
   authors: [{ name: 'ZVV' }],
@@ -75,7 +88,9 @@ export default function RootLayout({
     <html lang="de">
       <body className={inter.className}>
         {children}
+        <VersionInfo />
         <Analytics />
+        <Toaster />
       </body>
     </html>
   );

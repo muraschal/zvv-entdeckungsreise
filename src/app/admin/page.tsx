@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { createBrowserClient } from '@supabase/ssr';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
-import { Download, Search, RefreshCw, LogOut, ChevronDown } from 'lucide-react';
+import { Download, Search, RefreshCw, ChevronRight, Users, Calendar, School, FileSpreadsheet, Key } from 'lucide-react';
 import ExcelJS from 'exceljs';
 import {
   Table,
@@ -25,6 +25,8 @@ import {
   SheetDescription,
   SheetClose,
 } from "@/components/ui/sheet";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Link from 'next/link';
 
 // Typdefinition für eine Registrierung
 interface Registration {
@@ -43,374 +45,402 @@ interface Registration {
   created_at: string;
 }
 
-export default function AdminPage() {
-  const [registrations, setRegistrations] = useState<Registration[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedRegistration, setSelectedRegistration] = useState<Registration | null>(null);
-  const router = useRouter();
-  
-  // Erstelle einen Supabase-Client für den Browser
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+// UserButton Komponente für den Header
+const UserButton = () => {
+  return (
+    <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+      <span className="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-full">
+        <span className="flex h-full w-full items-center justify-center rounded-full bg-muted">
+          <span className="font-medium">A</span>
+        </span>
+      </span>
+    </Button>
   );
+};
 
-  // Funktion zum Formatieren des Datums
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('de-CH') + ' ' + date.toLocaleTimeString('de-CH');
-  };
-
-  // Funktion zum Abrufen der Registrierungen
-  const fetchRegistrations = async () => {
-    setLoading(true);
-    setError('');
-    
-    try {
-      // Prüfe, ob der Benutzer angemeldet ist
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        router.push('/admin/login');
-        return;
-      }
-      
-      // Hole die Registrierungen direkt aus der Datenbank
-      const { data, error } = await supabase
-        .from('registrations')
-        .select('*')
-        .order('created_at', { ascending: false });
-      
-      if (error) throw error;
-      
-      setRegistrations(data || []);
-    } catch (err) {
-      setError('Fehler beim Laden der Daten: ' + (err instanceof Error ? err.message : 'Unbekannter Fehler'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Abmelden
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.push('/admin/login');
-  };
-
+// ExportButton Komponente
+const ExportButton = ({ registrations }: { registrations: Registration[] }) => {
   const exportToExcel = async () => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Anmeldungen');
-
-    // Definiere die Spalten
+    
     worksheet.columns = [
-      { header: 'Anmeldedatum', key: 'created_at', width: 20 },
-      { header: 'Code', key: 'code', width: 15 },
+      { header: 'Code', key: 'code', width: 20 },
       { header: 'Schule', key: 'school', width: 30 },
-      { header: 'Klasse', key: 'class', width: 15 },
       { header: 'Kontaktperson', key: 'contact_person', width: 25 },
       { header: 'E-Mail', key: 'email', width: 30 },
       { header: 'Telefon', key: 'phone_number', width: 20 },
+      { header: 'Klasse', key: 'class', width: 15 },
       { header: 'Schüler', key: 'student_count', width: 10 },
       { header: 'Begleiter', key: 'accompanist_count', width: 10 },
-      { header: 'Reisedatum', key: 'travel_date', width: 15 },
+      { header: 'Anmeldedatum', key: 'created_at', width: 20 },
+      { header: 'Reisedatum', key: 'travel_date', width: 20 },
       { header: 'Ankunftszeit', key: 'arrival_time', width: 15 },
-      { header: 'Zusätzliche Notizen', key: 'additional_notes', width: 40 }
+      { header: 'Anmerkungen', key: 'additional_notes', width: 40 },
     ];
 
-    // Style für den Header
-    worksheet.getRow(1).font = { bold: true };
-    worksheet.getRow(1).fill = {
-      type: 'pattern',
-      pattern: 'solid',
-      fgColor: { argb: 'FFE0E0E0' }
-    };
-
-    // Füge die Daten hinzu
+    // Daten hinzufügen
     registrations.forEach(reg => {
       worksheet.addRow({
+        ...reg,
         created_at: new Date(reg.created_at).toLocaleDateString('de-CH'),
-        code: reg.code,
-        school: reg.school,
-        class: reg.class,
-        contact_person: reg.contact_person,
-        email: reg.email,
-        phone_number: reg.phone_number,
-        student_count: reg.student_count,
-        accompanist_count: reg.accompanist_count,
         travel_date: new Date(reg.travel_date).toLocaleDateString('de-CH'),
-        arrival_time: reg.arrival_time,
-        additional_notes: reg.additional_notes || ''
       });
     });
 
-    // Rahmen für alle Zellen
-    worksheet.eachRow({ includeEmpty: true }, row => {
-      row.eachCell({ includeEmpty: true }, cell => {
-        cell.border = {
-          top: { style: 'thin' },
-          left: { style: 'thin' },
-          bottom: { style: 'thin' },
-          right: { style: 'thin' }
-        };
-      });
-    });
-
-    // Generiere die Excel-Datei
+    // Styling
+    worksheet.getRow(1).font = { bold: true };
+    
+    // Excel-Datei herunterladen
     const buffer = await workbook.xlsx.writeBuffer();
     const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `ZVV-Anmeldungen-${new Date().toISOString().split('T')[0]}.xlsx`;
-    document.body.appendChild(a);
+    a.download = `ZVV-Entdeckungsreise-Anmeldungen-${new Date().toISOString().split('T')[0]}.xlsx`;
     a.click();
     window.URL.revokeObjectURL(url);
-    document.body.removeChild(a);
   };
-
-  // Lade die Daten beim ersten Rendern
-  useEffect(() => {
-    fetchRegistrations();
-  }, []);
-
-  const getStats = () => {
-    const totalStudents = registrations.reduce((sum, reg) => sum + reg.student_count, 0);
-    const totalAccompanists = registrations.reduce((sum, reg) => sum + reg.accompanist_count, 0);
-    const uniqueSchools = new Set(registrations.map(reg => reg.school)).size;
-    
-    return { totalStudents, totalAccompanists, uniqueSchools, totalRegistrations: registrations.length };
-  };
-
-  const filteredRegistrations = registrations.filter(reg => 
-    reg.school.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    reg.contact_person.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    reg.code.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const groupedRegistrations = filteredRegistrations.reduce((groups, reg) => {
-    const date = new Date(reg.travel_date).toLocaleDateString('de-CH');
-    if (!groups[date]) groups[date] = [];
-    groups[date].push(reg);
-    return groups;
-  }, {} as Record<string, Registration[]>);
-
-  // Skeleton-Loader für die Tabelle
-  const TableSkeleton = () => (
-    <div className="space-y-2">
-      <div className="flex items-center space-x-4">
-        <Skeleton className="h-12 w-full" />
-      </div>
-      {[...Array(5)].map((_, i) => (
-        <div key={i} className="flex items-center space-x-4">
-          <Skeleton className="h-10 w-full" />
-        </div>
-      ))}
-    </div>
-  );
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">ZVV-Entdeckungsreise</h1>
-          <p className="text-muted-foreground">Verwaltung der Anmeldungen</p>
-        </div>
-        <div className="flex space-x-2">
-          <Button variant="outline" onClick={fetchRegistrations} disabled={loading}>
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Aktualisieren
-          </Button>
-          <Button 
-            variant="outline" 
-            onClick={() => {
-              exportToExcel().catch(console.error);
-            }}
-          >
-            <Download className="h-4 w-4 mr-2" />
-            Export
-          </Button>
-          <Button variant="outline" onClick={handleLogout}>
-            <LogOut className="h-4 w-4 mr-2" />
-            Abmelden
-          </Button>
-        </div>
-      </div>
+    <Button
+      onClick={exportToExcel}
+      variant="outline"
+      size="sm"
+      className="h-8 gap-1"
+    >
+      <Download className="h-3.5 w-3.5" />
+      <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Export</span>
+    </Button>
+  );
+};
 
-      {!loading && !error && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {Object.entries(getStats()).map(([key, value]) => (
-            <Card key={key} className="bg-white shadow-sm">
-              <CardContent className="pt-6">
-                <div className="text-2xl font-bold">{value}</div>
-                <div className="text-muted-foreground">
-                  {key === 'totalStudents' && 'Schüler'}
-                  {key === 'totalAccompanists' && 'Begleiter'}
-                  {key === 'uniqueSchools' && 'Schulen'}
-                  {key === 'totalRegistrations' && 'Anmeldungen'}
+// AdminContent Komponente für den Inhalt der Admin-Seite
+function AdminContent() {
+  const [registrations, setRegistrations] = useState<Registration[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedRegistration, setSelectedRegistration] = useState<Registration | null>(null);
+  const searchParams = useSearchParams();
+
+  const fetchRegistrations = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch('/api/admin/registrations');
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Fehler beim Laden der Anmeldungen');
+      }
+      const data = await response.json();
+      console.log('Geladene Registrierungen:', data.registrations);
+      console.log('Anzahl Registrierungen:', data.registrations.length);
+      
+      // Berechne Gesamtzahl der Schüler und Begleitpersonen
+      const studentCount = data.registrations.reduce((sum: number, reg: Registration) => sum + reg.student_count, 0);
+      const accompanistCount = data.registrations.reduce((sum: number, reg: Registration) => sum + reg.accompanist_count, 0);
+      console.log('Gesamtzahl Schüler:', studentCount);
+      console.log('Gesamtzahl Begleitpersonen:', accompanistCount);
+      
+      setRegistrations(data.registrations || []);
+    } catch (err) {
+      console.error('Fehler beim Laden der Anmeldungen:', err);
+      setError((err as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRegistrations();
+
+    const regId = searchParams.get('reg');
+    if (regId) {
+      // Wenn eine Registrierungs-ID in der URL ist, öffne die Details
+      const selectedReg = registrations.find(r => r.id === regId);
+      if (selectedReg) {
+        setSelectedRegistration(selectedReg);
+      }
+    }
+  }, [searchParams]);
+
+  return (
+    <div className="container mx-auto p-6">
+      <h1 className="text-3xl font-bold tracking-tight mb-8">Admin Dashboard</h1>
+      
+      {loading ? (
+        <div className="grid gap-6 md:grid-cols-3">
+          <Skeleton className="h-36 w-full" />
+          <Skeleton className="h-36 w-full" />
+          <Skeleton className="h-36 w-full" />
+        </div>
+      ) : error ? (
+        <div className="p-4 bg-destructive/15 text-destructive rounded-md">
+          {error}
+        </div>
+      ) : (
+        <>
+          <div className="grid gap-6 md:grid-cols-3">
+            <Card className="shadow-sm">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Registrierungen</CardTitle>
+                <Users className="h-5 w-5 text-zvv-blue" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-zvv-blue" data-testid="registrations-count">
+                  {registrations.length}
                 </div>
+                <p className="text-xs text-muted-foreground">
+                  {registrations.length > 0 
+                    ? `Letzte am ${new Date(registrations[0].created_at).toLocaleDateString('de-CH')}` 
+                    : 'Keine Registrierungen vorhanden'}
+                </p>
               </CardContent>
+              <CardFooter className="pt-0">
+                <Button variant="outline" size="sm" className="btn-zvv-outline">
+                  Details
+                </Button>
+              </CardFooter>
             </Card>
-          ))}
-        </div>
-      )}
-
-      <Card className="bg-white shadow-sm">
-        <CardHeader>
-          <div className="flex justify-between items-center">
-            <CardTitle>Anmeldungen</CardTitle>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-              <Input
-                placeholder="Suchen..."
-                className="pl-10 w-[300px]"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+            
+            <Card className="shadow-sm">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Schulen</CardTitle>
+                <School className="h-5 w-5 text-zvv-blue" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-zvv-blue" data-testid="student-count">
+                  {registrations.reduce((sum, reg) => sum + reg.student_count, 0)}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Inklusive {registrations.reduce((sum, reg) => sum + reg.accompanist_count, 0)} Begleitpersonen
+                </p>
+              </CardContent>
+              <CardFooter className="pt-0">
+                <Button variant="outline" size="sm" className="btn-zvv-outline">
+                  Details
+                </Button>
+              </CardFooter>
+            </Card>
+            
+            <Card className="shadow-sm">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Kommende Fahrten</CardTitle>
+                <Calendar className="h-5 w-5 text-zvv-blue" />
+              </CardHeader>
+              <CardContent>
+                {(() => {
+                  const upcomingTrips = registrations
+                    .filter(reg => new Date(reg.travel_date) >= new Date())
+                    .sort((a, b) => new Date(a.travel_date).getTime() - new Date(b.travel_date).getTime());
+                  
+                  console.log('Kommende Fahrten:', upcomingTrips);
+                  console.log('Anzahl kommende Fahrten:', upcomingTrips.length);
+                  
+                  if (upcomingTrips.length === 0) {
+                    return (
+                      <>
+                        <div className="text-2xl font-bold text-zvv-blue" data-testid="upcoming-trips-empty">-</div>
+                        <p className="text-xs text-muted-foreground">
+                          Keine bevorstehenden Reisen
+                        </p>
+                      </>
+                    )
+                  }
+                  
+                  return (
+                    <>
+                      <div className="text-2xl font-bold text-zvv-blue" data-testid="upcoming-trips-date">
+                        {new Date(upcomingTrips[0].travel_date).toLocaleDateString('de-CH')}
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        {upcomingTrips[0].school}, {upcomingTrips[0].student_count} Schüler
+                      </p>
+                    </>
+                  )
+                })()}
+              </CardContent>
+              <CardFooter className="pt-0">
+                <Button variant="outline" size="sm" className="btn-zvv-outline">
+                  Details
+                </Button>
+              </CardFooter>
+            </Card>
+          </div>
+          
+          <div className="mt-8">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold tracking-tight">Registrierungen</h2>
+              <div className="flex gap-2">
+                <ExportButton registrations={registrations} />
+                <Button variant="outline" size="sm" className="h-8 gap-1 hover:text-zvv-blue" onClick={() => fetchRegistrations()}>
+                  <RefreshCw className="h-3.5 w-3.5" />
+                  <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Aktualisieren</span>
+                </Button>
+              </div>
+            </div>
+            <div className="border rounded-md">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Code</TableHead>
+                    <TableHead>Schule</TableHead>
+                    <TableHead>Klasse</TableHead>
+                    <TableHead>Schüler</TableHead>
+                    <TableHead>Reisedatum</TableHead>
+                    <TableHead>Anmeldedatum</TableHead>
+                    <TableHead></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {registrations.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={7} className="text-center text-muted-foreground py-6">
+                        Keine Registrierungen gefunden
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    registrations.map((reg) => (
+                      <TableRow key={reg.id} className="cursor-pointer hover:bg-muted/50" onClick={() => setSelectedRegistration(reg)}>
+                        <TableCell className="font-medium">{reg.code}</TableCell>
+                        <TableCell>{reg.school}</TableCell>
+                        <TableCell>{reg.class}</TableCell>
+                        <TableCell>{reg.student_count} (+{reg.accompanist_count})</TableCell>
+                        <TableCell>{new Date(reg.travel_date).toLocaleDateString('de-CH')}</TableCell>
+                        <TableCell>{new Date(reg.created_at).toLocaleDateString('de-CH')}</TableCell>
+                        <TableCell>
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <ChevronRight className="h-4 w-4" />
+                            <span className="sr-only">Details</span>
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
             </div>
           </div>
-        </CardHeader>
-        <CardContent>
-          {loading ? (
-            <TableSkeleton />
-          ) : error ? (
-            <div className="p-4 bg-destructive/10 text-destructive rounded-md">
-              {error}
-            </div>
-          ) : filteredRegistrations.length === 0 ? (
-            <div className="p-4 text-center">
-              <p>Keine Anmeldungen gefunden.</p>
-            </div>
-          ) : (
-            <div className="space-y-6">
-              {Object.entries(groupedRegistrations).map(([date, regs]) => (
-                <div key={date} className="rounded-md border">
-                  <div className="bg-muted px-4 py-2 font-medium flex items-center justify-between">
-                    <span>Reisedatum: {date}</span>
-                    <span className="text-muted-foreground text-sm">{regs.length} Anmeldungen</span>
-                  </div>
-                  <div className="overflow-x-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead className="w-[180px]">Anmeldedatum</TableHead>
-                          <TableHead className="w-[120px]">Code</TableHead>
-                          <TableHead className="w-[200px]">Schule</TableHead>
-                          <TableHead className="w-[250px]">Kontaktperson</TableHead>
-                          <TableHead className="w-[100px] text-right">Schüler</TableHead>
-                          <TableHead className="w-[100px] text-right">Begleiter</TableHead>
-                          <TableHead className="w-[100px]">Details</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {regs.map((reg) => (
-                          <TableRow key={reg.id}>
-                            <TableCell className="font-medium">
-                              {new Date(reg.created_at).toLocaleDateString('de-CH')}
-                            </TableCell>
-                            <TableCell>{reg.code}</TableCell>
-                            <TableCell>{reg.school}</TableCell>
-                            <TableCell>
-                              <div className="font-medium">{reg.contact_person}</div>
-                              <div className="text-sm text-muted-foreground">{reg.email}</div>
-                            </TableCell>
-                            <TableCell className="text-right">{reg.student_count}</TableCell>
-                            <TableCell className="text-right">{reg.accompanist_count}</TableCell>
-                            <TableCell>
-                              <Button 
-                                variant="ghost" 
-                                size="sm"
-                                onClick={() => setSelectedRegistration(reg)}
-                                className="flex items-center"
-                              >
-                                Details
-                                <ChevronDown className="ml-1 h-4 w-4" />
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
+          
+          <div className="mt-8 space-y-4">
+            <h2 className="text-xl font-bold tracking-tight">Admin-Tools</h2>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <Link href="/admin/testcodes" className="flex items-center p-4 border rounded-md shadow-sm hover:bg-zvv-light-blue hover:border-zvv-blue transition-colors">
+                <div className="mr-4 rounded-md bg-zvv-light-blue p-2">
+                  <Key className="h-5 w-5 text-zvv-blue" />
                 </div>
-              ))}
+                <div>
+                  <h3 className="font-semibold">Testcode-Management</h3>
+                  <p className="text-sm text-muted-foreground">Testcodes für INT-Umgebung verwalten</p>
+                </div>
+              </Link>
             </div>
-          )}
-        </CardContent>
-      </Card>
-
+          </div>
+        </>
+      )}
+      
       <Sheet open={!!selectedRegistration} onOpenChange={() => setSelectedRegistration(null)}>
-        <SheetContent>
+        <SheetContent className="sm:max-w-xl">
           <SheetHeader>
-            <SheetTitle>Anmeldungsdetails</SheetTitle>
-            <SheetDescription>
-              Details der Anmeldung von {selectedRegistration?.school}
-            </SheetDescription>
+            <SheetTitle>Registrierungsdetails</SheetTitle>
+            <SheetDescription>Details zur Anmeldung</SheetDescription>
           </SheetHeader>
           {selectedRegistration && (
-            <div className="mt-6 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <div className="text-sm font-medium text-muted-foreground">Code</div>
-                  <div>{selectedRegistration.code}</div>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-muted-foreground">Anmeldedatum</div>
-                  <div>{new Date(selectedRegistration.created_at).toLocaleDateString('de-CH')}</div>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-muted-foreground">Schule</div>
-                  <div>{selectedRegistration.school}</div>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-muted-foreground">Klasse</div>
-                  <div>{selectedRegistration.class}</div>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-muted-foreground">Kontaktperson</div>
-                  <div>{selectedRegistration.contact_person}</div>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-muted-foreground">E-Mail</div>
-                  <div>{selectedRegistration.email}</div>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-muted-foreground">Telefon</div>
-                  <div>{selectedRegistration.phone_number}</div>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-muted-foreground">Reisedatum</div>
-                  <div>{new Date(selectedRegistration.travel_date).toLocaleDateString('de-CH')}</div>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-muted-foreground">Ankunftszeit</div>
-                  <div>{selectedRegistration.arrival_time}</div>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-muted-foreground">Anzahl Schüler</div>
-                  <div>{selectedRegistration.student_count}</div>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-muted-foreground">Anzahl Begleiter</div>
-                  <div>{selectedRegistration.accompanist_count}</div>
+            <div className="mt-6 space-y-6">
+              <div className="space-y-1">
+                <h3 className="text-sm font-medium">Grundinformationen</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <p className="text-muted-foreground">Code</p>
+                    <p className="font-medium">{selectedRegistration.code}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Anmeldedatum</p>
+                    <p className="font-medium">
+                      {new Date(selectedRegistration.created_at).toLocaleDateString('de-CH')}
+                    </p>
+                  </div>
                 </div>
               </div>
+              
+              <div className="space-y-1">
+                <h3 className="text-sm font-medium">Schulinformationen</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="col-span-2">
+                    <p className="text-muted-foreground">Schule</p>
+                    <p className="font-medium">{selectedRegistration.school}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Klasse</p>
+                    <p className="font-medium">{selectedRegistration.class}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Kontaktperson</p>
+                    <p className="font-medium">{selectedRegistration.contact_person}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">E-Mail</p>
+                    <p className="font-medium break-all">{selectedRegistration.email}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Telefon</p>
+                    <p className="font-medium">{selectedRegistration.phone_number}</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="space-y-1">
+                <h3 className="text-sm font-medium">Reiseinformationen</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <p className="text-muted-foreground">Reisedatum</p>
+                    <p className="font-medium">
+                      {new Date(selectedRegistration.travel_date).toLocaleDateString('de-CH')}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Ankunftszeit</p>
+                    <p className="font-medium">
+                      {selectedRegistration.arrival_time.slice(0, 5)} Uhr
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Anzahl Schüler</p>
+                    <p className="font-medium">{selectedRegistration.student_count}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Anzahl Begleitpersonen</p>
+                    <p className="font-medium">{selectedRegistration.accompanist_count}</p>
+                  </div>
+                </div>
+              </div>
+              
               {selectedRegistration.additional_notes && (
-                <div>
-                  <div className="text-sm font-medium text-muted-foreground">Zusätzliche Notizen</div>
-                  <div className="mt-1 text-sm">{selectedRegistration.additional_notes}</div>
+                <div className="space-y-1">
+                  <h3 className="text-sm font-medium">Anmerkungen</h3>
+                  <p className="text-sm border p-3 rounded-md bg-muted/50 whitespace-pre-wrap">
+                    {selectedRegistration.additional_notes}
+                  </p>
                 </div>
               )}
-              <div className="pt-4">
-                <SheetClose asChild>
-                  <Button className="w-full">Schließen</Button>
-                </SheetClose>
-              </div>
             </div>
           )}
+          <div className="mt-6">
+            <SheetClose asChild>
+              <Button variant="outline" className="w-full">Schließen</Button>
+            </SheetClose>
+          </div>
         </SheetContent>
       </Sheet>
     </div>
+  );
+}
+
+// AdminPage Komponente mit Suspense
+export default function AdminPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center p-6"><div className="h-8 w-8 rounded-full border-2 border-t-zvv-blue animate-spin"></div></div>}>
+      <AdminContent />
+    </Suspense>
   );
 } 

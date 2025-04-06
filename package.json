@@ -4,11 +4,13 @@
   "description": "Code-Validierung für die ZVV-Entdeckungsreise mit Supabase & Zapier",
   "scripts": {
     "dev": "set NODE_NO_WARNINGS=1 && next dev",
-    "build": "next build",
+    "build": "NEXT_PUBLIC_GIT_COMMIT_DATE=$(git log -1 --format=%cd --date=format:'%d.%m.%y') NEXT_PUBLIC_GIT_COMMIT_SHA=$(git rev-parse --short HEAD) next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "next lint --max-warnings=0",
+    "cache-clean": "rm -rf .next && rm -rf node_modules/.cache",
     "build:widget": "next build && next export -o widget && cp -r .next/static widget/static",
-    "build:standalone": "webpack --config webpack.widget.config.js && mkdir -p public && cp dist/zvv-entdeckungsreise-widget.js public/"
+    "build:standalone": "webpack --config webpack.widget.config.js && mkdir -p public && cp dist/zvv-entdeckungsreise-widget.js public/",
+    "test:email": "ts-node -P tsconfig.test.json src/scripts/test-email.ts"
   },
   "repository": {
     "type": "git",
@@ -28,45 +30,59 @@
   },
   "homepage": "https://github.com/muraschal/zvv-entdeckungsreise#readme",
   "dependencies": {
-    "@babel/traverse": "^7.27.0",
-    "@radix-ui/react-dialog": "^1.1.6",
-    "@radix-ui/react-label": "^2.1.2",
+    "@babel/traverse": "^7.23.9",
+    "@radix-ui/react-dialog": "^1.0.5",
+    "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-slot": "^1.1.2",
+    "@radix-ui/react-tabs": "^1.1.3",
+    "@radix-ui/react-toast": "^1.2.6",
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/ssr": "^0.6.1",
-    "@vercel/analytics": "^1.5.0",
+    "@vercel/analytics": "^1.1.3",
     "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
+    "clsx": "^2.1.0",
+    "date-fns": "^4.1.0",
     "exceljs": "^4.4.0",
-    "lucide-react": "^0.477.0",
-    "next": "^14.1.0",
+    "lucide-react": "^0.487.0",
+    "next": "^15.2.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "resend": "^4.1.2",
-    "tailwind-merge": "^3.0.2"
+    "resend": "^4.2.0",
+    "tailwind-merge": "^2.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
     "@babel/preset-env": "^7.23.9",
     "@babel/preset-react": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
-    "@supabase/supabase-js": "^2.39.8",
+    "@shadcn/ui": "^0.0.4",
+    "@supabase/supabase-js": "^2.49.4",
     "@types/node": "^20.11.19",
     "@types/react": "^18.2.57",
     "@types/react-dom": "^18.2.19",
-    "autoprefixer": "^10.4.20",
+    "@types/uuid": "^10.0.0",
+    "autoprefixer": "^10.4.17",
     "babel-loader": "^9.1.3",
     "css-loader": "^6.10.0",
-    "dotenv": "^16.4.7",
+    "dotenv": "^16.4.5",
     "postcss": "^8.4.35",
-    "postcss-import": "^16.1.0",
+    "postcss-import": "^16.0.0",
     "postcss-loader": "^8.1.0",
-    "postcss-nesting": "^13.0.1",
+    "postcss-nesting": "^12.0.2",
     "style-loader": "^3.3.4",
     "tailwindcss": "^3.4.1",
     "tailwindcss-animate": "^1.0.7",
     "terser-webpack-plugin": "^5.3.10",
-    "typescript": "^5.3.3",
-    "webpack": "^5.90.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3",
+    "webpack": "^5.90.1",
     "webpack-cli": "^5.1.4"
-  }
+  },
+  "engines": {
+    "node": ">=18.17.0"
+  },
+  "cacheDirectories": [
+    "node_modules/.cache",
+    ".next/cache"
+  ]
 }

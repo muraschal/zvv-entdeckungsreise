@@ -46,8 +46,19 @@ Die Architektur setzt auf eine minimalistische, asynchrone Eventsteuerung, wobei
 - Validiert den Code und speichert die Anmeldedaten.
 
 ### **3. E-Mail-Benachrichtigungen** 📬
-- **Bestätigungs-E-Mail** an den Benutzer nach erfolgreicher Anmeldung.
-- **Benachrichtigungs-E-Mail** an den Administrator mit den Anmeldedetails.
+- **Bestätigungs-E-Mail** an den Benutzer nach erfolgreicher Anmeldung
+  - Professionelles Layout mit ZVV-Branding
+  - Übersichtliche Darstellung der Bestelldetails
+  - Absender wird über Umgebungsvariablen konfiguriert
+  - Betreff: "Ticketbestellung ZVV-Entdeckungsreise"
+- **Benachrichtigungs-E-Mail** an den Administrator mit den Anmeldedetails
+  - Detaillierte Informationen zur neuen Anmeldung
+  - Direkte Antwortmöglichkeit an die Kontaktperson
+- **Technische Details**
+  - Zuverlässiger E-Mail-Versand über Resend API
+  - Transaktionale E-Mails mit Zustellgarantie
+  - HTML und Text-Versionen für maximale Kompatibilität
+  - Automatische Bounce-Handling und Zustellberichte
 
 ### **4. Widget-Integration** 🔌
 - **Standalone JavaScript-Widget** für die Integration in externe Websites.
@@ -344,16 +355,19 @@ Authorization: Bearer <JWT_TOKEN>
    SUPABASE_SERVICE_ROLE_KEY=dein-service-role-key
    NEXT_PUBLIC_SUPABASE_ANON_KEY=dein-anon-key
    RESEND_API_KEY=dein-resend-api-key
-   EMAIL_FROM=noreply@zvv.ch
-   ADMIN_EMAIL=ict@zvv.zh.ch
+   EMAIL_FROM=deine-absender-email
+   EMAIL_FROM_NAME=dein-absender-name
+   ADMIN_EMAIL=deine-admin-email
    ```
 
    **Hinweis zur Konfiguration:**
    - `NEXT_PUBLIC_SUPABASE_URL`: Die URL deiner Supabase-Instanz
    - `SUPABASE_SERVICE_ROLE_KEY`: Der Service-Role-Key für den Zugriff auf die Supabase-Datenbank
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Der öffentliche Anon-Key für die Client-seitige Authentifizierung
-   - `EMAIL_FROM`: Die E-Mail-Adresse, die als Absender für alle E-Mails verwendet wird (z.B. `entdeckungsreise@zvv.ch`). Fallback: `noreply@zvv.ch`
-   - `ADMIN_EMAIL`: Die E-Mail-Adresse, an die Benachrichtigungen über neue Anmeldungen gesendet werden und die als Reply-To-Adresse in den Bestätigungs-E-Mails verwendet wird. Fallback: `ict@zvv.zh.ch`
+   - `RESEND_API_KEY`: Der API-Key für den E-Mail-Versand über Resend
+   - `EMAIL_FROM`: Die E-Mail-Adresse, die als Absender für alle E-Mails verwendet wird
+   - `EMAIL_FROM_NAME`: Der Anzeigename für den E-Mail-Absender
+   - `ADMIN_EMAIL`: Die E-Mail-Adresse für Admin-Benachrichtigungen und Reply-To
 
 4. Starte die Entwicklungsumgebung:
    ```bash
@@ -420,6 +434,26 @@ Ein vollständiges Beispiel für die Integration findest du in der Datei `exampl
 
 Der Admin-Bereich ist unter `/admin` erreichbar und bietet eine Übersicht über alle Anmeldungen.
 
+### Funktionen des Admin-Bereichs
+
+Der Admin-Bereich bietet folgende Funktionalitäten:
+
+- **Anmeldungsübersicht**: Tabellarische Darstellung aller eingegangenen Anmeldungen
+  - Sortier- und filterbare Tabelle mit allen wichtigen Informationen
+  - Detailansicht für jede Anmeldung mit allen eingereichten Daten
+  - Konsistente Spaltenbreiten und optimierte Darstellung für lange Inhalte
+  - Horizontales Scrolling für bessere Übersicht auf kleineren Bildschirmen
+
+- **Testcode-Verwaltung** (nur im INT-Environment): Verwaltung von Testcodes für Entwicklungs- und Testzwecke
+  - Generierung von neuen Testcodes mit einem Klick
+  - Automatische Bereinigung von Testcodes, die älter als 24 Stunden sind
+  - Testcodes folgen dem Format `INT_VALID_YYYYMMDD_XXXXX`
+  - Strikte Umgebungsprüfung: Funktionalität nur im INT-Environment verfügbar
+
+- **Export-Funktionalität**: Export der Anmeldungsdaten als Excel-Datei
+  - Vollständiger Export aller Anmeldungsdaten
+  - Formatierte Excel-Datei mit allen relevanten Feldern
+
 ### Authentifizierung
 
 Die Authentifizierung erfolgt über **Supabase Auth** mit folgenden Merkmalen:
@@ -432,6 +466,25 @@ Um Admin-Benutzer zu erstellen:
 1. Gehe zum Supabase Dashboard → Authentication → Users
 2. Klicke auf "Add User" und gib E-Mail und Passwort ein
 3. Der Benutzer erhält eine Einladungs-E-Mail zur Bestätigung
+
+### E-Mail-Konfiguration und Tests
+
+Die Anwendung verwendet **Resend** für den zuverlässigen Versand von E-Mails. Zum Testen der E-Mail-Funktionalität:
+
+```bash
+# Führe den E-Mail-Test aus
+npm run test:email
+```
+
+Der Test sendet sowohl eine Bestätigungs-E-Mail als auch eine Admin-Benachrichtigung an die in den Umgebungsvariablen konfigurierten Adressen. Dies ist nützlich, um das E-Mail-Layout und die Zustellung zu überprüfen.
+
+#### E-Mail-Layout
+
+Die E-Mail-Templates bieten:
+- Professionelles Layout mit ZVV-Branding und Farbschema
+- Klare Struktur mit Überschriften "Danke für Ihre Ticketbestellung"
+- Übersichtliche Darstellung aller Bestelldaten in einem strukturierten Format
+- Responsives Design für optimale Anzeige auf allen Geräten
 
 ## Best Practices
 - **Supabase Row-Level Security (RLS)** aktivieren, um Datenzugriff abzusichern 🔒

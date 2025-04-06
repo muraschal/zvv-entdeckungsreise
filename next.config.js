@@ -1,7 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  // swcMinify ist in Next.js 15.x standardmäßig aktiviert und muss nicht mehr explizit angegeben werden
+  // Aktiviere Output-Caching für schnellere Builds
+  output: 'standalone',
+  
+  // Optimiere den Build-Prozess
+  experimental: {
+    optimizePackageImports: [
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-label',
+      '@radix-ui/react-slot',
+      'lucide-react'
+    ]
+  }
 };
 
 module.exports = nextConfig; 

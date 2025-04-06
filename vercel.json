@@ -1,0 +1,19 @@
+{
+  "buildCommand": "next build",
+  "installCommand": "npm ci --prefer-offline",
+  "framework": "nextjs",
+  "regions": ["fra1"],
+  "git": {
+    "deploymentEnabled": {
+      "main": false,
+      "integration": true
+    }
+  },
+  "crons": [],
+  "functions": {
+    "app/api/**/*": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  }
+} 
