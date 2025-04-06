@@ -16,8 +16,8 @@ module.exports = {
       type: 'umd'
     },
     globalObject: 'this',
-    publicPath: 'https://entdeckungsreise-int.zvv.ch/',
-    chunkFilename: 'chunks/[name].[chunkhash].js',
+    publicPath: 'https://entdeckungsreise-int.zvv.ch/dist/',
+    chunkFilename: '[name].[chunkhash].js',
     clean: true
   },
   resolve: {
