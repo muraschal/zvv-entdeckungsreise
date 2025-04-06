@@ -223,12 +223,14 @@ function AdminContent() {
             </div>
           </div>
           
-          <DetailView 
-            data={selectedRegistration} 
-            open={!!selectedRegistration} 
-            onOpenChange={(open) => !open && setSelectedRegistration(null)}
-            isCode={false}
-          />
+          {selectedRegistration && (
+            <DetailView 
+              data={selectedRegistration} 
+              open={true} 
+              onOpenChange={(open) => !open && setSelectedRegistration(null)}
+              isCode={false}
+            />
+          )}
         </>
       )}
     </div>
