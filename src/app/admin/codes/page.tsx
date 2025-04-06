@@ -270,11 +270,13 @@ export default function AllCodesPage() {
                               <Badge variant="outline" className="text-gray-800 border-gray-300">Produktionscode</Badge>
                             )}
                           </td>
-                          <td className="text-center">
-                            {isUsed && (
-                              <span title="Zur Bestellung">
+                          <td className="text-center w-24">
+                            {isUsed ? (
+                              <span title="Zur Bestellung" className="inline-flex justify-center w-full">
                                 <ExternalLink className="h-4 w-4 text-gray-500" />
                               </span>
+                            ) : (
+                              <span className="inline-block w-4"></span>
                             )}
                           </td>
                         </tr>

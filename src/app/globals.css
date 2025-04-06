@@ -220,11 +220,17 @@
   }
 
   .table-zvv td {
-    @apply p-3 border-b border-gray-200 text-sm text-black;
+    @apply p-3 border-b border-gray-200 text-sm text-black align-middle;
   }
 
   .table-zvv tr:hover {
     @apply bg-gray-50;
+  }
+
+  /* Tabellenspaltenbreiten und Abstände */
+  .table-zvv th:last-child,
+  .table-zvv td:last-child {
+    @apply text-center w-24;
   }
 }
 
@@ -453,11 +459,17 @@ body {
   }
 
   .table-zvv td {
-    @apply p-3 border-b border-gray-200 text-sm text-black;
+    @apply p-3 border-b border-gray-200 text-sm text-black align-middle;
   }
 
   .table-zvv tr:hover {
     @apply bg-gray-50;
+  }
+
+  /* Tabellenspaltenbreiten und Abstände */
+  .table-zvv th:last-child,
+  .table-zvv td:last-child {
+    @apply text-center w-24;
   }
 }
 
