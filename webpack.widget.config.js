@@ -17,7 +17,7 @@ module.exports = {
     },
     globalObject: 'this',
     publicPath: 'https://entdeckungsreise-int.zvv.ch/dist/',
-    chunkFilename: 'chunks/[name].[chunkhash].js',
+    chunkFilename: '[name].[chunkhash].js',
     clean: true
   },
   resolve: {
