@@ -9,6 +9,20 @@ export const runtime = 'nodejs';
 // Verschiedene Testfälle, die generiert werden sollen
 const TEST_CASES = ['VALID', 'EXPIRED', 'USED', 'SPECIAL'];
 
+// Muster-Bestelldaten für Testcodes
+const SAMPLE_REGISTRATION = {
+  school: 'Musterschule Zürich',
+  student_count: 25,
+  travel_date: new Date().toISOString().split('T')[0], // Heutiges Datum
+  additional_notes: 'Dies ist eine automatisch erstellte Testbestellung',
+  email: 'test@example.com',
+  class: '5. Klasse',
+  contact_person: 'Max Mustermann',
+  phone_number: '044 123 45 67',
+  accompanist_count: 2,
+  arrival_time: '09:30',
+};
+
 // Generiere einen eindeutigen, lesbaren Code
 function generateUniqueCode(testCase: string): string {
   const timestamp = format(new Date(), 'yyyyMMdd');
@@ -102,11 +116,37 @@ export async function POST(request: Request) {
       );
     }
 
+    // Finde den USED-Testcode und erstelle eine Musterbestellung dafür
+    const usedCode = data?.find(code => code.code.includes('INT_USED_'));
+    
+    if (usedCode) {
+      console.log('Erstelle Musterbestellung für Code:', usedCode.code);
+      
+      // Erstelle eine Testbestellung mit dem verwendeten Code
+      const { data: registrationData, error: registrationError } = await supabase
+        .from('registrations')
+        .insert({
+          code: usedCode.code,
+          ...SAMPLE_REGISTRATION,
+          created_at: now.toISOString()
+        })
+        .select();
+      
+      if (registrationError) {
+        console.error('Fehler beim Erstellen der Musterbestellung:', registrationError);
+        // Wir werfen hier keinen Fehler, da die Codes bereits erstellt wurden
+      } else {
+        console.log('Musterbestellung erfolgreich erstellt:', registrationData);
+      }
+    }
+
     console.log('Testcodes erfolgreich in Datenbank eingefügt');
     return NextResponse.json({ 
       message: 'Testcodes erfolgreich generiert',
       count: newCodes.length,
-      codes: newCodes.map(code => code.code)
+      codes: newCodes.map(code => code.code),
+      includesUsedCode: !!usedCode,
+      sampleRegistrationCreated: usedCode ? true : false
     });
 
   } catch (error) {

@@ -18,6 +18,7 @@ interface TestCode {
   status: "unused" | "used";
   created_at: string;
   expires_at: string;
+  has_registration?: boolean; // Flag, ob eine Bestellung für diesen Code existiert
 }
 
 export default function TestcodesPage() {
@@ -184,7 +185,7 @@ export default function TestcodesPage() {
     }
   };
 
-  const getStatusBadge = (status: string, expiresAt: string) => {
+  const getStatusBadge = (status: string, expiresAt: string, hasRegistration?: boolean) => {
     const isExpired = new Date(expiresAt) < new Date();
     
     if (isExpired) {
@@ -198,17 +199,26 @@ export default function TestcodesPage() {
     
     if (status === "unused") {
       return (
-        <Badge variant="outline" className="bg-zvv-light-blue text-zvv-blue border-zvv-light-blue flex items-center gap-1">
+        <Badge variant="outline" className="bg-gray-100 text-gray-800 border-gray-200 flex items-center gap-1">
           <CheckCircle2 className="h-3.5 w-3.5" />
           <span>Verfügbar</span>
         </Badge>
       );
     } else {
+      // Status "used"
       return (
-        <Badge variant="outline" className="bg-zvv-light-blue text-zvv-blue border-zvv-light-blue flex items-center gap-1">
-          <XCircle className="h-3.5 w-3.5" />
-          <span>Verwendet</span>
-        </Badge>
+        <div className="flex flex-col gap-1">
+          <Badge variant="outline" className="text-gray-800 border-gray-300 flex items-center gap-1">
+            <XCircle className="h-3.5 w-3.5" />
+            <span>Verwendet</span>
+          </Badge>
+          {hasRegistration && (
+            <Badge variant="outline" className="bg-gray-50 text-gray-600 border-gray-200 flex items-center gap-1 text-xs">
+              <CheckCircle2 className="h-3 w-3" />
+              <span>Mit Bestellung</span>
+            </Badge>
+          )}
+        </div>
       );
     }
   };
@@ -216,6 +226,14 @@ export default function TestcodesPage() {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return format(date, 'dd.MM.yyyy HH:mm', { locale: de });
+  };
+
+  const getTestCaseType = (code: string) => {
+    if (code.includes('INT_VALID_')) return 'Gültiger Code';
+    if (code.includes('INT_EXPIRED_')) return 'Abgelaufener Code';
+    if (code.includes('INT_USED_')) return 'Verwendeter Code';
+    if (code.includes('INT_SPECIAL_')) return 'Spezialfall';
+    return 'Unbekannt';
   };
 
   // Wenn wir nicht in der Integrationsumgebung sind, zeigen wir eine Meldung an
@@ -328,6 +346,7 @@ export default function TestcodesPage() {
                       <th>Status</th>
                       <th>Erstellt am</th>
                       <th>Gültig bis</th>
+                      <th>Testfall</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -335,10 +354,11 @@ export default function TestcodesPage() {
                       <tr key={index}>
                         <td className="font-mono">{code.code}</td>
                         <td>
-                          {getStatusBadge(code.status, code.expires_at)}
+                          {getStatusBadge(code.status, code.expires_at, code.has_registration)}
                         </td>
                         <td>{formatDate(code.created_at)}</td>
                         <td>{formatDate(code.expires_at)}</td>
+                        <td>{getTestCaseType(code.code)}</td>
                       </tr>
                     ))}
                   </tbody>
