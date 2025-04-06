@@ -123,18 +123,18 @@ export default function AdminLayout({
                   </Link>
                 );
               })}
+              
+              <button 
+                onClick={handleLogout}
+                className={cn(
+                  "group flex items-center px-2 py-2 text-sm font-medium rounded-md w-full",
+                  `text-white ${hoverNavClass}`
+                )}
+              >
+                <LogOut className="mr-3 flex-shrink-0 h-5 w-5 text-white" />
+                Abmelden
+              </button>
             </nav>
-            <div className="px-2 mt-6 mb-2">
-              <div className="flex items-center px-2 py-2">
-                <LogOut className="mr-3 flex-shrink-0 h-5 w-5 text-white/80" />
-                <button 
-                  onClick={handleLogout}
-                  className="text-white/90 text-sm hover:text-white focus:outline-none"
-                >
-                  Abmelden
-                </button>
-              </div>
-            </div>
           </div>
           <div className="p-2 text-xs text-white/60 text-left">
             Version {APP_VERSION}
@@ -220,17 +220,22 @@ export default function AdminLayout({
                     </Link>
                   );
                 })}
-              </nav>
-            </div>
-            <div className="flex-shrink-0 flex border-t border-white/10 p-4">
-              <div className="flex items-center w-full">
-                <LogOut className="h-6 w-6 text-white/80" />
+                
                 <button 
                   onClick={handleLogout}
-                  className="ml-3 flex-1 flex items-center text-white/90 text-sm hover:text-white focus:outline-none"
+                  className={cn(
+                    "group flex items-center px-2 py-2 text-base font-medium rounded-md w-full",
+                    `text-white ${hoverNavClass}`
+                  )}
                 >
+                  <LogOut className="mr-4 flex-shrink-0 h-6 w-6 text-white" />
                   Abmelden
                 </button>
+              </nav>
+            </div>
+            <div className="flex-shrink-0 border-t border-white/10 p-4">
+              <div className="text-xs text-white/60 text-left">
+                Version {APP_VERSION}
               </div>
             </div>
           </div>
