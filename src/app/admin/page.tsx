@@ -409,16 +409,13 @@ function AdminContent() {
                       {nextExpiringCode ? (
                         <>
                           <div className="text-6xl font-bold text-zvv-blue">
-                            {daysUntilExpiry}
-                          </div>
-                          <div className="text-xl font-medium text-zvv-blue -mt-2 mb-2">
-                            {daysUntilExpiry === 1 ? 'Tag' : 'Tage'}
-                          </div>
-                          <div className="text-md font-semibold mt-1 bg-zvv-light-blue px-3 py-1.5 rounded text-center">
                             {new Date(nextExpiringCode.expires_at).toLocaleDateString('de-CH')}
                           </div>
-                          <div className="mt-2">
-                            <div className="px-2 py-1 text-xs font-mono rounded text-center overflow-hidden text-ellipsis">
+                          <div className="text-lg font-medium text-zvv-blue mt-2 mb-2">
+                            in {daysUntilExpiry} {daysUntilExpiry === 1 ? 'Tag' : 'Tagen'}
+                          </div>
+                          <div className="mt-1">
+                            <div className="px-2 py-1 text-xs font-mono rounded text-center overflow-hidden text-ellipsis bg-zvv-light-blue">
                               {nextExpiringCode.code}
                             </div>
                           </div>
