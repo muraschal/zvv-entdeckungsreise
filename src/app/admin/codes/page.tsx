@@ -246,40 +246,36 @@ export default function AllCodesPage() {
                     
                     // Unterschiedliche Styling-Klassen für verwendete und nicht verwendete Codes
                     const rowClassName = `
-                      hover:bg-gray-100 
-                      ${isUsed ? 'cursor-pointer' : ''}
-                      text-black
-                    `;
+                      ${isUsed ? 'hover:bg-gray-100 cursor-pointer' : ''}
+                    `.trim();
                     
                     return (
-                      <React.Fragment key={uniqueKey}>
-                        <tr 
-                          className={rowClassName}
-                          onClick={() => isUsed ? navigateToRegistration(code) : null}
-                          title={isUsed ? "Zur Bestellung anzeigen" : ""}
-                        >
-                          <td className="font-mono">{code.code}</td>
-                          <td>{getStatusBadge(code.status, code.expires_at)}</td>
-                          <td>{formatDate(code.created_at)}</td>
-                          <td>{formatDate(code.expires_at)}</td>
-                          <td>
-                            {isTestCode(code.code) ? (
-                              <Badge variant="outline" className="bg-gray-100 text-gray-800 border-gray-200">Testcode</Badge>
-                            ) : (
-                              <Badge variant="outline" className="text-gray-800 border-gray-300">Produktionscode</Badge>
-                            )}
-                          </td>
-                          <td className="text-center w-24">
-                            {isUsed ? (
-                              <span title="Zur Bestellung" className="inline-flex justify-center w-full">
-                                <ExternalLink className="h-4 w-4 text-gray-500" />
-                              </span>
-                            ) : (
-                              <span className="inline-block w-4"></span>
-                            )}
-                          </td>
-                        </tr>
-                      </React.Fragment>
+                      <tr 
+                        key={uniqueKey}
+                        className={rowClassName}
+                        onClick={() => isUsed && navigateToRegistration(code)}
+                      >
+                        <td className="font-mono">{code.code}</td>
+                        <td>{getStatusBadge(code.status, code.expires_at)}</td>
+                        <td>{formatDate(code.created_at)}</td>
+                        <td>{formatDate(code.expires_at)}</td>
+                        <td>
+                          {isTestCode(code.code) ? (
+                            <Badge variant="outline" className="bg-gray-100 text-gray-800 border-gray-200">Testcode</Badge>
+                          ) : (
+                            <Badge variant="outline" className="text-gray-800 border-gray-300">Produktionscode</Badge>
+                          )}
+                        </td>
+                        <td className="text-center w-24">
+                          {isUsed ? (
+                            <span title="Zur Bestellung" className="inline-flex justify-center w-full">
+                              <ExternalLink className="h-4 w-4 text-gray-500" />
+                            </span>
+                          ) : (
+                            <span className="inline-block w-4"></span>
+                          )}
+                        </td>
+                      </tr>
                     );
                   })}
                 </tbody>
