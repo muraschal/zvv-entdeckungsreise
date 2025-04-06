@@ -258,33 +258,6 @@ function AdminContent() {
                         {(registrations.reduce((sum, reg) => sum + reg.student_count, 0) / registrations.length).toFixed(1)}
                       </span>
                     </div>
-                    
-                    <div className="mt-1 space-y-1">
-                      <div className="flex justify-between text-xs">
-                        <span>Schüler-Begleiter Verhältnis</span>
-                        <span>
-                          {(registrations.reduce((sum, reg) => sum + reg.student_count, 0) / 
-                           Math.max(1, registrations.reduce((sum, reg) => sum + reg.accompanist_count, 0))).toFixed(1)}:1
-                        </span>
-                      </div>
-                      <Progress 
-                        value={75} 
-                        className="h-1 bg-gray-100"
-                      >
-                        <div 
-                          className="h-full bg-green-500" 
-                          style={{ 
-                            width: `${Math.min(100, (registrations.reduce((sum, reg) => sum + reg.student_count, 0) / 
-                              Math.max(1, registrations.reduce((sum, reg) => sum + reg.accompanist_count, 0) * 25) * 100))}%` 
-                          }}
-                        ></div>
-                      </Progress>
-                      <div className="flex justify-between text-[10px] text-gray-500">
-                        <span>Gut betreut</span>
-                        <span>Empfohlen</span>
-                        <span>Wenig Begleitung</span>
-                      </div>
-                    </div>
                   </>
                 )}
               </CardContent>
