@@ -246,7 +246,6 @@ export default function AllCodesPage() {
                     
                     // Unterschiedliche Styling-Klassen für verwendete und nicht verwendete Codes
                     const rowClassName = `
-                      ${isTestCode(code.code) ? 'bg-gray-50' : 'bg-white'} 
                       hover:bg-gray-100 
                       ${isUsed ? 'cursor-pointer' : ''}
                       text-black
