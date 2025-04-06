@@ -378,8 +378,8 @@ function AdminContent() {
                   {/* Große Code-Anzeige */}
                   <Card className="shadow-sm flex flex-col">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-lg font-medium">BESTELLCODES TOTAL</CardTitle>
-                      <Key className="h-6 w-6 text-zvv-blue" />
+                      <CardTitle className="text-sm font-medium">Bestellcodes total</CardTitle>
+                      <Key className="h-5 w-5 text-zvv-blue" />
                     </CardHeader>
                     <CardContent className="flex-1 flex flex-col justify-center items-center">
                       <div className="text-6xl font-bold text-zvv-blue mt-3" data-testid="total-codes">
@@ -401,8 +401,8 @@ function AdminContent() {
                   {/* Großes Ablaufdatum */}
                   <Card className="shadow-sm flex flex-col">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-lg font-medium">Nächster Ablauf</CardTitle>
-                      <Clock className="h-6 w-6 text-zvv-blue" />
+                      <CardTitle className="text-sm font-medium">Nächster Ablauf</CardTitle>
+                      <Clock className="h-5 w-5 text-zvv-blue" />
                     </CardHeader>
                     <CardContent className="flex-1 flex flex-col justify-center items-center">
                       {nextExpiringCode ? (
