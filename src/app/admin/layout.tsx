@@ -24,6 +24,9 @@ interface AdminLayoutProps {
   children: ReactNode;
 }
 
+// App Version aus den Environment-Variablen, mit Fallback
+const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION || '2.0.0';
+
 const navItems = [
   { label: 'Dashboard', href: '/admin', icon: Home },
   { label: 'Bestellungen', href: '/admin/bestellungen', icon: ShoppingCart },
@@ -133,8 +136,8 @@ export default function AdminLayout({
               </div>
             </div>
           </div>
-          <div className="p-2 text-xs text-white/60 text-center">
-            Version 2.0.0
+          <div className="p-2 text-xs text-white/60 text-left">
+            Version {APP_VERSION}
           </div>
         </div>
       </div>
