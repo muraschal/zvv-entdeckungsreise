@@ -1,14 +1,37 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { de } from 'date-fns/locale';
-import { Alert } from '@/components/ui/alert';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Skeleton } from '@/components/ui/skeleton';
 
-export const dynamic = 'force-dynamic';
+export default function AllCodesPage() {
+  const [data, setData] = useState<any>({ codes: [] });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-export default async function AllCodesPage() {
-  // Fetch data from API
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || ''}/api/admin/codes`);
-  const data = await response.json();
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/admin/codes');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const result = await response.json();
+        setData(result);
+      } catch (e) {
+        console.error('Error fetching codes:', e);
+        setError('Fehler beim Laden der Daten');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -31,12 +54,26 @@ export default async function AllCodesPage() {
     return code.startsWith('INT_');
   };
 
+  if (loading) {
+    return (
+      <div className="p-4">
+        <h1 className="text-2xl font-bold mb-4">Alle Codes</h1>
+        <div className="space-y-4">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-64 w-full" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Alle Codes</h1>
       
-      {data.error ? (
-        <Alert variant="destructive">Fehler beim Laden der Daten: {data.error}</Alert>
+      {error ? (
+        <Alert variant="destructive">
+          <AlertDescription>Fehler beim Laden der Daten: {error}</AlertDescription>
+        </Alert>
       ) : (
         <>
           <div className="mb-4">
