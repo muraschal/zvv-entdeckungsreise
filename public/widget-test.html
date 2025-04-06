@@ -20,6 +20,13 @@
     h1 {
       color: #0066b3; /* ZVV Blau */
     }
+    .error {
+      color: red;
+      background-color: #ffeeee;
+      padding: 10px;
+      border: 1px solid #ffcccc;
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body>
@@ -40,15 +47,36 @@
   <script src="/zvv-entdeckungsreise-widget.js"></script>
   
   <script>
+    // Funktion zum Überprüfen und Protokollieren der verfügbaren Widget-Initialisierungsmethoden
+    function checkWidgetAvailability() {
+      console.log('Verfügbare Widget-API:', {
+        initZVVEntdeckungsreiseWidget: typeof window.initZVVEntdeckungsreiseWidget === 'function' ? 'Verfügbar' : 'Nicht verfügbar',
+        ZVVEntdeckungsreiseWidget: typeof window.ZVVEntdeckungsreiseWidget === 'object' ? 'Verfügbar' : 'Nicht verfügbar',
+        initMethod: typeof window.ZVVEntdeckungsreiseWidget?.init === 'function' ? 'Verfügbar' : 'Nicht verfügbar'
+      });
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
+      // Verfügbarkeit überprüfen
+      checkWidgetAvailability();
+      
       // Widget initialisieren
-      if (window.initZVVEntdeckungsreiseWidget) {
+      if (typeof window.initZVVEntdeckungsreiseWidget === 'function') {
+        console.log('Initialisiere Widget mit neuer Methode');
         window.initZVVEntdeckungsreiseWidget('zvv-entdeckungsreise-widget', {
           apiBaseUrl: window.location.origin
         });
-      } else {
+      } 
+      else if (window.ZVVEntdeckungsreiseWidget && typeof window.ZVVEntdeckungsreiseWidget.init === 'function') {
+        console.log('Initialisiere Widget mit alter Methode');
+        window.ZVVEntdeckungsreiseWidget.init({
+          apiBaseUrl: window.location.origin
+        });
+      }
+      else {
+        console.error('ZVV Widget-Initialisierungsfunktion nicht gefunden');
         document.getElementById('zvv-entdeckungsreise-widget').innerHTML = 
-          '<p style="color: red;">Widget konnte nicht geladen werden. Bitte stellen Sie sicher, dass Sie das Widget korrekt gebaut haben.</p>';
+          '<div class="error">Widget konnte nicht geladen werden. Die Initialisierungsfunktion wurde nicht gefunden.</div>';
       }
     });
   </script>

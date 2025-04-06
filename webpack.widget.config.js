@@ -8,10 +8,14 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'zvv-entdeckungsreise-widget.js',
-    library: 'ZVVEntdeckungsreiseWidget',
-    libraryTarget: 'umd',
+    library: {
+      name: 'ZVVEntdeckungsreiseWidget',
+      type: 'umd',
+      export: 'default',
+    },
     globalObject: 'this',
     publicPath: '/',
+    chunkFilename: 'zvv-entdeckungsreise-widget.[chunkhash].js',
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
@@ -22,8 +26,10 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env.GITHUB_SHA': JSON.stringify(process.env.GITHUB_SHA || 'local-build'),
-      'process.env.BUILD_DATE': JSON.stringify(new Date().toISOString())
+      'process.env.BUILD_DATE': JSON.stringify(new Date().toISOString()),
+      'process.env.NODE_ENV': JSON.stringify('production')
     }),
+    new webpack.optimize.ModuleConcatenationPlugin(),
   ],
   module: {
     rules: [
@@ -38,6 +44,10 @@ module.exports = {
               '@babel/preset-react',
               '@babel/preset-typescript',
             ],
+            plugins: [
+              '@babel/plugin-transform-runtime',
+              '@babel/plugin-syntax-dynamic-import'
+            ]
           },
         },
       },
@@ -49,7 +59,28 @@ module.exports = {
   },
   optimization: {
     minimize: true,
-    minimizer: [new TerserPlugin()],
+    minimizer: [new TerserPlugin({
+      terserOptions: {
+        compress: {
+          drop_console: false,
+          passes: 2,
+        },
+        mangle: true,
+        output: {
+          comments: false,
+        },
+      },
+    })],
+    splitChunks: {
+      chunks: 'async',
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+        },
+      },
+    },
   },
   externals: {
     react: {
@@ -64,5 +95,10 @@ module.exports = {
       amd: 'ReactDOM',
       root: 'ReactDOM',
     },
+  },
+  performance: {
+    hints: 'warning',
+    maxAssetSize: 250000,
+    maxEntrypointSize: 400000,
   },
 }; 
