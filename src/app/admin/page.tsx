@@ -365,8 +365,7 @@ function AdminContent() {
           <div className="mt-8">
             <h2 className="text-xl font-bold tracking-tight mb-4">Code-Übersicht</h2>
             {loadingCodes ? (
-              <div className="grid gap-6 md:grid-cols-3">
-                <Skeleton className="h-36 w-full" />
+              <div className="grid gap-6 md:grid-cols-2">
                 <Skeleton className="h-36 w-full" />
                 <Skeleton className="h-36 w-full" />
               </div>
@@ -376,122 +375,58 @@ function AdminContent() {
               </div>
             ) : (
               <>
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-                  <Card className="shadow-sm">
+                <div className="grid gap-6 md:grid-cols-2">
+                  {/* Große Code-Anzeige */}
+                  <Card className="shadow-sm flex flex-col">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Insgesamt</CardTitle>
-                      <Key className="h-5 w-5 text-zvv-blue" />
+                      <CardTitle className="text-lg font-medium">BESTELLCODES TOTAL</CardTitle>
+                      <Key className="h-6 w-6 text-zvv-blue" />
                     </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold text-zvv-blue" data-testid="total-codes">
+                    <CardContent className="flex-1 flex flex-col justify-center items-center">
+                      <div className="text-6xl font-bold text-zvv-blue mt-3" data-testid="total-codes">
                         {totalCodes}
                       </div>
-                      <div className="mt-2 space-y-2">
-                        <div className="flex justify-between text-xs">
-                          <span>Verwendet</span>
-                          <span className="font-medium">{usedCodes} ({Math.round(usedCodes/totalCodes*100)}%)</span>
-                        </div>
-                        <Progress value={usedCodes/totalCodes*100} className="h-1" />
+                      <div className="mt-4 text-sm text-center">
+                        <span className="inline-flex items-center bg-green-50 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
+                          <CheckCircle className="h-3.5 w-3.5 mr-1" />
+                          {availableCodes} verfügbar
+                        </span>
+                        <span className="inline-flex items-center bg-blue-50 text-blue-700 px-2 py-1 rounded-full text-xs font-medium ml-2">
+                          <CheckCircle className="h-3.5 w-3.5 mr-1" />
+                          {usedCodes} verwendet
+                        </span>
                       </div>
                     </CardContent>
                   </Card>
                   
-                  <Card className="shadow-sm">
+                  {/* Großes Ablaufdatum */}
+                  <Card className="shadow-sm flex flex-col">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Code-Status</CardTitle>
-                      <PieChart className="h-5 w-5 text-zvv-blue" />
+                      <CardTitle className="text-lg font-medium">Nächster Ablauf</CardTitle>
+                      <Clock className="h-6 w-6 text-zvv-blue" />
                     </CardHeader>
-                    <CardContent>
-                      <div className="flex justify-center mt-1">
-                        <div className="h-44 w-44">
-                          <ResponsiveContainer width="100%" height="100%">
-                            <RechartPieChart>
-                              <Pie
-                                data={pieChartData}
-                                dataKey="value"
-                                nameKey="name"
-                                cx="50%"
-                                cy="50%"
-                                outerRadius={60}
-                                innerRadius={40}
-                                paddingAngle={2}
-                                label={({ name, percent }) => `${name} ${Math.round(percent * 100)}%`}
-                                labelLine={false}
-                                isAnimationActive={true}
-                              >
-                                {pieChartData.map((entry, index) => (
-                                  <Cell key={`cell-${index}`} fill={entry.color} />
-                                ))}
-                              </Pie>
-                              <Tooltip 
-                                formatter={(value, name) => [`${value} Codes`, name]}
-                              />
-                            </RechartPieChart>
-                          </ResponsiveContainer>
-                        </div>
-                      </div>
-                      <div className="flex justify-between mt-2 text-xs">
-                        <div className="flex items-center">
-                          <div className="w-3 h-3 bg-green-500 rounded-full mr-1"></div>
-                          <span>Verfügbar</span>
-                        </div>
-                        <div className="flex items-center">
-                          <div className="w-3 h-3 bg-blue-500 rounded-full mr-1"></div>
-                          <span>Verwendet</span>
-                        </div>
-                        <div className="flex items-center">
-                          <div className="w-3 h-3 bg-amber-500 rounded-full mr-1"></div>
-                          <span>Abgelaufen</span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card className="shadow-sm">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Abgelaufen</CardTitle>
-                      <AlertTriangle className="h-5 w-5 text-amber-500" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold text-amber-500" data-testid="expired-codes">
-                        {expiredCodes}
-                      </div>
-                      <div className="mt-2 space-y-2">
-                        <div className="flex justify-between text-xs">
-                          <span>Ungenutzt abgelaufen</span>
-                          <span className="font-medium">{Math.round(expiredCodes/totalCodes*100)}% aller Codes</span>
-                        </div>
-                        <Progress value={expiredCodes/totalCodes*100} className="h-1 bg-gray-100">
-                          <div className="h-full bg-amber-500" style={{ width: `${expiredCodes/totalCodes*100}%` }}></div>
-                        </Progress>
-                      </div>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card className="shadow-sm">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Nächster Ablauf</CardTitle>
-                      <Clock className="h-5 w-5 text-zvv-blue" />
-                    </CardHeader>
-                    <CardContent>
+                    <CardContent className="flex-1 flex flex-col justify-center items-center">
                       {nextExpiringCode ? (
                         <>
-                          <div className="text-2xl font-bold text-zvv-blue">
-                            {daysUntilExpiry} {daysUntilExpiry === 1 ? 'Tag' : 'Tage'}
+                          <div className="text-6xl font-bold text-zvv-blue">
+                            {daysUntilExpiry}
                           </div>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            Nächster Code läuft am {new Date(nextExpiringCode.expires_at).toLocaleDateString('de-CH')} ab
-                          </p>
+                          <div className="text-xl font-medium text-zvv-blue -mt-2 mb-2">
+                            {daysUntilExpiry === 1 ? 'Tag' : 'Tage'}
+                          </div>
+                          <div className="text-md font-semibold mt-1 bg-zvv-light-blue px-3 py-1.5 rounded text-center">
+                            {new Date(nextExpiringCode.expires_at).toLocaleDateString('de-CH')}
+                          </div>
                           <div className="mt-2">
-                            <div className="px-2 py-1 bg-zvv-light-blue text-xs font-mono rounded text-center overflow-hidden text-ellipsis">
+                            <div className="px-2 py-1 text-xs font-mono rounded text-center overflow-hidden text-ellipsis">
                               {nextExpiringCode.code}
                             </div>
                           </div>
                         </>
                       ) : (
                         <>
-                          <div className="text-2xl font-bold text-zvv-blue">-</div>
-                          <p className="text-xs text-muted-foreground mt-1">
+                          <div className="text-6xl font-bold text-zvv-blue">-</div>
+                          <p className="text-md mt-1">
                             Keine aktiven Codes vorhanden
                           </p>
                         </>
