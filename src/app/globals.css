@@ -194,10 +194,10 @@
 
   /* Login-Hintergrundbild */
   .zvv-login-background {
-    background: linear-gradient(135deg, rgba(0,51,153,0.9) 0%, rgba(0,41,122,0.9) 100%);
-    background-image: url('/images/zvv-background.jpg');
+    background: linear-gradient(135deg, rgba(0,51,153,0.9) 0%, rgba(0,41,122,0.9) 100%), url('/images/zvv-background.jpg');
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
     background-blend-mode: overlay;
   }
 
@@ -239,20 +239,20 @@
 
 /* Login Screen Hintergrund */
 .login-background {
-  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url('/images/zvv-background.jpg');
+  background: linear-gradient(135deg, rgba(0,51,153,0.9) 0%, rgba(0,41,122,0.9) 100%), url('/images/zvv-background.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  min-height: 100vh;
+  background-blend-mode: overlay;
 }
 
 /* Integration-Umgebung Overlay */
 .integration-overlay {
-  background-image: linear-gradient(to bottom, #7e002ce6, rgba(0, 62, 126, 0.95)), url('/images/zvv-background.jpg');
+  background: linear-gradient(135deg, rgba(126,0,44,0.9) 0%, rgba(180,0,44,0.75) 100%), url('/images/zvv-background.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  min-height: 100vh;
+  background-blend-mode: overlay;
 }
 
 /* Bestehende Stile beibehalten */
