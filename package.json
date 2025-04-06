@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint --max-warnings=0",
     "cache-clean": "rm -rf .next && rm -rf node_modules/.cache",
-    "build:widget": "webpack --config webpack.widget.config.js && mkdir -p public/dist && cp -r dist/* public/dist/",
+    "build:widget": "rm -rf public/dist && webpack --config webpack.widget.config.js && mkdir -p public/dist && cp -r dist/* public/dist/ && rm -rf public/dist/dist",
     "build:standalone": "webpack --config webpack.widget.config.js && mkdir -p public && cp dist/zvv-entdeckungsreise-widget.js public/",
     "test:email": "ts-node -P tsconfig.test.json src/scripts/test-email.ts"
   },
