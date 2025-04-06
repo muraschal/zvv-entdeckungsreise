@@ -11,24 +11,26 @@ export interface Database {
     Tables: {
       codes: {
         Row: {
+          id: number
           code: string
-          status: string
+          status: 'unused' | 'used'
+          expires_at: string
           created_at: string
-          expires_at: string | null
         }
         Insert: {
+          id?: number
           code: string
-          status?: string
+          status?: 'unused' | 'used'
+          expires_at: string
           created_at?: string
-          expires_at?: string | null
         }
         Update: {
+          id?: number
           code?: string
-          status?: string
+          status?: 'unused' | 'used'
+          expires_at?: string
           created_at?: string
-          expires_at?: string | null
         }
-        Relationships: []
       }
       registrations: {
         Row: {
@@ -37,11 +39,11 @@ export interface Database {
           school: string
           student_count: number
           travel_date: string
-          additional_notes: string | null
+          additional_notes?: string
           email: string
+          class: string
           contact_person: string
           phone_number: string
-          class: string
           accompanist_count: number
           arrival_time: string
           created_at: string
@@ -52,11 +54,11 @@ export interface Database {
           school: string
           student_count: number
           travel_date: string
-          additional_notes?: string | null
+          additional_notes?: string
           email: string
+          class: string
           contact_person: string
           phone_number: string
-          class: string
           accompanist_count: number
           arrival_time: string
           created_at?: string
@@ -67,23 +69,15 @@ export interface Database {
           school?: string
           student_count?: number
           travel_date?: string
-          additional_notes?: string | null
+          additional_notes?: string
           email?: string
+          class?: string
           contact_person?: string
           phone_number?: string
-          class?: string
           accompanist_count?: number
           arrival_time?: string
           created_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "registrations_code_fkey"
-            columns: ["code"]
-            referencedRelation: "codes"
-            referencedColumns: ["code"]
-          }
-        ]
       }
     }
     Views: {
@@ -93,9 +87,6 @@ export interface Database {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
       [_ in never]: never
     }
   }

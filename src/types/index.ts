@@ -1,10 +1,10 @@
 // Typdefinitionen für die Codes-Tabelle
 export interface Code {
-  id: string;
+  id: number;
   code: string;
   status: 'unused' | 'used';
+  expires_at: string;
   created_at: string;
-  expires_at: string | null;
 }
 
 // Typdefinitionen für die API-Anfragen und -Antworten
@@ -24,4 +24,27 @@ export interface RedeemRequest {
 export interface RedeemResponse {
   success: boolean;
   message: string;
+}
+
+export interface Registration {
+  id: string;
+  code: string;
+  school: string;
+  student_count: number;
+  travel_date: string;
+  additional_notes?: string;
+  email: string;
+  class: string;
+  contact_person: string;
+  phone_number: string;
+  accompanist_count: number;
+  arrival_time: string;
+  created_at: string;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data?: T;
+  error?: string;
 } 
