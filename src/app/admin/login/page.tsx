@@ -14,7 +14,6 @@ export default function AdminLoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
-  const [showResetForm, setShowResetForm] = useState(false);
   const router = useRouter();
   
   // Erstelle einen Supabase-Client für den Browser
@@ -40,34 +39,6 @@ export default function AdminLoginPage() {
       // Erfolgreich eingeloggt
       router.push('/admin');
       router.refresh(); // Aktualisiere die Seite, um den neuen Auth-Status zu reflektieren
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Ein Fehler ist aufgetreten');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleResetPassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    setMessage('');
-    
-    if (!email) {
-      setError('Bitte gib deine E-Mail-Adresse ein');
-      setLoading(false);
-      return;
-    }
-    
-    try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/admin/reset-password`,
-      });
-      
-      if (error) throw error;
-      
-      setMessage('Eine E-Mail zum Zurücksetzen des Passworts wurde gesendet. Bitte überprüfe deinen Posteingang.');
-      setShowResetForm(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Ein Fehler ist aufgetreten');
     } finally {
@@ -103,12 +74,10 @@ export default function AdminLoginPage() {
         <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
           <div className="flex flex-col space-y-2 text-center">
             <h1 className="text-2xl font-semibold tracking-tight">
-              {showResetForm ? 'Passwort zurücksetzen' : 'Admin-Bereich'}
+              Admin-Bereich
             </h1>
             <p className="text-sm text-muted-foreground">
-              {showResetForm 
-                ? 'Gib deine E-Mail-Adresse ein, um einen Reset-Link zu erhalten' 
-                : 'Gib deine Anmeldedaten ein, um auf den Admin-Bereich zuzugreifen'}
+              Gib deine Anmeldedaten ein, um auf den Admin-Bereich zuzugreifen
             </p>
           </div>
           
@@ -125,152 +94,77 @@ export default function AdminLoginPage() {
               </div>
             )}
             
-            {!showResetForm ? (
-              <form onSubmit={handleLogin}>
-                <div className="grid gap-4">
-                  <div className="grid gap-2">
-                    <Label className="text-sm font-medium" htmlFor="email">
-                      E-Mail
-                    </Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="name@zvv.ch"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      autoComplete="email"
-                      className="h-9"
-                    />
-                  </div>
-                  
-                  <div className="grid gap-2">
-                    <div className="flex items-center justify-between">
-                      <Label className="text-sm font-medium" htmlFor="password">
-                        Passwort
-                      </Label>
-                    </div>
-                    <Input
-                      id="password"
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      autoComplete="current-password"
-                      className="h-9"
-                    />
-                  </div>
-                  
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? (
-                      <>
-                        <svg
-                          className="mr-2 h-4 w-4 animate-spin"
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-                        </svg>
-                        Anmeldung...
-                      </>
-                    ) : (
-                      'Anmelden'
-                    )}
-                  </Button>
-                  
-                  <div className="text-center text-sm">
-                    <a 
-                      href="/register" 
-                      className="text-blue-600 hover:text-blue-800 hover:underline"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Zum Anmeldeformular für Schulklassen →
-                    </a>
-                  </div>
+            <form onSubmit={handleLogin}>
+              <div className="grid gap-4">
+                <div className="grid gap-2">
+                  <Label className="text-sm font-medium" htmlFor="email">
+                    E-Mail
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="name@zvv.ch"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    autoComplete="email"
+                    className="h-9"
+                  />
                 </div>
-              </form>
-            ) : (
-              <form onSubmit={handleResetPassword}>
-                <div className="grid gap-4">
-                  <div className="grid gap-2">
-                    <Label className="text-sm font-medium" htmlFor="reset-email">
-                      E-Mail
+                
+                <div className="grid gap-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-medium" htmlFor="password">
+                      Passwort
                     </Label>
-                    <Input
-                      id="reset-email"
-                      type="email"
-                      placeholder="name@zvv.ch"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      autoComplete="email"
-                      className="h-9"
-                    />
                   </div>
-                  
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? (
-                      <>
-                        <svg
-                          className="mr-2 h-4 w-4 animate-spin"
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-                        </svg>
-                        Senden...
-                      </>
-                    ) : (
-                      'Passwort-Reset-Link senden'
-                    )}
-                  </Button>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    autoComplete="current-password"
+                    className="h-9"
+                  />
                 </div>
-              </form>
-            )}
-            
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
+                
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? (
+                    <>
+                      <svg
+                        className="mr-2 h-4 w-4 animate-spin"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                      </svg>
+                      Anmeldung...
+                    </>
+                  ) : (
+                    'Anmelden'
+                  )}
+                </Button>
+                
+                <div className="text-center text-sm">
+                  <a 
+                    href="/register" 
+                    className="text-blue-600 hover:text-blue-800 hover:underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Zum Anmeldeformular für Schulklassen →
+                  </a>
+                </div>
               </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">
-                  {!showResetForm ? 'Oder' : ''}
-                </span>
-              </div>
-            </div>
-            
-            {!showResetForm ? (
-              <Button 
-                variant="outline" 
-                onClick={() => setShowResetForm(true)}
-                className="w-full"
-              >
-                Passwort vergessen?
-              </Button>
-            ) : (
-              <Button 
-                variant="outline" 
-                onClick={() => setShowResetForm(false)}
-                className="w-full"
-              >
-                Zurück zur Anmeldung
-              </Button>
-            )}
+            </form>
           </div>
         </div>
       </div>
