@@ -91,9 +91,8 @@ export default function RegisterPage() {
   if (success) {
     return (
       <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold text-green-600 mb-4">Anmeldung erfolgreich!</h1>
-        <p className="mb-4">Vielen Dank für deine Anmeldung zur ZVV-Entdeckungsreise.</p>
-        <p className="mb-4">Wir haben deine Anfrage erhalten und eine Bestätigungs-E-Mail an dich gesendet.</p>
+        <h1 className="text-2xl font-bold text-green-600 mb-4">Danke für Ihre Ticketbestellung.</h1>
+        <p className="mb-4">Die Tickets werden in den nächsten 7 Arbeitstagen an die angegebene Schulhaus-Adresse verschickt. Wir wünschen Ihrer Klasse schon jetzt viel Spass auf der ZVV-Entdeckungsreise.</p>
         <button
           onClick={() => router.push('/')}
           className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors"
