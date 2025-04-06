@@ -2,14 +2,7 @@ import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-  SheetClose,
-} from "@/components/ui/sheet";
+import { X } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Typdefinitionen
@@ -46,7 +39,7 @@ interface DetailViewProps {
 }
 
 export default function DetailView({ data, open, onOpenChange, isCode = false }: DetailViewProps) {
-  if (!data) return null;
+  if (!data || !open) return null;
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -84,90 +77,72 @@ export default function DetailView({ data, open, onOpenChange, isCode = false }:
   } : null;
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="sm:max-w-xl overflow-y-auto">
-        <SheetHeader>
-          <SheetTitle>{isCode ? 'Code-Details' : 'Registrierungsdetails'}</SheetTitle>
-          <SheetDescription>
-            {isCode 
-              ? 'Informationen zum ausgewählten Code' 
-              : 'Details zur ausgewählten Anmeldung'}
-          </SheetDescription>
-        </SheetHeader>
+    <div className="border-t border-b border-l bg-gray-50 w-full p-4 relative">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-lg font-medium">{isCode ? 'Code-Details' : 'Registrierungsdetails'}</h2>
+        <Button variant="ghost" size="icon" onClick={() => onOpenChange(false)}>
+          <X className="h-4 w-4" />
+          <span className="sr-only">Schließen</span>
+        </Button>
+      </div>
 
-        <Tabs defaultValue={isRegistration ? "registration" : "code"} className="mt-6">
-          <TabsList className="w-full">
-            {code && <TabsTrigger value="code">Code-Info</TabsTrigger>}
-            {registration && <TabsTrigger value="registration">Anmeldung</TabsTrigger>}
-          </TabsList>
-
-          {code && (
-            <TabsContent value="code" className="space-y-6 mt-4">
-              <div className="space-y-1">
-                <h3 className="text-sm font-medium">Code-Informationen</h3>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div className="col-span-2">
-                    <p className="text-muted-foreground">Code</p>
-                    <p className="font-mono font-medium">{code.code}</p>
-                  </div>
-                  {isCode && (
-                    <>
-                      <div>
-                        <p className="text-muted-foreground">Status</p>
-                        <div className="font-medium">
-                          {getStatusBadge(code.status, code.expires_at)}
-                        </div>
-                      </div>
-                      <div>
-                        <p className="text-muted-foreground">Typ</p>
-                        <div className="font-medium">
-                          {isTestCode(code.code) ? (
-                            <Badge variant="secondary">Testcode</Badge>
-                          ) : (
-                            <Badge>Produktionscode</Badge>
-                          )}
-                        </div>
-                      </div>
-                    </>
-                  )}
-                  <div>
-                    <p className="text-muted-foreground">Erstellt am</p>
-                    <p className="font-medium">
-                      {formatDate(code.created_at)}
-                    </p>
-                  </div>
-                  {isCode && code.expires_at && (
-                    <div>
-                      <p className="text-muted-foreground">Gültig bis</p>
-                      <p className="font-medium">
-                        {formatDate(code.expires_at)}
-                      </p>
-                    </div>
-                  )}
-                </div>
+      {isCode ? (
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="col-span-2">
+              <p className="text-muted-foreground">Code</p>
+              <p className="font-mono font-medium">{(data as Code).code}</p>
+            </div>
+            <div>
+              <p className="text-muted-foreground">Status</p>
+              <div className="font-medium">
+                {getStatusBadge((data as Code).status, (data as Code).expires_at)}
               </div>
-            </TabsContent>
-          )}
-
+            </div>
+            <div>
+              <p className="text-muted-foreground">Typ</p>
+              <div className="font-medium">
+                {isTestCode((data as Code).code) ? (
+                  <Badge variant="secondary">Testcode</Badge>
+                ) : (
+                  <Badge>Produktionscode</Badge>
+                )}
+              </div>
+            </div>
+            <div>
+              <p className="text-muted-foreground">Erstellt am</p>
+              <p className="font-medium">
+                {formatDate((data as Code).created_at)}
+              </p>
+            </div>
+            {(data as Code).expires_at && (
+              <div>
+                <p className="text-muted-foreground">Gültig bis</p>
+                <p className="font-medium">
+                  {formatDate((data as Code).expires_at)}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <p className="text-muted-foreground">Code</p>
+              <p className="font-mono font-medium">{registration?.code}</p>
+            </div>
+            <div>
+              <p className="text-muted-foreground">Anmeldedatum</p>
+              <p className="font-medium">
+                {registration?.created_at ? formatDate(registration.created_at) : '-'}
+              </p>
+            </div>
+          </div>
+          
           {registration && (
-            <TabsContent value="registration" className="space-y-6 mt-4">
-              <div className="space-y-1">
-                <h3 className="text-sm font-medium">Grundinformationen</h3>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="text-muted-foreground">Code</p>
-                    <p className="font-mono font-medium">{registration.code}</p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">Anmeldedatum</p>
-                    <p className="font-medium">
-                      {formatDate(registration.created_at)}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="space-y-1">
+            <>
+              <div className="space-y-2">
                 <h3 className="text-sm font-medium">Schulinformationen</h3>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div className="col-span-2">
@@ -193,7 +168,7 @@ export default function DetailView({ data, open, onOpenChange, isCode = false }:
                 </div>
               </div>
               
-              <div className="space-y-1">
+              <div className="space-y-2">
                 <h3 className="text-sm font-medium">Reiseinformationen</h3>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
@@ -220,23 +195,21 @@ export default function DetailView({ data, open, onOpenChange, isCode = false }:
               </div>
               
               {registration.additional_notes && (
-                <div className="space-y-1">
-                  <h3 className="text-sm font-medium">Anmerkungen</h3>
-                  <p className="text-sm border p-3 rounded-md bg-muted/50 whitespace-pre-wrap">
-                    {registration.additional_notes}
-                  </p>
+                <div className="space-y-2">
+                  <div className="grid grid-cols-1 gap-4 text-sm">
+                    <div>
+                      <p className="text-muted-foreground">Anmerkungen</p>
+                      <p className="font-medium whitespace-pre-wrap">
+                        {registration.additional_notes}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               )}
-            </TabsContent>
+            </>
           )}
-        </Tabs>
-
-        <div className="mt-6">
-          <SheetClose asChild>
-            <Button variant="outline" className="w-full">Schließen</Button>
-          </SheetClose>
         </div>
-      </SheetContent>
-    </Sheet>
+      )}
+    </div>
   );
 } 
