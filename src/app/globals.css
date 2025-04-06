@@ -81,7 +81,7 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
-    --radius: 0.5rem;
+    --radius: 0;
   }
 
   .dark {
@@ -216,15 +216,21 @@
   }
 
   .table-zvv th {
-    @apply text-left p-3 bg-zvv-light-blue text-zvv-blue font-medium border-b border-gray-200;
+    @apply text-left p-3 bg-gray-100 text-black font-medium text-sm border-b border-gray-200;
   }
 
   .table-zvv td {
-    @apply p-3 border-b border-gray-200;
+    @apply p-3 border-b border-gray-200 text-sm text-black align-middle;
   }
 
   .table-zvv tr:hover {
     @apply bg-gray-50;
+  }
+
+  /* Tabellenspaltenbreiten und Abstände */
+  .table-zvv th:last-child,
+  .table-zvv td:last-child {
+    @apply text-center w-24;
   }
 }
 
@@ -287,6 +293,9 @@ body {
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --zvv-integration-red: 350 100% 25%; /* #7E002C */
+  --zvv-integration-dark-red: 350 100% 20%; /* #660024 */
+  --zvv-integration-light-red: 350 100% 95%; /* #FFE5EE */
 }
 
 .dark {
@@ -446,14 +455,52 @@ body {
 
   /* ZVV Tabellen */
   .table-zvv th {
-    @apply text-left p-3 bg-zvv-light-blue text-zvv-blue font-medium text-sm border-b border-gray-200;
+    @apply text-left p-3 bg-gray-100 text-black font-medium text-sm border-b border-gray-200;
   }
 
   .table-zvv td {
-    @apply p-3 border-b border-gray-200 text-sm;
+    @apply p-3 border-b border-gray-200 text-sm text-black align-middle;
   }
 
   .table-zvv tr:hover {
     @apply bg-gray-50;
   }
+
+  /* Tabellenspaltenbreiten und Abstände */
+  .table-zvv th:last-child,
+  .table-zvv td:last-child {
+    @apply text-center w-24;
+  }
+}
+
+/* Farben für die Integrationsumgebung */
+:root {
+  --zvv-integration-red: 350 100% 25%; /* #7E002C */
+  --zvv-integration-dark-red: 350 100% 20%; /* #660024 */
+  --zvv-integration-light-red: 350 100% 95%; /* #FFE5EE */
+}
+
+/* Zusätzliche Klassen für INT-Umgebung */
+.bg-zvv-integration-red {
+  background-color: hsl(var(--zvv-integration-red));
+}
+
+.bg-zvv-integration-dark-red {
+  background-color: hsl(var(--zvv-integration-dark-red));
+}
+
+.bg-zvv-integration-light-red {
+  background-color: hsl(var(--zvv-integration-light-red));
+}
+
+.text-zvv-integration-red {
+  color: hsl(var(--zvv-integration-red));
+}
+
+.hover\:bg-zvv-integration-dark-red:hover {
+  background-color: hsl(var(--zvv-integration-dark-red));
+}
+
+.hover\:bg-zvv-integration-light-red:hover {
+  background-color: hsl(var(--zvv-integration-light-red));
 } 

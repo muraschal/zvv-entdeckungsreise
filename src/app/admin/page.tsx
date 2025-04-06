@@ -7,26 +7,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
-import { Download, Search, RefreshCw, ChevronRight, Users, Calendar, School, FileSpreadsheet, Key } from 'lucide-react';
+import { Download, Search, RefreshCw, ChevronRight, Users, Calendar, School, FileSpreadsheet, Key, ShoppingCart, CheckCircle, Clock, AlertTriangle, PieChart, BarChart, LineChart } from 'lucide-react';
 import ExcelJS from 'exceljs';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-  SheetClose,
-} from "@/components/ui/sheet";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from 'next/link';
+import DetailView from '@/components/admin/DetailView';
+import { Progress } from '@/components/ui/progress';
+import { PieChart as RechartPieChart, Pie, Cell, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 // Typdefinition für eine Registrierung
 interface Registration {
@@ -45,81 +31,23 @@ interface Registration {
   created_at: string;
 }
 
-// UserButton Komponente für den Header
-const UserButton = () => {
-  return (
-    <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-      <span className="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-full">
-        <span className="flex h-full w-full items-center justify-center rounded-full bg-muted">
-          <span className="font-medium">A</span>
-        </span>
-      </span>
-    </Button>
-  );
-};
-
-// ExportButton Komponente
-const ExportButton = ({ registrations }: { registrations: Registration[] }) => {
-  const exportToExcel = async () => {
-    const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('Anmeldungen');
-    
-    worksheet.columns = [
-      { header: 'Code', key: 'code', width: 20 },
-      { header: 'Schule', key: 'school', width: 30 },
-      { header: 'Kontaktperson', key: 'contact_person', width: 25 },
-      { header: 'E-Mail', key: 'email', width: 30 },
-      { header: 'Telefon', key: 'phone_number', width: 20 },
-      { header: 'Klasse', key: 'class', width: 15 },
-      { header: 'Schüler', key: 'student_count', width: 10 },
-      { header: 'Begleiter', key: 'accompanist_count', width: 10 },
-      { header: 'Anmeldedatum', key: 'created_at', width: 20 },
-      { header: 'Reisedatum', key: 'travel_date', width: 20 },
-      { header: 'Ankunftszeit', key: 'arrival_time', width: 15 },
-      { header: 'Anmerkungen', key: 'additional_notes', width: 40 },
-    ];
-
-    // Daten hinzufügen
-    registrations.forEach(reg => {
-      worksheet.addRow({
-        ...reg,
-        created_at: new Date(reg.created_at).toLocaleDateString('de-CH'),
-        travel_date: new Date(reg.travel_date).toLocaleDateString('de-CH'),
-      });
-    });
-
-    // Styling
-    worksheet.getRow(1).font = { bold: true };
-    
-    // Excel-Datei herunterladen
-    const buffer = await workbook.xlsx.writeBuffer();
-    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `ZVV-Entdeckungsreise-Anmeldungen-${new Date().toISOString().split('T')[0]}.xlsx`;
-    a.click();
-    window.URL.revokeObjectURL(url);
-  };
-
-  return (
-    <Button
-      onClick={exportToExcel}
-      variant="outline"
-      size="sm"
-      className="h-8 gap-1"
-    >
-      <Download className="h-3.5 w-3.5" />
-      <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Export</span>
-    </Button>
-  );
-};
+// Typdefinition für einen Code
+interface Code {
+  id: string;
+  code: string;
+  status: string;
+  expires_at: string;
+  created_at: string;
+}
 
 // AdminContent Komponente für den Inhalt der Admin-Seite
 function AdminContent() {
   const [registrations, setRegistrations] = useState<Registration[]>([]);
+  const [codes, setCodes] = useState<Code[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingCodes, setLoadingCodes] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [errorCodes, setErrorCodes] = useState<string | null>(null);
   const [selectedRegistration, setSelectedRegistration] = useState<Registration | null>(null);
   const searchParams = useSearchParams();
 
@@ -151,8 +79,29 @@ function AdminContent() {
     }
   };
 
+  const fetchCodes = async () => {
+    setLoadingCodes(true);
+    setErrorCodes(null);
+    try {
+      const response = await fetch('/api/admin/codes');
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Fehler beim Laden der Codes');
+      }
+      const data = await response.json();
+      console.log('Geladene Codes:', data.codes);
+      setCodes(data.codes || []);
+    } catch (err) {
+      console.error('Fehler beim Laden der Codes:', err);
+      setErrorCodes((err as Error).message);
+    } finally {
+      setLoadingCodes(false);
+    }
+  };
+
   useEffect(() => {
     fetchRegistrations();
+    fetchCodes();
 
     const regId = searchParams.get('reg');
     if (regId) {
@@ -164,9 +113,89 @@ function AdminContent() {
     }
   }, [searchParams]);
 
+  // Code-Statistiken berechnen
+  const totalCodes = codes.length;
+  const usedCodes = codes.filter(code => code.status === 'used').length;
+  const unusedCodes = codes.filter(code => code.status === 'unused').length;
+  const expiredCodes = codes.filter(code => 
+    code.status === 'unused' && new Date(code.expires_at) < new Date()
+  ).length;
+  const availableCodes = unusedCodes - expiredCodes;
+  
+  // Finde den nächsten ablaufenden Code
+  const today = new Date();
+  const futureCodes = codes.filter(code => 
+    code.status === 'unused' && new Date(code.expires_at) > today
+  ).sort((a, b) => new Date(a.expires_at).getTime() - new Date(b.expires_at).getTime());
+  
+  const nextExpiringCode = futureCodes.length > 0 ? futureCodes[0] : null;
+  const daysUntilExpiry = nextExpiringCode 
+    ? Math.ceil((new Date(nextExpiringCode.expires_at).getTime() - today.getTime()) / (1000 * 60 * 60 * 24)) 
+    : 0;
+
+  // Daten für das Kuchendiagramm vorbereiten
+  const pieChartData = [
+    { name: 'Verfügbar', value: availableCodes, color: '#22c55e' },
+    { name: 'Verwendet', value: usedCodes, color: '#3b82f6' },
+    { name: 'Abgelaufen', value: expiredCodes, color: '#f59e0b' }
+  ];
+
+  // Daten für das Bestellungsverlaufsdiagramm vorbereiten
+  const prepareRegistrationChartData = () => {
+    if (registrations.length === 0) return [];
+
+    // Kopieren und sortieren der Registrierungen nach Reisedatum
+    const sortedRegistrations = [...registrations]
+      .sort((a, b) => new Date(a.travel_date).getTime() - new Date(b.travel_date).getTime());
+
+    // Gruppiere Registrierungen nach Monat des Reisedatums
+    const monthlyData: Record<string, { count: number, students: number }> = {};
+    
+    sortedRegistrations.forEach(reg => {
+      const date = new Date(reg.travel_date);
+      const monthKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+      
+      if (!monthlyData[monthKey]) {
+        monthlyData[monthKey] = { count: 0, students: 0 };
+      }
+      
+      monthlyData[monthKey].count += 1;
+      monthlyData[monthKey].students += reg.student_count;
+    });
+
+    // Umwandlung in Array für Recharts
+    return Object.entries(monthlyData).map(([month, data]) => {
+      const [year, monthNum] = month.split('-');
+      const monthNames = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
+      const monthName = monthNames[parseInt(monthNum) - 1];
+      
+      return {
+        name: `${monthName} ${year}`,
+        Bestellungen: data.count,
+        Schüler: data.students
+      };
+    }).sort((a, b) => {
+      // Sortiere nach Jahr und Monat für chronologische Darstellung
+      const [aMonth, aYear] = a.name.split(' ');
+      const [bMonth, bYear] = b.name.split(' ');
+      
+      const aYearNum = parseInt(aYear);
+      const bYearNum = parseInt(bYear);
+      
+      if (aYearNum !== bYearNum) {
+        return aYearNum - bYearNum;
+      }
+      
+      const monthNames = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
+      return monthNames.indexOf(aMonth) - monthNames.indexOf(bMonth);
+    });
+  };
+
+  const registrationChartData = prepareRegistrationChartData();
+
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold tracking-tight mb-8">Admin Dashboard</h1>
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
       
       {loading ? (
         <div className="grid gap-6 md:grid-cols-3">
@@ -175,7 +204,7 @@ function AdminContent() {
           <Skeleton className="h-36 w-full" />
         </div>
       ) : error ? (
-        <div className="p-4 bg-destructive/15 text-destructive rounded-md">
+        <div className="p-4 bg-destructive/15 text-destructive">
           {error}
         </div>
       ) : (
@@ -196,11 +225,6 @@ function AdminContent() {
                     : 'Keine Registrierungen vorhanden'}
                 </p>
               </CardContent>
-              <CardFooter className="pt-0">
-                <Button variant="outline" size="sm" className="btn-zvv-outline">
-                  Details
-                </Button>
-              </CardFooter>
             </Card>
             
             <Card className="shadow-sm">
@@ -212,15 +236,30 @@ function AdminContent() {
                 <div className="text-2xl font-bold text-zvv-blue" data-testid="student-count">
                   {registrations.reduce((sum, reg) => sum + reg.student_count, 0)}
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  Inklusive {registrations.reduce((sum, reg) => sum + reg.accompanist_count, 0)} Begleitpersonen
-                </p>
+                <div className="flex justify-between text-xs mt-1">
+                  <span>Schüler gesamt</span>
+                  <span className="text-sm font-medium">
+                    {registrations.reduce((sum, reg) => sum + reg.accompanist_count, 0)} Begleitpersonen
+                  </span>
+                </div>
+                
+                {registrations.length > 0 && (
+                  <>
+                    <div className="mt-3 flex items-center justify-between text-xs">
+                      <span>∅ Klassengröße</span>
+                      <span className="font-semibold text-sm">
+                        {Math.round(registrations.reduce((sum, reg) => sum + reg.student_count, 0) / registrations.length)}
+                      </span>
+                    </div>
+                    <div className="mt-2 flex items-center justify-between text-xs">
+                      <span>∅ Begleiter</span>
+                      <span className="font-semibold text-sm">
+                        {Math.round(registrations.reduce((sum, reg) => sum + reg.accompanist_count, 0) / registrations.length)}
+                      </span>
+                    </div>
+                  </>
+                )}
               </CardContent>
-              <CardFooter className="pt-0">
-                <Button variant="outline" size="sm" className="btn-zvv-outline">
-                  Details
-                </Button>
-              </CardFooter>
             </Card>
             
             <Card className="shadow-sm">
@@ -260,74 +299,170 @@ function AdminContent() {
                   )
                 })()}
               </CardContent>
-              <CardFooter className="pt-0">
-                <Button variant="outline" size="sm" className="btn-zvv-outline">
-                  Details
-                </Button>
-              </CardFooter>
             </Card>
           </div>
           
+          {/* Bestellungsverlauf-Diagramm */}
+          {registrationChartData.length > 0 && (
+            <div className="mt-8">
+              <h2 className="text-xl font-bold tracking-tight mb-4">Reiseverlauf</h2>
+              <Card className="shadow-sm p-4">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Entwicklung der Reisen im Zeitverlauf</CardTitle>
+                  <LineChart className="h-5 w-5 text-zvv-blue" />
+                </CardHeader>
+                <CardContent className="pt-4">
+                  <div className="h-80 w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart
+                        data={registrationChartData}
+                        margin={{ top: 5, right: 30, left: 20, bottom: 40 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis 
+                          dataKey="name" 
+                          angle={-30} 
+                          textAnchor="end" 
+                          height={70}
+                          tick={{ fontSize: 12 }}
+                        />
+                        <YAxis yAxisId="left" orientation="left" stroke="#3b82f6" />
+                        <YAxis yAxisId="right" orientation="right" stroke="#22c55e" />
+                        <Tooltip 
+                          formatter={(value, name) => [value, name === 'Bestellungen' ? 'Bestellungen' : 'Schüler']}
+                          labelFormatter={(label) => `Reisezeitraum: ${label}`}
+                          contentStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', borderRadius: '6px', border: '1px solid #eaeaea' }}
+                        />
+                        <Legend />
+                        <Area 
+                          yAxisId="left" 
+                          type="monotone"
+                          dataKey="Bestellungen" 
+                          stroke="#3b82f6" 
+                          fill="#3b82f680" 
+                          name="Bestellungen"
+                          activeDot={{ r: 6 }}
+                        />
+                        <Area 
+                          yAxisId="right" 
+                          type="monotone"
+                          dataKey="Schüler" 
+                          stroke="#22c55e" 
+                          fill="#22c55e80"
+                          name="Anzahl Schüler" 
+                          activeDot={{ r: 6 }}
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+          
+          {/* Code-Statistiken */}
           <div className="mt-8">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold tracking-tight">Registrierungen</h2>
-              <div className="flex gap-2">
-                <ExportButton registrations={registrations} />
-                <Button variant="outline" size="sm" className="h-8 gap-1 hover:text-zvv-blue" onClick={() => fetchRegistrations()}>
-                  <RefreshCw className="h-3.5 w-3.5" />
-                  <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Aktualisieren</span>
-                </Button>
+            <h2 className="text-xl font-bold tracking-tight mb-4">Code-Übersicht</h2>
+            {loadingCodes ? (
+              <div className="grid gap-6 md:grid-cols-2">
+                <Skeleton className="h-36 w-full" />
+                <Skeleton className="h-36 w-full" />
               </div>
-            </div>
-            <div className="border rounded-md">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Code</TableHead>
-                    <TableHead>Schule</TableHead>
-                    <TableHead>Klasse</TableHead>
-                    <TableHead>Schüler</TableHead>
-                    <TableHead>Reisedatum</TableHead>
-                    <TableHead>Anmeldedatum</TableHead>
-                    <TableHead></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {registrations.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={7} className="text-center text-muted-foreground py-6">
-                        Keine Registrierungen gefunden
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    registrations.map((reg) => (
-                      <TableRow key={reg.id} className="cursor-pointer hover:bg-muted/50" onClick={() => setSelectedRegistration(reg)}>
-                        <TableCell className="font-medium">{reg.code}</TableCell>
-                        <TableCell>{reg.school}</TableCell>
-                        <TableCell>{reg.class}</TableCell>
-                        <TableCell>{reg.student_count} (+{reg.accompanist_count})</TableCell>
-                        <TableCell>{new Date(reg.travel_date).toLocaleDateString('de-CH')}</TableCell>
-                        <TableCell>{new Date(reg.created_at).toLocaleDateString('de-CH')}</TableCell>
-                        <TableCell>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
-                            <ChevronRight className="h-4 w-4" />
-                            <span className="sr-only">Details</span>
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
-            </div>
+            ) : errorCodes ? (
+              <div className="p-4 bg-destructive/15 text-destructive">
+                {errorCodes}
+              </div>
+            ) : (
+              <>
+                <div className="grid gap-6 md:grid-cols-2">
+                  {/* Große Code-Anzeige */}
+                  <Card className="shadow-sm flex flex-col">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Bestellcodes total</CardTitle>
+                      <Key className="h-5 w-5 text-zvv-blue" />
+                    </CardHeader>
+                    <CardContent className="flex-1 flex flex-col justify-center items-center">
+                      <div className="text-6xl font-bold text-zvv-blue mt-3" data-testid="total-codes">
+                        {totalCodes}
+                      </div>
+                      <div className="mt-4 text-sm text-center">
+                        <span className="inline-flex items-center bg-green-50 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
+                          <CheckCircle className="h-3.5 w-3.5 mr-1" />
+                          {availableCodes} verfügbar
+                        </span>
+                        <span className="inline-flex items-center bg-blue-50 text-blue-700 px-2 py-1 rounded-full text-xs font-medium ml-2">
+                          <CheckCircle className="h-3.5 w-3.5 mr-1" />
+                          {usedCodes} verwendet
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
+                  {/* Großes Ablaufdatum */}
+                  <Card className="shadow-sm flex flex-col">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">Nächster Ablauf</CardTitle>
+                      <Clock className="h-5 w-5 text-zvv-blue" />
+                    </CardHeader>
+                    <CardContent className="flex-1 flex flex-col justify-center items-center">
+                      {nextExpiringCode ? (
+                        <>
+                          <div className="text-6xl font-bold text-zvv-blue">
+                            {new Date(nextExpiringCode.expires_at).toLocaleDateString('de-CH')}
+                          </div>
+                          <div className="text-lg font-medium text-zvv-blue mt-2 mb-2">
+                            in {daysUntilExpiry} {daysUntilExpiry === 1 ? 'Tag' : 'Tagen'}
+                          </div>
+                          <div className="mt-1">
+                            <div className="px-2 py-1 text-xs font-mono rounded text-center overflow-hidden text-ellipsis bg-zvv-light-blue">
+                              {nextExpiringCode.code}
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="text-6xl font-bold text-zvv-blue">-</div>
+                          <p className="text-md mt-1">
+                            Keine aktiven Codes vorhanden
+                          </p>
+                        </>
+                      )}
+                    </CardContent>
+                  </Card>
+                </div>
+                
+                <div className="mt-4">
+                </div>
+              </>
+            )}
           </div>
           
           <div className="mt-8 space-y-4">
             <h2 className="text-xl font-bold tracking-tight">Admin-Tools</h2>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              <Link href="/admin/testcodes" className="flex items-center p-4 border rounded-md shadow-sm hover:bg-zvv-light-blue hover:border-zvv-blue transition-colors">
-                <div className="mr-4 rounded-md bg-zvv-light-blue p-2">
+              <Link href="/admin/bestellungen" className="flex items-center p-4 border shadow-sm hover:bg-zvv-light-blue hover:border-zvv-blue transition-colors">
+                <div className="mr-4 bg-zvv-light-blue p-2">
+                  <ShoppingCart className="h-5 w-5 text-zvv-blue" />
+                </div>
+                <div>
+                  <h3 className="font-semibold">Bestellungen</h3>
+                  <p className="text-sm text-muted-foreground">Bestellungen anzeigen und als Excel-Datei exportieren</p>
+                </div>
+              </Link>
+              
+              <Link href="/admin/codes" className="flex items-center p-4 border shadow-sm hover:bg-zvv-light-blue hover:border-zvv-blue transition-colors">
+                <div className="mr-4 bg-zvv-light-blue p-2">
                   <Key className="h-5 w-5 text-zvv-blue" />
+                </div>
+                <div>
+                  <h3 className="font-semibold">Code-Übersicht</h3>
+                  <p className="text-sm text-muted-foreground">Alle Codes anzeigen</p>
+                </div>
+              </Link>
+              
+              <Link href="/admin/testcodes" className="flex items-center p-4 border shadow-sm hover:bg-zvv-light-blue hover:border-zvv-blue transition-colors">
+                <div className="mr-4 bg-zvv-light-blue p-2">
+                  <FileSpreadsheet className="h-5 w-5 text-zvv-blue" />
                 </div>
                 <div>
                   <h3 className="font-semibold">Testcode-Management</h3>
@@ -336,102 +471,17 @@ function AdminContent() {
               </Link>
             </div>
           </div>
+          
+          {selectedRegistration && (
+            <DetailView 
+              data={selectedRegistration} 
+              open={true} 
+              onOpenChange={(open) => !open && setSelectedRegistration(null)}
+              isCode={false}
+            />
+          )}
         </>
       )}
-      
-      <Sheet open={!!selectedRegistration} onOpenChange={() => setSelectedRegistration(null)}>
-        <SheetContent className="sm:max-w-xl">
-          <SheetHeader>
-            <SheetTitle>Registrierungsdetails</SheetTitle>
-            <SheetDescription>Details zur Anmeldung</SheetDescription>
-          </SheetHeader>
-          {selectedRegistration && (
-            <div className="mt-6 space-y-6">
-              <div className="space-y-1">
-                <h3 className="text-sm font-medium">Grundinformationen</h3>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="text-muted-foreground">Code</p>
-                    <p className="font-medium">{selectedRegistration.code}</p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">Anmeldedatum</p>
-                    <p className="font-medium">
-                      {new Date(selectedRegistration.created_at).toLocaleDateString('de-CH')}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="space-y-1">
-                <h3 className="text-sm font-medium">Schulinformationen</h3>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div className="col-span-2">
-                    <p className="text-muted-foreground">Schule</p>
-                    <p className="font-medium">{selectedRegistration.school}</p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">Klasse</p>
-                    <p className="font-medium">{selectedRegistration.class}</p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">Kontaktperson</p>
-                    <p className="font-medium">{selectedRegistration.contact_person}</p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">E-Mail</p>
-                    <p className="font-medium break-all">{selectedRegistration.email}</p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">Telefon</p>
-                    <p className="font-medium">{selectedRegistration.phone_number}</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="space-y-1">
-                <h3 className="text-sm font-medium">Reiseinformationen</h3>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="text-muted-foreground">Reisedatum</p>
-                    <p className="font-medium">
-                      {new Date(selectedRegistration.travel_date).toLocaleDateString('de-CH')}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">Ankunftszeit</p>
-                    <p className="font-medium">
-                      {selectedRegistration.arrival_time.slice(0, 5)} Uhr
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">Anzahl Schüler</p>
-                    <p className="font-medium">{selectedRegistration.student_count}</p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">Anzahl Begleitpersonen</p>
-                    <p className="font-medium">{selectedRegistration.accompanist_count}</p>
-                  </div>
-                </div>
-              </div>
-              
-              {selectedRegistration.additional_notes && (
-                <div className="space-y-1">
-                  <h3 className="text-sm font-medium">Anmerkungen</h3>
-                  <p className="text-sm border p-3 rounded-md bg-muted/50 whitespace-pre-wrap">
-                    {selectedRegistration.additional_notes}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-          <div className="mt-6">
-            <SheetClose asChild>
-              <Button variant="outline" className="w-full">Schließen</Button>
-            </SheetClose>
-          </div>
-        </SheetContent>
-      </Sheet>
     </div>
   );
 }
@@ -439,7 +489,7 @@ function AdminContent() {
 // AdminPage Komponente mit Suspense
 export default function AdminPage() {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center p-6"><div className="h-8 w-8 rounded-full border-2 border-t-zvv-blue animate-spin"></div></div>}>
+    <Suspense fallback={<div className="flex items-center justify-center p-6"><div className="h-8 w-8 border-2 border-t-zvv-blue animate-spin"></div></div>}>
       <AdminContent />
     </Suspense>
   );
