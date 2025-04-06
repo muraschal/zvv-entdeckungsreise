@@ -194,8 +194,8 @@ function AdminContent() {
   const registrationChartData = prepareRegistrationChartData();
 
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold tracking-tight mb-8">Admin Dashboard</h1>
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
       
       {loading ? (
         <div className="grid gap-6 md:grid-cols-3">

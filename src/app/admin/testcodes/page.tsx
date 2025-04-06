@@ -245,7 +245,7 @@ export default function TestcodesPage() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-8">
+    <div className="p-4">
       <div className="flex items-center space-x-2">
         <Button variant="outline" size="sm" asChild className="hover:bg-zvv-light-blue">
           <Link href="/admin" className="flex items-center gap-1">
@@ -253,10 +253,10 @@ export default function TestcodesPage() {
             <span>Zurück</span>
           </Link>
         </Button>
-        <h1 className="text-3xl font-bold tracking-tight">Testcode Management</h1>
+        <h1 className="text-2xl font-bold">Testcode Management</h1>
       </div>
       
-      <div className="space-y-6">
+      <div className="space-y-6 mt-4">
         <Card className="bg-white border shadow-sm">
           <CardHeader>
             <CardTitle>Test-Umgebung</CardTitle>
