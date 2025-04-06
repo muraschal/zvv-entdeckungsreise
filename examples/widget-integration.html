@@ -62,8 +62,10 @@
 &lt;script&gt;
   document.addEventListener('DOMContentLoaded', function() {
     // Widget initialisieren
-    window.initZVVEntdeckungsreiseWidget('zvv-entdeckungsreise-widget', {
-      apiBaseUrl: 'https://entdeckungsreise.zvv.ch' // Optional: API-Basis-URL anpassen
+    window.ZVVEntdeckungsreiseWidget.init({
+      apiBaseUrl: 'https://entdeckungsreise.zvv.ch', // Optional: API-Basis-URL anpassen
+      environment: 'PRD',                           // Optional: Umgebung wählen (PRD oder INT)
+      cacheTimeout: 300000                          // Optional: Cache-Dauer in ms (Standard: 5 Minuten)
     });
   });
 &lt;/script&gt;
@@ -72,7 +74,9 @@
   <h3>Konfigurationsoptionen</h3>
   <p>Das Widget akzeptiert folgende Konfigurationsoptionen:</p>
   <ul>
-    <li><strong>apiBaseUrl</strong>: Die Basis-URL für API-Anfragen (Standard: 'https://entdeckungsreise.zvv.ch')</li>
+    <li><strong>apiBaseUrl</strong>: Die Basis-URL für API-Anfragen (Standard: '')</li>
+    <li><strong>environment</strong>: Die Umgebung, in der das Widget ausgeführt wird ('PRD' oder 'INT', Standard: 'PRD')</li>
+    <li><strong>cacheTimeout</strong>: Die Dauer in Millisekunden, für die API-Antworten im Cache gespeichert werden sollen (Standard: 300000 ms = 5 Minuten)</li>
   </ul>
   
   <!-- React und ReactDOM einbinden (von CDN) -->
@@ -85,9 +89,11 @@
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       // Widget initialisieren
-      if (window.initZVVEntdeckungsreiseWidget) {
-        window.initZVVEntdeckungsreiseWidget('zvv-entdeckungsreise-widget', {
-          apiBaseUrl: window.location.origin // Für lokale Entwicklung
+      if (window.ZVVEntdeckungsreiseWidget) {
+        window.ZVVEntdeckungsreiseWidget.init({
+          apiBaseUrl: window.location.origin, // Für lokale Entwicklung
+          environment: 'INT',                // Test-Umgebung für Entwicklung
+          cacheTimeout: 60000               // Kürzere Cache-Zeit für die Entwicklung (1 Minute)
         });
       } else {
         document.getElementById('zvv-entdeckungsreise-widget').innerHTML = 

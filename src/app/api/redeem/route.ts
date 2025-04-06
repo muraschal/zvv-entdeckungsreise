@@ -7,6 +7,13 @@ import { sendConfirmationEmail, sendAdminNotificationEmail, ADMIN_EMAIL } from '
 
 export async function POST(request: Request) {
   try {
+    // Performance messen
+    const startTime = performance.now();
+    
+    // Umgebung aus Header extrahieren (Default: PRD)
+    const environment = request.headers.get('X-Environment') || 'PRD';
+    console.log(`Einlösen eines Codes in Umgebung: ${environment}`);
+
     // Extrahiere die Daten aus dem Request-Body
     const { 
       code, 
@@ -39,10 +46,23 @@ export async function POST(request: Request) {
       );
     }
 
-    // Suche den Code in der Datenbank
+    // Umgebungscheck für Codes
+    if (environment === 'INT' && !code.startsWith('INT_')) {
+      return NextResponse.json(
+        { success: false, message: 'Ungültiger Code für Testumgebung.' },
+        { status: 404 }
+      );
+    } else if (environment === 'PRD' && code.startsWith('INT_')) {
+      return NextResponse.json(
+        { success: false, message: 'Testcodes können nicht in der Produktionsumgebung verwendet werden.' },
+        { status: 404 }
+      );
+    }
+
+    // Suche den Code in der Datenbank - optimierte Abfrage mit Feldauswahl
     const { data, error } = await supabase
       .from('codes')
-      .select('*')
+      .select('code, status, expires_at')
       .eq('code', code)
       .single();
 
@@ -110,7 +130,6 @@ export async function POST(request: Request) {
     }
 
     // 2. Aktualisiere den Status des Codes auf 'used'
-    // Verwende 'code' als Primärschlüssel, nicht 'id'
     const { error: updateError } = await supabase
       .from('codes')
       .update({ status: 'used' })
@@ -132,8 +151,8 @@ export async function POST(request: Request) {
       );
     }
 
-    // 3. Sende Bestätigungs-E-Mail an den Benutzer
-    const { success: emailSuccess, error: emailError } = await sendConfirmationEmail({
+    // E-Mail-Versand im Hintergrund, ohne auf die Antwort zu warten
+    const emailPromise = sendConfirmationEmail({
       to: email,
       school,
       studentCount,
@@ -146,14 +165,7 @@ export async function POST(request: Request) {
       arrivalTime
     });
 
-    if (!emailSuccess) {
-      console.error('Fehler beim Senden der Bestätigungs-E-Mail:', emailError);
-      // Wir setzen den Vorgang trotzdem fort, da die Anmeldung erfolgreich war
-    }
-
-    // 4. Sende Benachrichtigungs-E-Mail an den Administrator
-    console.log('Sende Admin-Benachrichtigung an:', ADMIN_EMAIL);
-    const { success: adminEmailSuccess, error: adminEmailError } = await sendAdminNotificationEmail({
+    const adminEmailPromise = sendAdminNotificationEmail({
       school,
       studentCount,
       travelDate,
@@ -166,15 +178,8 @@ export async function POST(request: Request) {
       arrivalTime
     });
 
-    if (!adminEmailSuccess) {
-      console.error('Fehler beim Senden der Admin-Benachrichtigung:', adminEmailError);
-      // Wir setzen den Vorgang trotzdem fort, da die Anmeldung erfolgreich war
-    } else {
-      console.log('Admin-Benachrichtigung erfolgreich gesendet');
-    }
-
     // Code erfolgreich eingelöst und Anmeldung gespeichert
-    return NextResponse.json(
+    const response = NextResponse.json(
       { 
         success: true, 
         message: 'Anmeldung erfolgreich. Vielen Dank!',
@@ -182,11 +187,37 @@ export async function POST(request: Request) {
           registrationId: registrationData[0].id,
           school: school,
           travelDate: travelDate,
-          emailSent: emailSuccess
+          emailPending: true
         }
       },
       { status: 200 }
     );
+
+    // Performance-Messung abschließen
+    const endTime = performance.now();
+    console.log(`Code eingelöst in ${endTime - startTime}ms`);
+
+    // E-Mail-Versand im Hintergrund abschließen und loggen
+    Promise.allSettled([emailPromise, adminEmailPromise]).then(results => {
+      const [userEmailResult, adminEmailResult] = results;
+      if (userEmailResult.status === 'fulfilled' && userEmailResult.value.success) {
+        console.log('Bestätigungs-E-Mail erfolgreich gesendet');
+      } else if (userEmailResult.status === 'fulfilled') {
+        console.error('Fehler beim Senden der Bestätigungs-E-Mail:', userEmailResult.value.error);
+      } else {
+        console.error('Fehler beim Senden der Bestätigungs-E-Mail:', userEmailResult.reason);
+      }
+
+      if (adminEmailResult.status === 'fulfilled' && adminEmailResult.value.success) {
+        console.log('Admin-Benachrichtigung erfolgreich gesendet');
+      } else if (adminEmailResult.status === 'fulfilled') {
+        console.error('Fehler beim Senden der Admin-Benachrichtigung:', adminEmailResult.value.error);
+      } else {
+        console.error('Fehler beim Senden der Admin-Benachrichtigung:', adminEmailResult.reason);
+      }
+    });
+
+    return response;
   } catch (error) {
     console.error('Unerwarteter Fehler:', error);
     return NextResponse.json(

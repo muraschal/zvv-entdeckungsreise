@@ -1,0 +1,1 @@
+/*! For license information please see zvv-entdeckungsreise-widget.js.LICENSE.txt */

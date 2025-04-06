@@ -1,6 +1,7 @@
 const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   mode: 'production',
@@ -13,8 +14,9 @@ module.exports = {
       type: 'umd'
     },
     globalObject: 'this',
-    publicPath: '/',
+    publicPath: 'https://entdeckungsreise-int.zvv.ch/',
     chunkFilename: 'zvv-entdeckungsreise-widget.[chunkhash].js',
+    clean: true
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
@@ -29,6 +31,14 @@ module.exports = {
       'process.env.NODE_ENV': JSON.stringify('production')
     }),
     new webpack.optimize.ModuleConcatenationPlugin(),
+    new CopyWebpackPlugin({
+      patterns: [
+        { 
+          from: 'dist/*.js',
+          to: '../public/[name][ext]'
+        }
+      ]
+    })
   ],
   module: {
     rules: [
@@ -71,13 +81,18 @@ module.exports = {
       },
     })],
     splitChunks: {
-      chunks: 'async',
+      chunks: 'all',
       cacheGroups: {
         vendor: {
           test: /[\\/]node_modules[\\/]/,
           name: 'vendors',
           chunks: 'all',
         },
+        default: {
+          minChunks: 2,
+          priority: -20,
+          reuseExistingChunk: true
+        }
       },
     },
   },

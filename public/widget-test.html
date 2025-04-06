@@ -79,7 +79,7 @@
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
   
   <!-- ZVV Entdeckungsreise Widget einbinden -->
-  <script src="/zvv-entdeckungsreise-widget.js"></script>
+  <script src="https://entdeckungsreise-int.zvv.ch/zvv-entdeckungsreise-widget.js"></script>
   
   <script>
     function checkApiAvailability() {
@@ -112,7 +112,8 @@
       if (typeof window.initZVVEntdeckungsreiseWidget === 'function') {
         console.log('Initialisiere Widget mit direkter globaler Funktion');
         window.initZVVEntdeckungsreiseWidget('zvv-entdeckungsreise-widget', {
-          apiBaseUrl: window.location.origin
+          apiBaseUrl: 'https://entdeckungsreise-int.zvv.ch',
+          environment: 'INT'
         });
         document.getElementById('api-info').innerHTML += "\n✅ Initialisierung mit direkter Funktion erfolgreich";
       } else {
@@ -125,13 +126,15 @@
         if (typeof window.ZVVEntdeckungsreiseWidget.initZVVEntdeckungsreiseWidget === 'function') {
           console.log('Initialisiere Widget mit ZVVEntdeckungsreiseWidget.initZVVEntdeckungsreiseWidget');
           window.ZVVEntdeckungsreiseWidget.initZVVEntdeckungsreiseWidget('zvv-entdeckungsreise-widget', {
-            apiBaseUrl: window.location.origin
+            apiBaseUrl: 'https://entdeckungsreise-int.zvv.ch',
+            environment: 'INT'
           });
           document.getElementById('api-info').innerHTML += "\n✅ Initialisierung mit API-Objekt erfolgreich";
         } else if (typeof window.ZVVEntdeckungsreiseWidget.init === 'function') {
           console.log('Initialisiere Widget mit ZVVEntdeckungsreiseWidget.init');
           window.ZVVEntdeckungsreiseWidget.init({
-            apiBaseUrl: window.location.origin
+            apiBaseUrl: 'https://entdeckungsreise-int.zvv.ch',
+            environment: 'INT'
           });
           document.getElementById('api-info').innerHTML += "\n✅ Initialisierung mit Legacy-Methode erfolgreich";
         } else {
