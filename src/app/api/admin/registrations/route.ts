@@ -1,7 +1,10 @@
 import { createAdminClient } from '@/lib/supabase/server';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET() {
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
+export async function GET(request: NextRequest) {
   try {
     // Prüfe, ob dies die Integrationsumgebung ist (sonst nur in auth-geschützten Admin-Bereichen)
     const isIntegrationEnv = process.env.VERCEL_ENV === 'preview' || process.env.NODE_ENV === 'development';
