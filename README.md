@@ -438,11 +438,21 @@ Der Admin-Bereich ist unter `/admin` erreichbar und bietet eine Übersicht über
 
 Der Admin-Bereich bietet folgende Funktionalitäten:
 
+- **Dashboard**: Übersichtliche Darstellung der wichtigsten Kennzahlen
+  - Anzahl der Registrierungen, Schüler und kommenden Fahrten
+  - Durchschnittliche Klassengröße und Anzahl Begleiter 
+  - Anzahl verfügbarer und verwendeter Codes
+
 - **Anmeldungsübersicht**: Tabellarische Darstellung aller eingegangenen Anmeldungen
   - Sortier- und filterbare Tabelle mit allen wichtigen Informationen
   - Detailansicht für jede Anmeldung mit allen eingereichten Daten
   - Konsistente Spaltenbreiten und optimierte Darstellung für lange Inhalte
   - Horizontales Scrolling für bessere Übersicht auf kleineren Bildschirmen
+
+- **Code-Übersicht**: Verwaltung aller Bestellcodes
+  - Übersicht über alle verfügbaren, verwendeten und abgelaufenen Codes
+  - Farbliche Kennzeichnung des Status (verfügbar, verwendet, abgelaufen)
+  - Direkte Navigation zu den damit verbundenen Bestellungen
 
 - **Testcode-Verwaltung** (nur im INT-Environment): Verwaltung von Testcodes für Entwicklungs- und Testzwecke
   - Generierung von neuen Testcodes mit einem Klick
@@ -453,6 +463,16 @@ Der Admin-Bereich bietet folgende Funktionalitäten:
 - **Export-Funktionalität**: Export der Anmeldungsdaten als Excel-Datei
   - Vollständiger Export aller Anmeldungsdaten
   - Formatierte Excel-Datei mit allen relevanten Feldern
+
+### Umgebungsindikator
+
+Die Anwendung verfügt über einen klaren Umgebungsindikator, der in der Navigation und im Versionshinweis sichtbar ist:
+- **INT-Umgebung**: Rote Farbkodierung (Navigationsleiste und Versionshinweis)
+- **PROD-Umgebung**: Blaue Farbkodierung (Navigationsleiste und Versionshinweis)
+
+Die Umgebungserkennung erfolgt automatisch anhand der Hostname-Prüfung:
+- Hostnames mit `localhost`, `vercel.app`, `-int` oder `entdeckungsreise-int.zvv.ch` werden als INT-Umgebung erkannt
+- Alle anderen Hostnames werden als PROD-Umgebung erkannt
 
 ### Authentifizierung
 
