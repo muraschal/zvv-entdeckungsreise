@@ -1,6 +1,9 @@
 import { createAdminClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 export async function POST(request: Request) {
   console.log('Cleaning up test codes...');
   try {
@@ -25,8 +28,11 @@ export async function POST(request: Request) {
     const referer = request.headers.get('referer') || '';
     
     const isLocalRequest = origin.includes('localhost') || referer.includes('localhost');
-    const isValidOrigin = origin.includes('vercel.app') || referer.includes('vercel.app') || isLocalRequest;
-    console.log('Origin Checks:', { origin, referer, isLocalRequest, isValidOrigin });
+    const isVercelRequest = origin.includes('vercel.app') || referer.includes('vercel.app');
+    const isZvvRequest = origin.includes('zvv.ch') || referer.includes('zvv.ch');
+    const isValidOrigin = isLocalRequest || isVercelRequest || isZvvRequest;
+    
+    console.log('Origin Checks:', { origin, referer, isLocalRequest, isVercelRequest, isZvvRequest, isValidOrigin });
     
     if (!isValidOrigin) {
       console.error('Ungültiger Ursprung:', origin, referer);
