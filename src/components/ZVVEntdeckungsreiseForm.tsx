@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { fetchWithCache } from '../widget';
 
 // Hilfsfunktion zur Formatierung des Datums für die Anzeige
 const formatDateForDisplay = (dateString: string) => {
@@ -14,6 +13,31 @@ const formatDateForDisplay = (dateString: string) => {
 const formatTimeForDisplay = (timeString: string) => {
   if (!timeString) return '';
   return timeString;
+};
+
+// Cache-Speicher für API-Antworten
+const apiCache: Record<string, { data: any; timestamp: number }> = {};
+
+// Funktion zum Abrufen von Daten mit Caching (direkt in der Komponente implementiert)
+const fetchWithCache = async (url: string, options: RequestInit, cacheTimeout: number = 300000) => {
+  const cacheKey = `${url}-${JSON.stringify(options)}`;
+  const now = Date.now();
+  
+  // Wenn Daten im Cache sind und noch nicht abgelaufen, verwende sie
+  if (apiCache[cacheKey] && now - apiCache[cacheKey].timestamp < cacheTimeout) {
+    return apiCache[cacheKey].data;
+  }
+  
+  // Ansonsten hol die Daten und speichere sie im Cache
+  try {
+    const response = await fetch(url, options);
+    const data = await response.json();
+    apiCache[cacheKey] = { data, timestamp: now };
+    return data;
+  } catch (error) {
+    console.error('Fehler beim Abrufen der Daten:', error);
+    throw error;
+  }
 };
 
 // Exportierbare Komponente für die Integration in externe Websites
