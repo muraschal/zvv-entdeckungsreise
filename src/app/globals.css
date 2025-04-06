@@ -192,15 +192,6 @@
     border-color: hsl(var(--zvv-blue));
   }
 
-  /* Login-Hintergrundbild */
-  .zvv-login-background {
-    background: linear-gradient(135deg, rgba(0,51,153,0.9) 0%, rgba(0,41,122,0.9) 100%), url('/images/zvv-background.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-blend-mode: overlay;
-  }
-
   /* ZVV Button Stile */
   .btn-zvv-primary {
     @apply bg-zvv-blue text-white hover:bg-zvv-dark-blue rounded-md py-2 px-4 font-medium transition-colors flex items-center gap-2;
@@ -237,7 +228,8 @@
   }
 }
 
-/* Login Screen Hintergrund */
+/* Login Hintergründe für verschiedene Umgebungen */
+/* Blauer Hintergrund für Produktion */
 .login-background {
   background: linear-gradient(135deg, rgba(0,51,153,0.9) 0%, rgba(0,41,122,0.9) 100%), url('/images/zvv-background.jpg');
   background-size: cover;
@@ -246,7 +238,7 @@
   background-blend-mode: overlay;
 }
 
-/* Integration-Umgebung Overlay */
+/* Roter Hintergrund für Integration */
 .integration-overlay {
   background: linear-gradient(135deg, rgba(126,0,44,0.9) 0%, rgba(180,0,44,0.75) 100%), url('/images/zvv-background.jpg');
   background-size: cover;
@@ -436,15 +428,15 @@ body {
 
   /* ZVV Button Stile */
   .btn-zvv-primary {
-    @apply bg-zvv-blue text-white hover:bg-zvv-dark-blue rounded-md py-2 px-4 font-medium transition-colors;
+    @apply bg-zvv-blue text-white hover:bg-zvv-dark-blue rounded-md py-2 px-4 font-medium transition-colors flex items-center gap-2;
   }
 
   .btn-zvv-secondary {
-    @apply bg-white text-zvv-blue border border-zvv-blue hover:bg-zvv-light-blue rounded-md py-2 px-4 font-medium transition-colors;
+    @apply bg-white text-zvv-blue border border-zvv-blue hover:bg-zvv-light-blue rounded-md py-2 px-4 font-medium transition-colors flex items-center gap-2;
   }
 
   .btn-zvv-outline {
-    @apply bg-transparent text-zvv-blue border border-gray-300 hover:border-zvv-blue hover:bg-zvv-light-blue rounded-md py-2 px-4 transition-colors;
+    @apply bg-transparent text-zvv-blue border border-gray-300 hover:border-zvv-blue hover:bg-zvv-light-blue rounded-md py-2 px-4 transition-colors flex items-center gap-2;
   }
 
   /* ZVV Formulare */
