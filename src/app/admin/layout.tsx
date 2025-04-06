@@ -11,7 +11,8 @@ import {
   LogOut,
   TicketCheck,
   AlertTriangle,
-  BookOpen
+  BookOpen,
+  Key
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -24,6 +25,7 @@ interface AdminLayoutProps {
 
 const navItems = [
   { label: 'Dashboard', href: '/admin', icon: Home },
+  { label: 'Codes', href: '/admin/codes', icon: Key },
   { label: 'Testcodes', href: '/admin/testcodes', icon: BookOpen },
 ];
 
@@ -31,6 +33,7 @@ export default function AdminLayout({
   children,
 }: AdminLayoutProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isIntegrationEnv, setIsIntegrationEnv] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -39,6 +42,17 @@ export default function AdminLayout({
 
   // Vereinfachter Loading-State ohne Router-Events
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // Überprüfe die Umgebung anhand der Hostname-Endung
+    const hostname = window.location.hostname;
+    const isInt = hostname.includes('localhost') || 
+                  hostname.includes('vercel.app') || 
+                  hostname.includes('-int') || 
+                  hostname === 'entdeckungsreise-int.zvv.ch';
+    
+    setIsIntegrationEnv(isInt);
+  }, []);
 
   const handleLogout = async () => {
     // Einfache Weiterleitung auf Login-Seite
@@ -50,12 +64,22 @@ export default function AdminLayout({
     return <>{children}</>;
   }
   
+  // CSS-Klassen basierend auf der Umgebung
+  const sidebarBgClass = isIntegrationEnv ? 'bg-zvv-integration-red' : 'bg-zvv-blue';
+  const headerBgClass = isIntegrationEnv ? 'bg-zvv-integration-dark-red' : 'bg-zvv-dark-blue';
+  const activeNavClass = isIntegrationEnv 
+    ? "bg-zvv-integration-light-red text-zvv-integration-red" 
+    : "bg-zvv-light-blue text-zvv-blue";
+  const hoverNavClass = isIntegrationEnv 
+    ? "hover:bg-zvv-integration-dark-red" 
+    : "hover:bg-zvv-dark-blue";
+  
   return (
     <div className="min-h-screen bg-background flex">
       {/* Sidebar for desktop */}
       <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
-        <div className="flex flex-col flex-1 bg-zvv-blue">
-          <div className="flex items-center justify-between h-16 px-4 bg-zvv-dark-blue">
+        <div className={`flex flex-col flex-1 ${sidebarBgClass}`}>
+          <div className={`flex items-center justify-between h-16 px-4 ${headerBgClass}`}>
             <div className="flex items-center">
               <Image 
                 src="/zvv-logo-white.png" 
@@ -65,6 +89,9 @@ export default function AdminLayout({
                 className="h-8 w-auto" 
               />
               <span className="ml-2 text-white font-semibold">Admin</span>
+              {isIntegrationEnv && (
+                <span className="ml-2 text-xs bg-white text-zvv-integration-red px-1.5 py-0.5 rounded">INT</span>
+              )}
             </div>
           </div>
           <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
@@ -78,13 +105,13 @@ export default function AdminLayout({
                     href={item.href}
                     className={cn(
                       "group flex items-center px-2 py-2 text-sm font-medium rounded-md",
-                      isActive ? "bg-zvv-light-blue text-zvv-blue" : "text-white hover:bg-zvv-dark-blue"
+                      isActive ? activeNavClass : `text-white ${hoverNavClass}`
                     )}
                   >
                     <Icon 
                       className={cn(
                         "mr-3 flex-shrink-0 h-5 w-5",
-                        isActive ? "text-zvv-blue" : "text-white"
+                        isActive ? (isIntegrationEnv ? "text-zvv-integration-red" : "text-zvv-blue") : "text-white"
                       )} 
                     />
                     {item.label}
@@ -111,7 +138,7 @@ export default function AdminLayout({
       </div>
       
       {/* Mobile header */}
-      <div className="md:hidden flex items-center justify-between h-16 bg-zvv-blue px-4">
+      <div className={`md:hidden flex items-center justify-between h-16 ${sidebarBgClass} px-4`}>
         <div className="flex items-center">
           <button
             onClick={() => setIsMobileMenuOpen(true)}
@@ -126,6 +153,9 @@ export default function AdminLayout({
             alt="ZVV Logo" 
             className="ml-2 h-8 w-auto" 
           />
+          {isIntegrationEnv && (
+            <span className="ml-2 text-xs bg-white text-zvv-integration-red px-1.5 py-0.5 rounded">INT</span>
+          )}
         </div>
         <div>
           {/* Platzhalter für UserButton */}
@@ -136,7 +166,7 @@ export default function AdminLayout({
       {isMobileMenuOpen && (
         <div className="fixed inset-0 flex z-40 md:hidden">
           <div className="fixed inset-0 bg-gray-600 bg-opacity-75" onClick={() => setIsMobileMenuOpen(false)}></div>
-          <div className="relative flex-1 flex flex-col max-w-xs w-full bg-zvv-blue">
+          <div className={`relative flex-1 flex flex-col max-w-xs w-full ${sidebarBgClass}`}>
             <div className="absolute top-0 right-0 -mr-12 pt-2">
               <button
                 type="button"
@@ -157,6 +187,9 @@ export default function AdminLayout({
                   className="h-8 w-auto" 
                 />
                 <span className="ml-2 text-white font-semibold">Admin</span>
+                {isIntegrationEnv && (
+                  <span className="ml-2 text-xs bg-white text-zvv-integration-red px-1.5 py-0.5 rounded">INT</span>
+                )}
               </div>
               <nav className="mt-5 px-2 space-y-1">
                 {navItems.map((item) => {
@@ -168,14 +201,14 @@ export default function AdminLayout({
                       href={item.href}
                       className={cn(
                         "group flex items-center px-2 py-2 text-base font-medium rounded-md",
-                        isActive ? "bg-zvv-light-blue text-zvv-blue" : "text-white hover:bg-zvv-dark-blue"
+                        isActive ? activeNavClass : `text-white ${hoverNavClass}`
                       )}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       <Icon 
                         className={cn(
                           "mr-4 flex-shrink-0 h-6 w-6",
-                          isActive ? "text-zvv-blue" : "text-white"
+                          isActive ? (isIntegrationEnv ? "text-zvv-integration-red" : "text-zvv-blue") : "text-white"
                         )} 
                       />
                       {item.label}
