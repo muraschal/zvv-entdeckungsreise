@@ -280,15 +280,6 @@ export default function AllCodesPage() {
                             )}
                           </td>
                         </tr>
-                        {isUsed && (
-                          <tr key={`details-${code.id}`}>
-                            <td colSpan={6} className="p-0 border-none">
-                              <div className="bg-gray-50 shadow-sm">
-                                {/* Add your details component here */}
-                              </div>
-                            </td>
-                          </tr>
-                        )}
                       </React.Fragment>
                     );
                   })}
