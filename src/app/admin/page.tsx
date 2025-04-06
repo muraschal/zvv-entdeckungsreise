@@ -494,7 +494,7 @@ function AdminContent() {
                 </div>
                 <div>
                   <h3 className="font-semibold">Bestellungen</h3>
-                  <p className="text-sm text-muted-foreground">Alle Bestellungen anzeigen</p>
+                  <p className="text-sm text-muted-foreground">Bestellungen anzeigen und als Excel-Datei exportieren</p>
                 </div>
               </Link>
               
