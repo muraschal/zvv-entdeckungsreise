@@ -513,27 +513,29 @@ Die E-Mail-Templates bieten:
 - **Transaktionale E-Mails** für Bestätigungen und Benachrichtigungen 📩
 - **Widget-Integration** ohne iframes für bessere Benutzererfahrung 🖼️
 
-## Demo-Daten
+## Testcodes und Umgebungen
 
-Für Testzwecke können folgende Demo-Codes verwendet werden:
+### Integrationsumgebung (INT)
 
-| Kategorie | Codes |
-|-----------|-------|
-| Test-Codes | `TEST123`, `TEST456`, `TEST789` |
-| Schul-Codes | `SCHULE2023`, `SCHULE2024`, `SCHULE2025` |
-| ZVV-Codes | `ZVV2023`, `ZVV2024`, `ZVV2025` |
-| Präsentations-Codes | `DEMO001`, `DEMO002`, `DEMO003` |
-| Regionale Codes | `ZUERICH01`, `ZUERICH02`, `WINTERTHUR01`, `WINTERTHUR02`, `USTER01`, `WETZIKON01`, `DIETIKON01`, `HORGEN01` |
+In der Integrationsumgebung (`entdeckungsreise-int.zvv.ch`) bietet die Anwendung einen speziellen Bereich zur Verwaltung von Testcodes unter `/admin/testcodes`. Hier können:
 
-Alle Demo-Codes sind für 3 Jahre gültig und können für Testzwecke verwendet werden.
+- Neue Testcodes automatisch generiert werden
+- Verschiedene Testszenarien simuliert werden (gültige, abgelaufene, bereits verwendete Codes)
+- Ältere Testcodes bereinigt werden
+
+Testcodes folgen dem Format `INT_VALID_YYYYMMDD_XXXXX` und sind für kurze Zeit (24 Stunden) gültig, sodass sie ideale Werkzeuge für Entwicklung und Tests darstellen, ohne die Produktionsdaten zu beeinflussen.
+
+### Produktionsumgebung (PRD)
+
+In der Produktionsumgebung (`entdeckungsreise.zvv.ch`) werden echte Bestellcodes verwendet. Diese werden separat generiert und in die Datenbank eingefügt. Die Funktionalität zur Testcode-Generierung ist in der Produktionsumgebung aus Sicherheitsgründen nicht verfügbar.
 
 ### Datenbank einrichten
 
-Um die Datenbank einzurichten und Demo-Codes einzufügen, verwende die Datei `setup-database.sql`:
+Für die Ersteinrichtung einer neuen Instanz steht die Datei `setup-database.sql` zur Verfügung. Diese enthält grundlegende Datenbankstruktur und -einstellungen:
 
 ```bash
 # Verbinde dich mit deiner Supabase-Datenbank
-psql -h db.abcdefghijklm.supabase.co -p 5432 -d postgres -U postgres
+psql -h db.deine-instanz.supabase.co -p 5432 -d postgres -U postgres
 
 # Führe das SQL-Skript aus
 \i setup-database.sql
