@@ -12,7 +12,8 @@ import {
   TicketCheck,
   AlertTriangle,
   BookOpen,
-  Key
+  Key,
+  ShoppingCart
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -25,6 +26,7 @@ interface AdminLayoutProps {
 
 const navItems = [
   { label: 'Dashboard', href: '/admin', icon: Home },
+  { label: 'Bestellungen', href: '/admin/bestellungen', icon: ShoppingCart },
   { label: 'Codes', href: '/admin/codes', icon: Key },
   { label: 'Testcodes', href: '/admin/testcodes', icon: BookOpen },
 ];

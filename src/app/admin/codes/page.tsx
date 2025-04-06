@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { de } from 'date-fns/locale';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
-import DetailView from '@/components/admin/DetailView';
+import { ExternalLink, ArrowUp, ArrowDown } from 'lucide-react';
 
 // Typdefinitionen
 interface Code {
@@ -35,21 +35,32 @@ interface Registration {
   additional_notes?: string;
 }
 
+// Sortieroptionen definieren
+type SortField = 'code' | 'status' | 'created_at' | 'expires_at' | 'type';
+type SortDirection = 'asc' | 'desc';
+
 export default function AllCodesPage() {
   const [data, setData] = useState<any>({ codes: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCode, setSelectedCode] = useState<Code | null>(null);
+  
+  // State für Sortierung
+  const [sortField, setSortField] = useState<SortField>('created_at');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
+  // Daten beim Laden der Seite abrufen
   useEffect(() => {
     async function fetchData() {
       try {
         setLoading(true);
+        
         const response = await fetch('/api/admin/codes');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const result = await response.json();
+        
         setData(result);
       } catch (e) {
         console.error('Error fetching codes:', e);
@@ -71,11 +82,11 @@ export default function AllCodesPage() {
     const isExpired = new Date(expiresAt) < new Date();
     
     if (status === 'used') {
-      return <Badge variant="destructive">Verwendet</Badge>;
+      return <Badge variant="outline" className="bg-gray-100 text-gray-800 border-gray-200">Verwendet</Badge>;
     } else if (isExpired) {
-      return <Badge variant="outline">Abgelaufen</Badge>;
+      return <Badge variant="outline" className="text-gray-800 border-gray-300">Abgelaufen</Badge>;
     } else {
-      return <Badge variant="secondary" className="bg-green-100 text-green-800">Verfügbar</Badge>;
+      return <Badge variant="outline" className="bg-gray-100 text-gray-800 border-gray-200">Verfügbar</Badge>;
     }
   };
 
@@ -83,12 +94,34 @@ export default function AllCodesPage() {
     return code.startsWith('INT_');
   };
 
-  const toggleSelectedCode = (code: Code) => {
-    if (selectedCode?.id === code.id) {
-      setSelectedCode(null);
-    } else {
-      setSelectedCode(code);
+  const navigateToRegistration = async (code: Code) => {
+    // Wenn der Code verwendet wurde, versuche zur Bestellungsseite zu navigieren
+    if (code.status === 'used') {
+      // Da wir einen 1:1-Verhältnis zwischen Code und Bestellung haben,
+      // können wir direkt mit dem Code-Wert navigieren
+      window.location.href = `/admin/bestellungen?code=${code.code}`;
     }
+  };
+
+  // Funktion zum Umschalten der Sortierung
+  const toggleSort = (field: SortField) => {
+    if (sortField === field) {
+      // Wenn das Feld bereits ausgewählt ist, Richtung ändern
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      // Neues Feld auswählen und standardmäßig aufsteigend sortieren
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  // Funktion zum Anzeigen des Sortierindikators
+  const getSortIndicator = (field: SortField) => {
+    if (sortField !== field) return null;
+    
+    return sortDirection === 'asc' 
+      ? <ArrowUp className="h-4 w-4 inline-block ml-1" /> 
+      : <ArrowDown className="h-4 w-4 inline-block ml-1" />;
   };
 
   if (loading) {
@@ -103,8 +136,50 @@ export default function AllCodesPage() {
     );
   }
 
-  // Erstelle eine sortierte Liste der Codes
-  const sortedCodes = [...(data.codes || [])];
+  // Sortieren der Codes basierend auf aktiven Sortieroptionen
+  const sortedCodes = [...(data.codes || [])].sort((a, b) => {
+    let aValue, bValue;
+    
+    switch (sortField) {
+      case 'code':
+        aValue = a.code;
+        bValue = b.code;
+        break;
+      case 'status':
+        // Für Status unterscheiden wir zwischen "verwendet", "abgelaufen" und "verfügbar"
+        const getStatusPriority = (code: Code) => {
+          if (code.status === 'used') return 1;
+          if (new Date(code.expires_at) < new Date()) return 2;
+          return 3;
+        };
+        aValue = getStatusPriority(a);
+        bValue = getStatusPriority(b);
+        break;
+      case 'created_at':
+        aValue = new Date(a.created_at).getTime();
+        bValue = new Date(b.created_at).getTime();
+        break;
+      case 'expires_at':
+        aValue = new Date(a.expires_at).getTime();
+        bValue = new Date(b.expires_at).getTime();
+        break;
+      case 'type':
+        aValue = isTestCode(a.code) ? 'test' : 'production';
+        bValue = isTestCode(b.code) ? 'test' : 'production';
+        break;
+      default:
+        aValue = a[sortField];
+        bValue = b[sortField];
+    }
+    
+    // Sortierrichtung berücksichtigen
+    const sortFactor = sortDirection === 'asc' ? 1 : -1;
+    
+    // Sortierung durchführen
+    if (aValue < bValue) return -1 * sortFactor;
+    if (aValue > bValue) return 1 * sortFactor;
+    return 0;
+  });
 
   return (
     <div className="p-4">
@@ -118,9 +193,9 @@ export default function AllCodesPage() {
         <>
           <div className="mb-4">
             <span className="text-sm text-gray-500">
-              Umgebung: <Badge>{data.environment === 'integration' ? 'Integration' : 'Produktion'}</Badge>
+              Umgebung: <Badge variant="outline" className="text-gray-800 border-gray-300">{data.environment === 'integration' ? 'Integration' : 'Produktion'}</Badge>
             </span>
-            <div className="mt-2 font-medium">
+            <div className="mt-2 font-medium text-black">
               {sortedCodes.length || 0} Codes gefunden
             </div>
           </div>
@@ -129,24 +204,60 @@ export default function AllCodesPage() {
             <div className="overflow-x-auto">
               <table className="w-full border-collapse table-zvv">
                 <thead>
-                  <tr>
-                    <th>Code</th>
-                    <th>Status</th>
-                    <th>Erstellt am</th>
-                    <th>Gültig bis</th>
-                    <th>Typ</th>
+                  <tr className="bg-gray-100 text-black">
+                    <th 
+                      className="cursor-pointer hover:bg-gray-200"
+                      onClick={() => toggleSort('code')}
+                    >
+                      Code {getSortIndicator('code')}
+                    </th>
+                    <th 
+                      className="cursor-pointer hover:bg-gray-200"
+                      onClick={() => toggleSort('status')}
+                    >
+                      Status {getSortIndicator('status')}
+                    </th>
+                    <th 
+                      className="cursor-pointer hover:bg-gray-200"
+                      onClick={() => toggleSort('created_at')}
+                    >
+                      Erstellt am {getSortIndicator('created_at')}
+                    </th>
+                    <th 
+                      className="cursor-pointer hover:bg-gray-200"
+                      onClick={() => toggleSort('expires_at')}
+                    >
+                      Gültig bis {getSortIndicator('expires_at')}
+                    </th>
+                    <th 
+                      className="cursor-pointer hover:bg-gray-200"
+                      onClick={() => toggleSort('type')}
+                    >
+                      Typ {getSortIndicator('type')}
+                    </th>
+                    <th>Bestellung</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {sortedCodes.map((code: Code) => {
-                    const isSelected = selectedCode?.id === code.id;
-                    const rowClassName = `${isTestCode(code.code) ? 'bg-gray-100' : ''} hover:bg-muted/50 cursor-pointer ${isSelected ? 'bg-muted/50' : ''}`;
+                  {sortedCodes.map((code: Code, index) => {
+                    const uniqueKey = code.id || `code-${index}-${code.code}`;
+                    // Zusätzliche Klasse für verwendete Codes, die auf Bestellungen verlinken
+                    const isUsed = code.status === 'used';
+                    
+                    // Unterschiedliche Styling-Klassen für verwendete und nicht verwendete Codes
+                    const rowClassName = `
+                      ${isTestCode(code.code) ? 'bg-gray-50' : 'bg-white'} 
+                      hover:bg-gray-100 
+                      ${isUsed ? 'cursor-pointer' : ''}
+                      text-black
+                    `;
                     
                     return (
-                      <React.Fragment key={code.id}>
+                      <React.Fragment key={uniqueKey}>
                         <tr 
                           className={rowClassName}
-                          onClick={() => toggleSelectedCode(code)}
+                          onClick={() => isUsed ? navigateToRegistration(code) : null}
+                          title={isUsed ? "Zur Bestellung anzeigen" : ""}
                         >
                           <td className="font-mono">{code.code}</td>
                           <td>{getStatusBadge(code.status, code.expires_at)}</td>
@@ -154,32 +265,25 @@ export default function AllCodesPage() {
                           <td>{formatDate(code.expires_at)}</td>
                           <td>
                             {isTestCode(code.code) ? (
-                              <Badge variant="secondary">Testcode</Badge>
+                              <Badge variant="outline" className="bg-gray-100 text-gray-800 border-gray-200">Testcode</Badge>
                             ) : (
-                              <Badge>Produktionscode</Badge>
+                              <Badge variant="outline" className="text-gray-800 border-gray-300">Produktionscode</Badge>
+                            )}
+                          </td>
+                          <td className="text-center">
+                            {isUsed && (
+                              <span title="Zur Bestellung">
+                                <ExternalLink className="h-4 w-4 text-gray-500" />
+                              </span>
                             )}
                           </td>
                         </tr>
-                        {isSelected && (
+                        {isUsed && (
                           <tr key={`details-${code.id}`}>
-                            <td colSpan={5} className="p-0">
-                              <DetailView 
-                                data={code} 
-                                open={true} 
-                                onOpenChange={(open) => !open && setSelectedCode(null)}
-                                isCode={true}
-                              />
-                              {code.status === 'used' && code.registration && (
-                                <div className="p-4 border-t">
-                                  <h3 className="text-sm font-medium mb-4">Registrierungsinformationen</h3>
-                                  <DetailView 
-                                    data={code.registration}
-                                    open={true}
-                                    onOpenChange={() => {}}
-                                    isCode={false}
-                                  />
-                                </div>
-                              )}
+                            <td colSpan={6} className="p-0 border-none">
+                              <div className="bg-gray-50 shadow-sm">
+                                {/* Add your details component here */}
+                              </div>
                             </td>
                           </tr>
                         )}

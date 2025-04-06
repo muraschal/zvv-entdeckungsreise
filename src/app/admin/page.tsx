@@ -7,17 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
-import { Download, Search, RefreshCw, ChevronRight, Users, Calendar, School, FileSpreadsheet, Key } from 'lucide-react';
+import { Download, Search, RefreshCw, ChevronRight, Users, Calendar, School, FileSpreadsheet, Key, ShoppingCart } from 'lucide-react';
 import ExcelJS from 'exceljs';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from 'next/link';
 import DetailView from '@/components/admin/DetailView';
 
@@ -37,76 +28,6 @@ interface Registration {
   arrival_time: string;
   created_at: string;
 }
-
-// UserButton Komponente für den Header
-const UserButton = () => {
-  return (
-    <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-      <span className="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-full">
-        <span className="flex h-full w-full items-center justify-center rounded-full bg-muted">
-          <span className="font-medium">A</span>
-        </span>
-      </span>
-    </Button>
-  );
-};
-
-// ExportButton Komponente
-const ExportButton = ({ registrations }: { registrations: Registration[] }) => {
-  const exportToExcel = async () => {
-    const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('Anmeldungen');
-    
-    worksheet.columns = [
-      { header: 'Code', key: 'code', width: 20 },
-      { header: 'Schule', key: 'school', width: 30 },
-      { header: 'Kontaktperson', key: 'contact_person', width: 25 },
-      { header: 'E-Mail', key: 'email', width: 30 },
-      { header: 'Telefon', key: 'phone_number', width: 20 },
-      { header: 'Klasse', key: 'class', width: 15 },
-      { header: 'Schüler', key: 'student_count', width: 10 },
-      { header: 'Begleiter', key: 'accompanist_count', width: 10 },
-      { header: 'Anmeldedatum', key: 'created_at', width: 20 },
-      { header: 'Reisedatum', key: 'travel_date', width: 20 },
-      { header: 'Ankunftszeit', key: 'arrival_time', width: 15 },
-      { header: 'Anmerkungen', key: 'additional_notes', width: 40 },
-    ];
-
-    // Daten hinzufügen
-    registrations.forEach(reg => {
-      worksheet.addRow({
-        ...reg,
-        created_at: new Date(reg.created_at).toLocaleDateString('de-CH'),
-        travel_date: new Date(reg.travel_date).toLocaleDateString('de-CH'),
-      });
-    });
-
-    // Styling
-    worksheet.getRow(1).font = { bold: true };
-    
-    // Excel-Datei herunterladen
-    const buffer = await workbook.xlsx.writeBuffer();
-    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `ZVV-Entdeckungsreise-Anmeldungen-${new Date().toISOString().split('T')[0]}.xlsx`;
-    a.click();
-    window.URL.revokeObjectURL(url);
-  };
-
-  return (
-    <Button
-      onClick={exportToExcel}
-      variant="outline"
-      size="sm"
-      className="h-8 gap-1"
-    >
-      <Download className="h-3.5 w-3.5" />
-      <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Export</span>
-    </Button>
-  );
-};
 
 // AdminContent Komponente für den Inhalt der Admin-Seite
 function AdminContent() {
@@ -168,7 +89,7 @@ function AdminContent() {
           <Skeleton className="h-36 w-full" />
         </div>
       ) : error ? (
-        <div className="p-4 bg-destructive/15 text-destructive rounded-md">
+        <div className="p-4 bg-destructive/15 text-destructive">
           {error}
         </div>
       ) : (
@@ -190,9 +111,11 @@ function AdminContent() {
                 </p>
               </CardContent>
               <CardFooter className="pt-0">
-                <Button variant="outline" size="sm" className="btn-zvv-outline">
-                  Details
-                </Button>
+                <Link href="/admin/bestellungen">
+                  <Button variant="outline" size="sm" className="btn-zvv-outline">
+                    Details
+                  </Button>
+                </Link>
               </CardFooter>
             </Card>
             
@@ -210,9 +133,11 @@ function AdminContent() {
                 </p>
               </CardContent>
               <CardFooter className="pt-0">
-                <Button variant="outline" size="sm" className="btn-zvv-outline">
-                  Details
-                </Button>
+                <Link href="/admin/bestellungen">
+                  <Button variant="outline" size="sm" className="btn-zvv-outline">
+                    Details
+                  </Button>
+                </Link>
               </CardFooter>
             </Card>
             
@@ -254,72 +179,30 @@ function AdminContent() {
                 })()}
               </CardContent>
               <CardFooter className="pt-0">
-                <Button variant="outline" size="sm" className="btn-zvv-outline">
-                  Details
-                </Button>
+                <Link href="/admin/bestellungen">
+                  <Button variant="outline" size="sm" className="btn-zvv-outline">
+                    Details
+                  </Button>
+                </Link>
               </CardFooter>
             </Card>
-          </div>
-          
-          <div className="mt-8">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold tracking-tight">Registrierungen</h2>
-              <div className="flex gap-2">
-                <ExportButton registrations={registrations} />
-                <Button variant="outline" size="sm" className="h-8 gap-1 hover:text-zvv-blue" onClick={() => fetchRegistrations()}>
-                  <RefreshCw className="h-3.5 w-3.5" />
-                  <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Aktualisieren</span>
-                </Button>
-              </div>
-            </div>
-            <div className="border rounded-md">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Code</TableHead>
-                    <TableHead>Schule</TableHead>
-                    <TableHead>Klasse</TableHead>
-                    <TableHead>Schüler</TableHead>
-                    <TableHead>Reisedatum</TableHead>
-                    <TableHead>Anmeldedatum</TableHead>
-                    <TableHead></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {registrations.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={7} className="text-center text-muted-foreground py-6">
-                        Keine Registrierungen gefunden
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    registrations.map((reg) => (
-                      <TableRow key={reg.id} className="cursor-pointer hover:bg-muted/50" onClick={() => setSelectedRegistration(reg)}>
-                        <TableCell className="font-medium">{reg.code}</TableCell>
-                        <TableCell>{reg.school}</TableCell>
-                        <TableCell>{reg.class}</TableCell>
-                        <TableCell>{reg.student_count} (+{reg.accompanist_count})</TableCell>
-                        <TableCell>{new Date(reg.travel_date).toLocaleDateString('de-CH')}</TableCell>
-                        <TableCell>{new Date(reg.created_at).toLocaleDateString('de-CH')}</TableCell>
-                        <TableCell>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
-                            <ChevronRight className="h-4 w-4" />
-                            <span className="sr-only">Details</span>
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
-            </div>
           </div>
           
           <div className="mt-8 space-y-4">
             <h2 className="text-xl font-bold tracking-tight">Admin-Tools</h2>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              <Link href="/admin/codes" className="flex items-center p-4 border rounded-md shadow-sm hover:bg-zvv-light-blue hover:border-zvv-blue transition-colors">
-                <div className="mr-4 rounded-md bg-zvv-light-blue p-2">
+              <Link href="/admin/bestellungen" className="flex items-center p-4 border shadow-sm hover:bg-zvv-light-blue hover:border-zvv-blue transition-colors">
+                <div className="mr-4 bg-zvv-light-blue p-2">
+                  <ShoppingCart className="h-5 w-5 text-zvv-blue" />
+                </div>
+                <div>
+                  <h3 className="font-semibold">Bestellungen</h3>
+                  <p className="text-sm text-muted-foreground">Alle Bestellungen anzeigen</p>
+                </div>
+              </Link>
+              
+              <Link href="/admin/codes" className="flex items-center p-4 border shadow-sm hover:bg-zvv-light-blue hover:border-zvv-blue transition-colors">
+                <div className="mr-4 bg-zvv-light-blue p-2">
                   <Key className="h-5 w-5 text-zvv-blue" />
                 </div>
                 <div>
@@ -328,8 +211,8 @@ function AdminContent() {
                 </div>
               </Link>
               
-              <Link href="/admin/testcodes" className="flex items-center p-4 border rounded-md shadow-sm hover:bg-zvv-light-blue hover:border-zvv-blue transition-colors">
-                <div className="mr-4 rounded-md bg-zvv-light-blue p-2">
+              <Link href="/admin/testcodes" className="flex items-center p-4 border shadow-sm hover:bg-zvv-light-blue hover:border-zvv-blue transition-colors">
+                <div className="mr-4 bg-zvv-light-blue p-2">
                   <FileSpreadsheet className="h-5 w-5 text-zvv-blue" />
                 </div>
                 <div>
@@ -355,7 +238,7 @@ function AdminContent() {
 // AdminPage Komponente mit Suspense
 export default function AdminPage() {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center p-6"><div className="h-8 w-8 rounded-full border-2 border-t-zvv-blue animate-spin"></div></div>}>
+    <Suspense fallback={<div className="flex items-center justify-center p-6"><div className="h-8 w-8 border-2 border-t-zvv-blue animate-spin"></div></div>}>
       <AdminContent />
     </Suspense>
   );

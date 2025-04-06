@@ -81,7 +81,7 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
-    --radius: 0.5rem;
+    --radius: 0;
   }
 
   .dark {
@@ -216,11 +216,11 @@
   }
 
   .table-zvv th {
-    @apply text-left p-3 bg-zvv-light-blue text-zvv-blue font-medium border-b border-gray-200;
+    @apply text-left p-3 bg-gray-100 text-black font-medium text-sm border-b border-gray-200;
   }
 
   .table-zvv td {
-    @apply p-3 border-b border-gray-200;
+    @apply p-3 border-b border-gray-200 text-sm text-black;
   }
 
   .table-zvv tr:hover {
@@ -449,11 +449,11 @@ body {
 
   /* ZVV Tabellen */
   .table-zvv th {
-    @apply text-left p-3 bg-zvv-light-blue text-zvv-blue font-medium text-sm border-b border-gray-200;
+    @apply text-left p-3 bg-gray-100 text-black font-medium text-sm border-b border-gray-200;
   }
 
   .table-zvv td {
-    @apply p-3 border-b border-gray-200 text-sm;
+    @apply p-3 border-b border-gray-200 text-sm text-black;
   }
 
   .table-zvv tr:hover {
