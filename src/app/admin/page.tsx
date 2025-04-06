@@ -144,15 +144,15 @@ function AdminContent() {
   const prepareRegistrationChartData = () => {
     if (registrations.length === 0) return [];
 
-    // Kopieren und sortieren der Registrierungen nach Datum
+    // Kopieren und sortieren der Registrierungen nach Reisedatum
     const sortedRegistrations = [...registrations]
-      .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+      .sort((a, b) => new Date(a.travel_date).getTime() - new Date(b.travel_date).getTime());
 
-    // Gruppiere Registrierungen nach Monat
+    // Gruppiere Registrierungen nach Monat des Reisedatums
     const monthlyData: Record<string, { count: number, students: number }> = {};
     
     sortedRegistrations.forEach(reg => {
-      const date = new Date(reg.created_at);
+      const date = new Date(reg.travel_date);
       const monthKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
       
       if (!monthlyData[monthKey]) {
@@ -174,6 +174,20 @@ function AdminContent() {
         Bestellungen: data.count,
         Schüler: data.students
       };
+    }).sort((a, b) => {
+      // Sortiere nach Jahr und Monat für chronologische Darstellung
+      const [aMonth, aYear] = a.name.split(' ');
+      const [bMonth, bYear] = b.name.split(' ');
+      
+      const aYearNum = parseInt(aYear);
+      const bYearNum = parseInt(bYear);
+      
+      if (aYearNum !== bYearNum) {
+        return aYearNum - bYearNum;
+      }
+      
+      const monthNames = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
+      return monthNames.indexOf(aMonth) - monthNames.indexOf(bMonth);
     });
   };
 
@@ -292,10 +306,10 @@ function AdminContent() {
           {/* Bestellungsverlauf-Diagramm */}
           {registrationChartData.length > 0 && (
             <div className="mt-8">
-              <h2 className="text-xl font-bold tracking-tight mb-4">Bestellungsverlauf</h2>
+              <h2 className="text-xl font-bold tracking-tight mb-4">Reiseverlauf</h2>
               <Card className="shadow-sm p-4">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Entwicklung der Bestellungen und Schülerzahlen</CardTitle>
+                  <CardTitle className="text-sm font-medium">Verteilung der Reisen nach Reisedatum</CardTitle>
                   <BarChart className="h-5 w-5 text-zvv-blue" />
                 </CardHeader>
                 <CardContent className="pt-4">
@@ -317,7 +331,7 @@ function AdminContent() {
                         <YAxis yAxisId="right" orientation="right" stroke="#22c55e" />
                         <Tooltip 
                           formatter={(value, name) => [value, name === 'Bestellungen' ? 'Bestellungen' : 'Schüler']}
-                          labelFormatter={(label) => `Zeitraum: ${label}`}
+                          labelFormatter={(label) => `Reisezeitraum: ${label}`}
                         />
                         <Legend />
                         <Bar 

@@ -9,6 +9,9 @@ export const runtime = 'nodejs';
 // Verschiedene Testfälle, die generiert werden sollen
 const TEST_CASES = ['VALID', 'EXPIRED', 'USED', 'SPECIAL'];
 
+// Fibonacci-Folge für die Verteilung der Reisedaten
+const fibonacciNumbers = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144];
+
 // Kreative Arrays für zufällige Testdaten
 const funnySchoolNames = [
   'Zauberschule Hogwärts am Zürichsee',
@@ -95,8 +98,42 @@ const funnyNotes = [
   'Bitte genügend Platz für unseren Mini-Alpsimulator einplanen'
 ];
 
+// Funktion zum Generieren realistischerer Reisedaten über das ganze Jahr
+function generateTravelDate() {
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  
+  // Verwende eine Fibonacci-Zahl für die Verteilung (addiere zufälligen Offset für mehr Varianz)
+  const fibonacci = fibonacciNumbers[Math.floor(Math.random() * fibonacciNumbers.length)];
+  const randomOffset = Math.floor(Math.random() * 7); // 0-6 Tage zusätzlich
+  
+  // Bestimme einen zufälligen Monat im Jahr (0-11)
+  const randomMonth = Math.floor(Math.random() * 12);
+  
+  // Bestimme einen zufälligen Tag im Monat (1-28 um Probleme mit Monatsenden zu vermeiden)
+  let randomDay = Math.min(1 + (fibonacci + randomOffset) % 28, 28);
+  
+  // Erstelle Datum
+  const travelDate = new Date(currentYear, randomMonth, randomDay);
+  
+  // Sorge dafür, dass historische Daten und zukünftige Daten erstellt werden
+  if (Math.random() > 0.7) {
+    // 30% zukünftige Daten
+    if (travelDate < now) {
+      travelDate.setFullYear(currentYear + 1);
+    }
+  } else {
+    // 70% vergangene Daten
+    if (travelDate > now) {
+      travelDate.setFullYear(currentYear - 1);
+    }
+  }
+  
+  return travelDate;
+}
+
 // Funktion zum Generieren zufälliger Registrierungsdaten
-function generateRandomRegistration() {
+function generateRandomRegistration(createdAt: Date) {
   const randomSchool = funnySchoolNames[Math.floor(Math.random() * funnySchoolNames.length)];
   const randomContact = funnyContactNames[Math.floor(Math.random() * funnyContactNames.length)];
   const randomClass = funnyClasses[Math.floor(Math.random() * funnyClasses.length)];
@@ -113,10 +150,8 @@ function generateRandomRegistration() {
   const minute = Math.floor(Math.random() * 6) * 5; // 0, 5, 10, 15, 20, 25
   const arrivalTime = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
   
-  // Reisedatum in den nächsten 30 Tagen
-  const today = new Date();
-  const travelDate = new Date(today);
-  travelDate.setDate(today.getDate() + Math.floor(Math.random() * 30) + 1);
+  // Reisedatum über das Jahr verteilt mit Fibonacci-Verteilung
+  const travelDate = generateTravelDate();
   
   return {
     school: randomSchool,
@@ -129,6 +164,7 @@ function generateRandomRegistration() {
     phone_number: randomPhone,
     accompanist_count: accompanistCount,
     arrival_time: arrivalTime,
+    created_at: createdAt.toISOString()
   };
 }
 
@@ -185,12 +221,13 @@ export async function POST(request: Request) {
       );
     }
 
-    // Erstelle die Testcodes für jeden Testfall
+    // Erstelle 10 Testcodes + einen für jeden Testfall
     const now = new Date();
     const yesterday = new Date(now.getTime() - (24 * 60 * 60 * 1000));
     const tomorrow = new Date(now.getTime() + (24 * 60 * 60 * 1000));
     
-    const newCodes = TEST_CASES.map(testCase => {
+    // Basis-Testcodes für jeden Testfall
+    const baseTestCodes = TEST_CASES.map(testCase => {
       // Je nach Testfall unterschiedliche Eigenschaften setzen
       let expiresAt = tomorrow;
       let status = 'unused';
@@ -208,7 +245,23 @@ export async function POST(request: Request) {
         created_at: now.toISOString()
       };
     });
-
+    
+    // Zusätzliche 'USED' Testcodes für mehr Testdaten
+    const additionalUsedCodes = Array.from({ length: 10 }, () => {
+      // Generiere ein zufälliges Erstellungsdatum innerhalb des letzten Jahres
+      const randomCreationDate = new Date();
+      const randomDaysAgo = Math.floor(Math.random() * 365); // 0-364 Tage zurück
+      randomCreationDate.setDate(randomCreationDate.getDate() - randomDaysAgo);
+      
+      return {
+        code: generateUniqueCode('USED'),
+        status: 'used',
+        expires_at: tomorrow.toISOString(),
+        created_at: randomCreationDate.toISOString()
+      };
+    });
+    
+    const newCodes = [...baseTestCodes, ...additionalUsedCodes];
     console.log('Generierte Codes:', newCodes);
 
     // Füge die neuen Codes in die Datenbank ein
@@ -225,32 +278,43 @@ export async function POST(request: Request) {
       );
     }
 
-    // Finde den USED-Testcode und erstelle eine lustige Musterbestellung dafür
-    const usedCode = data?.find(code => code.code.includes('INT_USED_'));
-    let createdRegistration = null;
+    // Finde alle 'USED' Testcodes und erstelle dafür Musterbestellungen
+    const usedCodes = data?.filter(code => code.code.includes('INT_USED_')) || [];
+    const createdRegistrations = [];
     
-    if (usedCode) {
-      console.log('Erstelle kreative Musterbestellung für Code:', usedCode.code);
+    if (usedCodes.length > 0) {
+      console.log(`Erstelle kreative Musterbestellungen für ${usedCodes.length} Codes`);
       
-      // Generiere zufällige, lustige Registrierungsdaten
-      const randomRegistration = generateRandomRegistration();
-      
-      // Erstelle eine Testbestellung mit dem verwendeten Code
-      const { data: registrationData, error: registrationError } = await supabase
-        .from('registrations')
-        .insert({
-          code: usedCode.code,
-          ...randomRegistration,
-          created_at: now.toISOString()
-        })
-        .select();
-      
-      if (registrationError) {
-        console.error('Fehler beim Erstellen der Musterbestellung:', registrationError);
-        // Wir werfen hier keinen Fehler, da die Codes bereits erstellt wurden
-      } else {
-        console.log('Kreative Musterbestellung erfolgreich erstellt:', registrationData);
-        createdRegistration = registrationData[0];
+      // Erstelle für jeden verwendeten Code eine Bestellung
+      for (const usedCode of usedCodes) {
+        // Erstelle ein zufälliges Erstellungsdatum basierend auf dem Code-Erstellungsdatum
+        const codeDate = new Date(usedCode.created_at);
+        const registrationDate = new Date(codeDate);
+        // Füge 1-3 Tage hinzu für die Bestellung nach Code-Erstellung
+        registrationDate.setDate(codeDate.getDate() + Math.floor(Math.random() * 3) + 1);
+        
+        // Generiere zufällige, lustige Registrierungsdaten
+        const randomRegistration = generateRandomRegistration(registrationDate);
+        
+        try {
+          // Erstelle eine Testbestellung mit dem verwendeten Code
+          const { data: registrationData, error: registrationError } = await supabase
+            .from('registrations')
+            .insert({
+              code: usedCode.code,
+              ...randomRegistration
+            })
+            .select();
+          
+          if (registrationError) {
+            console.error(`Fehler beim Erstellen der Musterbestellung für Code ${usedCode.code}:`, registrationError);
+          } else {
+            console.log(`Kreative Musterbestellung für Code ${usedCode.code} erfolgreich erstellt:`, registrationData);
+            createdRegistrations.push(registrationData[0]);
+          }
+        } catch (err) {
+          console.error(`Fehler bei Bestellung für Code ${usedCode.code}:`, err);
+        }
       }
     }
 
@@ -259,9 +323,8 @@ export async function POST(request: Request) {
       message: 'Testcodes erfolgreich generiert',
       count: newCodes.length,
       codes: newCodes.map(code => code.code),
-      includesUsedCode: !!usedCode,
-      sampleRegistrationCreated: !!createdRegistration,
-      sampleRegistration: createdRegistration 
+      registrationsCreated: createdRegistrations.length,
+      sampleRegistrations: createdRegistrations.slice(0, 3) // Gebe zur Info maximal 3 zurück
     });
 
   } catch (error) {
