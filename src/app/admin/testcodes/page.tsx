@@ -246,17 +246,9 @@ export default function TestcodesPage() {
 
   return (
     <div className="p-4">
-      <div className="flex items-center space-x-2">
-        <Button variant="outline" size="sm" asChild className="hover:bg-zvv-light-blue">
-          <Link href="/admin" className="flex items-center gap-1">
-            <ArrowLeft className="h-4 w-4" />
-            <span>Zurück</span>
-          </Link>
-        </Button>
-        <h1 className="text-2xl font-bold">Testcode Management</h1>
-      </div>
+      <h1 className="text-2xl font-bold mb-4">Testcode Management</h1>
       
-      <div className="space-y-6 mt-4">
+      <div className="space-y-6">
         <Card className="bg-white border shadow-sm">
           <CardHeader>
             <CardTitle>Test-Umgebung</CardTitle>
