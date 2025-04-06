@@ -45,7 +45,13 @@ export const fetchWithCache = async (url: string, options: RequestInit, cacheTim
   }
 };
 
-// Die Haupt-Widget-Initialisierungs-Funktion
+/**
+ * Hauptfunktion zur Initialisierung des Widgets mit einem vorhandenen Container.
+ * 
+ * @param containerId - Die ID des HTML-Elements, in dem das Widget gerendert werden soll
+ * @param config - Konfigurationsobjekt für das Widget
+ * @returns true bei Erfolg, false bei Fehler
+ */
 function initZVVEntdeckungsreiseWidget(containerId: string, config: {
   apiBaseUrl?: string;
   environment?: 'INT' | 'PRD';
@@ -65,7 +71,7 @@ function initZVVEntdeckungsreiseWidget(containerId: string, config: {
   const container = document.getElementById(containerId);
   if (!container) {
     console.error(`Container mit ID "${containerId}" wurde nicht gefunden.`);
-    return;
+    return false;
   }
   
   try {
@@ -113,17 +119,24 @@ function initZVVEntdeckungsreiseWidget(containerId: string, config: {
   }
 }
 
-// Initialisierungsfunktionen
+/**
+ * Legacy-Methode zur Initialisierung des Widgets durch Erstellen eines Containers.
+ * 
+ * @param config - Konfigurationsobjekt für das Widget
+ * @returns true bei Erfolg, false bei Fehler
+ */
 function initWidget(config: Config) {
-  // Standardwerte für Konfiguration setzen
-  const mergedConfig = {
+  // Standardwerte für Konfiguration
+  const standardConfig = {
     apiBaseUrl: '',
     environment: 'PRD' as 'INT' | 'PRD',
-    cacheTimeout: 300000, // 5 Minuten Standard-Cache
-    ...config
+    cacheTimeout: 300000
   };
   
-  console.log(`ZVV-Widget wird initialisiert mit:`, mergedConfig);
+  // Konfiguration mit Standardwerten zusammenführen
+  const mergedConfig = { ...standardConfig, ...config };
+  
+  console.log(`ZVV-Widget wird mit Legacy-Methode initialisiert:`, mergedConfig);
   
   // Container erstellen, wenn nicht anders angegeben
   const containerId = 'zvv-entdeckungsreise-widget';
@@ -136,8 +149,7 @@ function initWidget(config: Config) {
     console.log(`Container "${containerId}" wurde erstellt`);
   }
   
-  // Direkter Aufruf der Container-spezifischen Funktion 
-  // mit den bereits konfigurierten Einstellungen
+  // Direkter Aufruf der Container-spezifischen Funktion mit den bereits konfigurierten Einstellungen
   return initZVVEntdeckungsreiseWidget(containerId, mergedConfig);
 }
 
@@ -147,19 +159,14 @@ const widgetAPI = {
   initZVVEntdeckungsreiseWidget: initZVVEntdeckungsreiseWidget
 };
 
-// WICHTIG: Zuerst die globalen Funktionen explizit definieren
+// WICHTIG: Funktionen direkt global zuweisen, NICHT in einer Bedingung!
+// Das stellt sicher, dass die Funktionen immer verfügbar sind
 if (typeof window !== 'undefined') {
-  // Direkter Zugriff auf die Initialisierungsfunktion 
   (window as any).initZVVEntdeckungsreiseWidget = initZVVEntdeckungsreiseWidget;
-  
-  // Kompatibilität mit dem früheren API beibehalten
   (window as any).ZVVEntdeckungsreiseWidget = widgetAPI;
-  
-  console.log('ZVV Widget-Funktionen wurden global registriert:', {
-    directFunction: typeof (window as any).initZVVEntdeckungsreiseWidget === 'function',
-    objectAPI: typeof (window as any).ZVVEntdeckungsreiseWidget === 'object'
-  });
+  console.log('ZVV Widget-Funktionen wurden global registriert');
 }
 
-// Export für Modulformat
+// Sowohl als Default-Export als auch als Named-Exports bereitstellen
+export { initZVVEntdeckungsreiseWidget, initWidget };
 export default widgetAPI; 
