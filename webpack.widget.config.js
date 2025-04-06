@@ -8,11 +8,9 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'zvv-entdeckungsreise-widget.js',
-    library: {
-      name: 'ZVVEntdeckungsreiseWidget',
-      type: 'umd',
-      export: 'default',
-    },
+    library: 'ZVVEntdeckungsreiseWidget',
+    libraryTarget: 'umd',
+    libraryExport: 'default',
     globalObject: 'this',
     publicPath: '/',
     chunkFilename: 'zvv-entdeckungsreise-widget.[chunkhash].js',

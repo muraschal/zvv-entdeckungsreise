@@ -27,12 +27,29 @@
       border: 1px solid #ffcccc;
       border-radius: 4px;
     }
+    .api-info {
+      background-color: #f8f8f8;
+      padding: 15px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      font-family: monospace;
+      white-space: pre;
+    }
+    .success {
+      color: green;
+      background-color: #eeffee;
+      padding: 10px;
+      border: 1px solid #ccffcc;
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body>
   <h1>ZVV Entdeckungsreise Widget Test</h1>
   
-  <p>Unten sehen Sie das ZVV Entdeckungsreise Formular, das als Widget eingebunden wurde:</p>
+  <div class="api-info" id="api-info">Prüfe Widget-API Verfügbarkeit...</div>
+  
+  <p>Widget-Einbindung mit <code>window.initZVVEntdeckungsreiseWidget</code>:</p>
   
   <div class="container">
     <!-- Widget Container -->
@@ -47,36 +64,76 @@
   <script src="/zvv-entdeckungsreise-widget.js"></script>
   
   <script>
-    // Funktion zum Überprüfen und Protokollieren der verfügbaren Widget-Initialisierungsmethoden
-    function checkWidgetAvailability() {
-      console.log('Verfügbare Widget-API:', {
-        initZVVEntdeckungsreiseWidget: typeof window.initZVVEntdeckungsreiseWidget === 'function' ? 'Verfügbar' : 'Nicht verfügbar',
-        ZVVEntdeckungsreiseWidget: typeof window.ZVVEntdeckungsreiseWidget === 'object' ? 'Verfügbar' : 'Nicht verfügbar',
-        initMethod: typeof window.ZVVEntdeckungsreiseWidget?.init === 'function' ? 'Verfügbar' : 'Nicht verfügbar'
-      });
+    // Status-Anzeige aktualisieren
+    function updateApiInfo() {
+      const info = {
+        'window.initZVVEntdeckungsreiseWidget': typeof window.initZVVEntdeckungsreiseWidget,
+        'window.ZVVEntdeckungsreiseWidget': typeof window.ZVVEntdeckungsreiseWidget,
+        'window.ZVVEntdeckungsreiseWidget?.init': typeof window.ZVVEntdeckungsreiseWidget?.init,
+        'window.ZVVEntdeckungsreiseWidget?.initZVVEntdeckungsreiseWidget': typeof window.ZVVEntdeckungsreiseWidget?.initZVVEntdeckungsreiseWidget
+      };
+      
+      const apiInfoEl = document.getElementById('api-info');
+      apiInfoEl.textContent = JSON.stringify(info, null, 2);
+      
+      // Farblich kennzeichnen
+      let allAvailable = true;
+      for (const key in info) {
+        if (info[key] !== 'function' && key !== 'window.ZVVEntdeckungsreiseWidget') {
+          allAvailable = false;
+        }
+        if (key === 'window.ZVVEntdeckungsreiseWidget' && info[key] !== 'object') {
+          allAvailable = false;
+        }
+      }
+      
+      apiInfoEl.className = allAvailable ? 'api-info success' : 'api-info error';
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-      // Verfügbarkeit überprüfen
-      checkWidgetAvailability();
+      // Status anzeigen
+      updateApiInfo();
       
-      // Widget initialisieren
-      if (typeof window.initZVVEntdeckungsreiseWidget === 'function') {
-        console.log('Initialisiere Widget mit neuer Methode');
-        window.initZVVEntdeckungsreiseWidget('zvv-entdeckungsreise-widget', {
-          apiBaseUrl: window.location.origin
-        });
-      } 
-      else if (window.ZVVEntdeckungsreiseWidget && typeof window.ZVVEntdeckungsreiseWidget.init === 'function') {
-        console.log('Initialisiere Widget mit alter Methode');
-        window.ZVVEntdeckungsreiseWidget.init({
-          apiBaseUrl: window.location.origin
-        });
-      }
-      else {
-        console.error('ZVV Widget-Initialisierungsfunktion nicht gefunden');
+      // Widget initialisieren - versuche alle bekannten Methoden
+      try {
+        // 1. Versuch: Direkte globale Funktion
+        if (typeof window.initZVVEntdeckungsreiseWidget === 'function') {
+          console.log('Initialisiere Widget mit direkter globaler Funktion');
+          window.initZVVEntdeckungsreiseWidget('zvv-entdeckungsreise-widget', {
+            apiBaseUrl: window.location.origin
+          });
+          return;
+        }
+        
+        // 2. Versuch: Über das API-Objekt
+        if (window.ZVVEntdeckungsreiseWidget) {
+          // Über init-Methode
+          if (typeof window.ZVVEntdeckungsreiseWidget.init === 'function') {
+            console.log('Initialisiere Widget mit ZVVEntdeckungsreiseWidget.init');
+            window.ZVVEntdeckungsreiseWidget.init({
+              apiBaseUrl: window.location.origin
+            });
+            return;
+          }
+          
+          // Über initZVVEntdeckungsreiseWidget-Methode
+          if (typeof window.ZVVEntdeckungsreiseWidget.initZVVEntdeckungsreiseWidget === 'function') {
+            console.log('Initialisiere Widget mit ZVVEntdeckungsreiseWidget.initZVVEntdeckungsreiseWidget');
+            window.ZVVEntdeckungsreiseWidget.initZVVEntdeckungsreiseWidget('zvv-entdeckungsreise-widget', {
+              apiBaseUrl: window.location.origin
+            });
+            return;
+          }
+        }
+        
+        // Keine Methode gefunden
+        console.error('Keine Widget-Initialisierungsmethode gefunden');
         document.getElementById('zvv-entdeckungsreise-widget').innerHTML = 
-          '<div class="error">Widget konnte nicht geladen werden. Die Initialisierungsfunktion wurde nicht gefunden.</div>';
+          '<div class="error">Widget konnte nicht geladen werden. Keine Initialisierungsmethode gefunden.</div>';
+      } catch (error) {
+        console.error('Fehler bei Widget-Initialisierung:', error);
+        document.getElementById('zvv-entdeckungsreise-widget').innerHTML = 
+          `<div class="error">Fehler bei Widget-Initialisierung: ${error.message}</div>`;
       }
     });
   </script>

@@ -113,30 +113,53 @@ function initZVVEntdeckungsreiseWidget(containerId: string, config: {
   }
 }
 
-// Exportiere die Funktion direkt global
-(window as any).initZVVEntdeckungsreiseWidget = initZVVEntdeckungsreiseWidget;
-
-// Kompatibilität mit dem früheren API beibehalten
-(window as any).ZVVEntdeckungsreiseWidget = {
-  init: function(config: Config) {
-    // Container erstellen, wenn nicht anders angegeben
-    const containerId = 'zvv-entdeckungsreise-widget';
-    let container = document.getElementById(containerId);
-    
-    if (!container) {
-      container = document.createElement('div');
-      container.id = containerId;
-      document.body.appendChild(container);
-      console.log(`Container "${containerId}" wurde erstellt`);
-    }
-    
-    // Initialisiere mit der neuen Funktion
-    return initZVVEntdeckungsreiseWidget(containerId, config);
+// Initialisierungsfunktionen
+function initWidget(config: Config) {
+  // Standardwerte für Konfiguration setzen
+  const mergedConfig = {
+    apiBaseUrl: '',
+    environment: 'PRD' as 'INT' | 'PRD',
+    cacheTimeout: 300000, // 5 Minuten Standard-Cache
+    ...config
+  };
+  
+  console.log(`ZVV-Widget wird initialisiert mit:`, mergedConfig);
+  
+  // Container erstellen, wenn nicht anders angegeben
+  const containerId = 'zvv-entdeckungsreise-widget';
+  let container = document.getElementById(containerId);
+  
+  if (!container) {
+    container = document.createElement('div');
+    container.id = containerId;
+    document.body.appendChild(container);
+    console.log(`Container "${containerId}" wurde erstellt`);
   }
+  
+  // Direkter Aufruf der Container-spezifischen Funktion 
+  // mit den bereits konfigurierten Einstellungen
+  return initZVVEntdeckungsreiseWidget(containerId, mergedConfig);
+}
+
+// Widget-API-Objekt erstellen
+const widgetAPI = {
+  init: initWidget,
+  initZVVEntdeckungsreiseWidget: initZVVEntdeckungsreiseWidget
 };
 
-// Exportiere als Modul-Default für moderne Importe
-export default {
-  initZVVEntdeckungsreiseWidget,
-  init: (window as any).ZVVEntdeckungsreiseWidget.init
-}; 
+// WICHTIG: Zuerst die globalen Funktionen explizit definieren
+if (typeof window !== 'undefined') {
+  // Direkter Zugriff auf die Initialisierungsfunktion 
+  (window as any).initZVVEntdeckungsreiseWidget = initZVVEntdeckungsreiseWidget;
+  
+  // Kompatibilität mit dem früheren API beibehalten
+  (window as any).ZVVEntdeckungsreiseWidget = widgetAPI;
+  
+  console.log('ZVV Widget-Funktionen wurden global registriert:', {
+    directFunction: typeof (window as any).initZVVEntdeckungsreiseWidget === 'function',
+    objectAPI: typeof (window as any).ZVVEntdeckungsreiseWidget === 'object'
+  });
+}
+
+// Export für Modulformat
+export default widgetAPI; 
