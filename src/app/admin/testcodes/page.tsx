@@ -10,6 +10,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, RefreshCw, PlusCircle, Trash2, CheckCircle2, XCircle, AlertTriangle, Clock } from "lucide-react";
 import Link from "next/link";
+import { format } from 'date-fns';
+import { de } from 'date-fns/locale';
 
 interface TestCode {
   code: string;
@@ -19,6 +21,8 @@ interface TestCode {
 }
 
 export default function TestcodesPage() {
+  // Prüfen, ob wir in der Integrationsumgebung sind
+  const [isIntegrationEnv, setIsIntegrationEnv] = useState(true); // Default-Wert
   const [testCodes, setTestCodes] = useState<TestCode[]>([]);
   const [loading, setLoading] = useState(true);
   const [generatingCodes, setGeneratingCodes] = useState(false);
@@ -27,7 +31,18 @@ export default function TestcodesPage() {
   const { toast } = useToast();
   const router = useRouter();
 
+  // Überprüfe die Umgebung beim Laden der Seite
   useEffect(() => {
+    // Wir überprüfen die Umgebung anhand der Hostname-Endung
+    // In einer echten Anwendung würde man dies besser über eine API-Abfrage lösen
+    const hostname = window.location.hostname;
+    setIsIntegrationEnv(
+      hostname.includes('localhost') || 
+      hostname.includes('vercel.app') || 
+      hostname.includes('-int') || 
+      hostname === 'entdeckungsreise-int.zvv.ch'
+    );
+    
     fetchTestCodes();
   }, []);
 
@@ -198,6 +213,27 @@ export default function TestcodesPage() {
     }
   };
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return format(date, 'dd.MM.yyyy HH:mm', { locale: de });
+  };
+
+  // Wenn wir nicht in der Integrationsumgebung sind, zeigen wir eine Meldung an
+  if (!isIntegrationEnv) {
+    return (
+      <div className="p-4">
+        <h1 className="text-2xl font-bold mb-4">Testcodes</h1>
+        <Alert variant="destructive">
+          <AlertTitle>Nicht verfügbar</AlertTitle>
+          <AlertDescription>
+            Diese Funktion ist nur in der Integrationsumgebung verfügbar.
+            Bitte wechseln Sie zu <a href="https://entdeckungsreise-int.zvv.ch/admin/testcodes" className="underline">entdeckungsreise-int.zvv.ch</a>, um Testcodes zu verwalten.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto p-6 space-y-8">
       <div className="flex items-center space-x-2">
@@ -220,53 +256,56 @@ export default function TestcodesPage() {
             <p className="mb-4 text-sm">
               Testcodes werden automatisch im Format <code className="bg-zvv-light-blue px-1.5 py-0.5 rounded">INT_VALID_YYYYMMDD_XXXXX</code> generiert und sind 24 Stunden gültig.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Button 
-                onClick={generateTestCodes} 
-                disabled={generatingCodes} 
-                className="btn-zvv-primary"
+
+            <div className="flex flex-wrap gap-2 mb-6">
+              <Button
+                onClick={generateTestCodes}
+                disabled={generatingCodes}
+                className="bg-zvv-blue hover:bg-zvv-dark-blue text-white"
               >
                 {generatingCodes ? (
-                  <RefreshCw className="h-4 w-4 animate-spin mr-2" />
+                  <>
+                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                    Generiere...
+                  </>
                 ) : (
-                  <PlusCircle className="h-4 w-4 mr-2" />
+                  <>
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Testcodes generieren
+                  </>
                 )}
-                Neue Testcodes generieren
               </Button>
-              <Button 
-                onClick={cleanupOldTestCodes} 
-                disabled={cleaningCodes} 
+
+              <Button
                 variant="outline"
-                className="btn-zvv-outline"
+                onClick={cleanupOldTestCodes}
+                disabled={cleaningCodes}
+                className="border-zvv-blue text-zvv-blue hover:bg-zvv-light-blue"
               >
                 {cleaningCodes ? (
-                  <RefreshCw className="h-4 w-4 animate-spin mr-2" />
+                  <>
+                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                    Bereinige...
+                  </>
                 ) : (
-                  <Trash2 className="h-4 w-4 mr-2" />
+                  <>
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Alte Testcodes bereinigen
+                  </>
                 )}
-                Alte Codes bereinigen
+              </Button>
+
+              <Button
+                variant="outline"
+                onClick={fetchTestCodes}
+                disabled={loading}
+                className="border-zvv-blue text-zvv-blue hover:bg-zvv-light-blue"
+              >
+                <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+                Aktualisieren
               </Button>
             </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="shadow-sm">
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <span>Testcode Status</span>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={fetchTestCodes}
-                className="h-8 gap-1 hover:text-zvv-blue"
-              >
-                <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
-                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Aktualisieren</span>
-              </Button>
-            </CardTitle>
-            <CardDescription>Liste aller Testcodes und deren aktueller Status</CardDescription>
-          </CardHeader>
-          <CardContent>
+
             {error && (
               <Alert variant="destructive" className="mb-4">
                 <AlertTriangle className="h-4 w-4" />
@@ -274,52 +313,42 @@ export default function TestcodesPage() {
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
-            
+
             {loading ? (
-              <div className="text-center p-6">
-                <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-2 text-muted-foreground" />
-                <p className="text-muted-foreground">Lade Testcodes...</p>
+              <div className="flex justify-center items-center py-12">
+                <RefreshCw className="h-8 w-8 text-zvv-blue animate-spin" />
+                <span className="ml-2 text-zvv-blue">Lade Testcodes...</span>
               </div>
-            ) : testCodes.length === 0 ? (
-              <div className="text-center p-8 border rounded-md border-dashed">
-                <p className="text-muted-foreground mb-2">Keine Testcodes vorhanden</p>
-                <Button 
-                  onClick={generateTestCodes} 
-                  disabled={generatingCodes}
-                  variant="outline"
-                  size="sm"
-                  className="hover:text-zvv-blue"
-                >
-                  <PlusCircle className="h-4 w-4 mr-2" />
-                  Testcodes generieren
-                </Button>
-              </div>
-            ) : (
+            ) : testCodes.length > 0 ? (
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[700px] table-zvv">
+                <table className="w-full border-collapse table-zvv">
                   <thead>
                     <tr>
-                      <th className="w-[250px]">Code</th>
-                      <th className="w-[100px]">Status</th>
-                      <th className="w-[150px]">Erstellt am</th>
-                      <th className="w-[150px]">Gültig bis</th>
+                      <th>Code</th>
+                      <th>Status</th>
+                      <th>Erstellt am</th>
+                      <th>Gültig bis</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {testCodes.map((code) => (
-                      <tr key={code.code}>
-                        <td className="font-mono text-xs truncate max-w-[250px]" title={code.code}>
-                          {code.code}
-                        </td>
+                    {testCodes.map((code, index) => (
+                      <tr key={index}>
+                        <td className="font-mono">{code.code}</td>
                         <td>
                           {getStatusBadge(code.status, code.expires_at)}
                         </td>
-                        <td>{new Date(code.created_at).toLocaleString('de-CH')}</td>
-                        <td>{new Date(code.expires_at).toLocaleString('de-CH')}</td>
+                        <td>{formatDate(code.created_at)}</td>
+                        <td>{formatDate(code.expires_at)}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
+              </div>
+            ) : (
+              <div className="py-12 text-center text-gray-500">
+                <AlertTriangle className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                <p>Keine Testcodes gefunden.</p>
+                <p className="text-sm mt-2">Generiere neue Testcodes mit dem Button oben.</p>
               </div>
             )}
           </CardContent>
