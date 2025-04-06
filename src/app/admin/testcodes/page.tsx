@@ -185,12 +185,12 @@ export default function TestcodesPage() {
     }
   };
 
-  const getStatusBadge = (status: string, expiresAt: string, hasRegistration?: boolean) => {
+  const getStatusBadge = (status: string, expiresAt: string) => {
     const isExpired = new Date(expiresAt) < new Date();
     
     if (isExpired) {
       return (
-        <Badge variant="outline" className="bg-gray-100 text-gray-500 flex items-center gap-1">
+        <Badge variant="outline" className="bg-gray-100 text-gray-700 border-gray-200 flex items-center gap-1">
           <Clock className="h-3.5 w-3.5" />
           <span>Abgelaufen</span>
         </Badge>
@@ -199,7 +199,7 @@ export default function TestcodesPage() {
     
     if (status === "unused") {
       return (
-        <Badge variant="outline" className="bg-gray-100 text-gray-800 border-gray-200 flex items-center gap-1">
+        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 flex items-center gap-1">
           <CheckCircle2 className="h-3.5 w-3.5" />
           <span>Verfügbar</span>
         </Badge>
@@ -207,18 +207,10 @@ export default function TestcodesPage() {
     } else {
       // Status "used"
       return (
-        <div className="flex flex-col gap-1">
-          <Badge variant="outline" className="text-gray-800 border-gray-300 flex items-center gap-1">
-            <XCircle className="h-3.5 w-3.5" />
-            <span>Verwendet</span>
-          </Badge>
-          {hasRegistration && (
-            <Badge variant="outline" className="bg-gray-50 text-gray-600 border-gray-200 flex items-center gap-1 text-xs">
-              <CheckCircle2 className="h-3 w-3" />
-              <span>Mit Bestellung</span>
-            </Badge>
-          )}
-        </div>
+        <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200 flex items-center gap-1">
+          <XCircle className="h-3.5 w-3.5" />
+          <span>Verwendet</span>
+        </Badge>
       );
     }
   };
@@ -354,7 +346,7 @@ export default function TestcodesPage() {
                       <tr key={index}>
                         <td className="font-mono">{code.code}</td>
                         <td>
-                          {getStatusBadge(code.status, code.expires_at, code.has_registration)}
+                          {getStatusBadge(code.status, code.expires_at)}
                         </td>
                         <td>{formatDate(code.created_at)}</td>
                         <td>{formatDate(code.expires_at)}</td>

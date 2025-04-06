@@ -82,11 +82,11 @@ export default function AllCodesPage() {
     const isExpired = new Date(expiresAt) < new Date();
     
     if (status === 'used') {
-      return <Badge variant="outline" className="bg-gray-100 text-gray-800 border-gray-200">Verwendet</Badge>;
+      return <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">Verwendet</Badge>;
     } else if (isExpired) {
-      return <Badge variant="outline" className="text-gray-800 border-gray-300">Abgelaufen</Badge>;
+      return <Badge variant="outline" className="bg-gray-100 text-gray-700 border-gray-200">Abgelaufen</Badge>;
     } else {
-      return <Badge variant="outline" className="bg-gray-100 text-gray-800 border-gray-200">Verfügbar</Badge>;
+      return <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">Verfügbar</Badge>;
     }
   };
 
