@@ -134,7 +134,7 @@ export default function AdminLayout({
             </div>
           </div>
           <div className="p-2 text-xs text-white/60 text-center">
-            Version 1.0.0
+            Version 2.0.0
           </div>
         </div>
       </div>
