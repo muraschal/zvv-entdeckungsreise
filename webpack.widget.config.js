@@ -17,7 +17,7 @@ module.exports = {
     },
     globalObject: 'this',
     publicPath: 'https://entdeckungsreise-int.zvv.ch/dist/',
-    chunkFilename: '[name].[chunkhash].js',
+    chunkFilename: 'chunks/[name].[chunkhash].js',
     clean: true
   },
   resolve: {
@@ -37,7 +37,7 @@ module.exports = {
       patterns: [
         { 
           from: 'dist/**/*.js',
-          to: '../public/[path][name][ext]',
+          to: '../public/dist/[path][name][ext]',
           noErrorOnMissing: true
         }
       ]
