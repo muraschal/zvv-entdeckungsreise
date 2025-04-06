@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { de } from 'date-fns/locale';
@@ -16,6 +16,23 @@ interface Code {
   created_at: string;
   expires_at: string;
   registration?: any;
+}
+
+// Registration-Schnittstelle für die Typung
+interface Registration {
+  id: string;
+  code: string;
+  email: string;
+  created_at: string;
+  school: string;
+  student_count: number;
+  travel_date: string;
+  class: string;
+  contact_person: string;
+  phone_number: string;
+  accompanist_count: number;
+  arrival_time: string;
+  additional_notes?: string;
 }
 
 export default function AllCodesPage() {
@@ -66,6 +83,14 @@ export default function AllCodesPage() {
     return code.startsWith('INT_');
   };
 
+  const toggleSelectedCode = (code: Code) => {
+    if (selectedCode?.id === code.id) {
+      setSelectedCode(null);
+    } else {
+      setSelectedCode(code);
+    }
+  };
+
   if (loading) {
     return (
       <div className="p-4">
@@ -77,6 +102,9 @@ export default function AllCodesPage() {
       </div>
     );
   }
+
+  // Erstelle eine sortierte Liste der Codes
+  const sortedCodes = [...(data.codes || [])];
 
   return (
     <div className="p-4">
@@ -93,11 +121,11 @@ export default function AllCodesPage() {
               Umgebung: <Badge>{data.environment === 'integration' ? 'Integration' : 'Produktion'}</Badge>
             </span>
             <div className="mt-2 font-medium">
-              {data.codes?.length || 0} Codes gefunden
+              {sortedCodes.length || 0} Codes gefunden
             </div>
           </div>
 
-          {data.codes?.length > 0 ? (
+          {sortedCodes.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full border-collapse table-zvv">
                 <thead>
@@ -110,25 +138,54 @@ export default function AllCodesPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.codes.map((code: Code) => (
-                    <tr 
-                      key={code.id} 
-                      className={`${isTestCode(code.code) ? 'bg-gray-100' : ''} hover:bg-muted/50 cursor-pointer`}
-                      onClick={() => setSelectedCode(code)}
-                    >
-                      <td className="font-mono">{code.code}</td>
-                      <td>{getStatusBadge(code.status, code.expires_at)}</td>
-                      <td>{formatDate(code.created_at)}</td>
-                      <td>{formatDate(code.expires_at)}</td>
-                      <td>
-                        {isTestCode(code.code) ? (
-                          <Badge variant="secondary">Testcode</Badge>
-                        ) : (
-                          <Badge>Produktionscode</Badge>
+                  {sortedCodes.map((code: Code) => {
+                    const isSelected = selectedCode?.id === code.id;
+                    const rowClassName = `${isTestCode(code.code) ? 'bg-gray-100' : ''} hover:bg-muted/50 cursor-pointer ${isSelected ? 'bg-muted/50' : ''}`;
+                    
+                    return (
+                      <React.Fragment key={code.id}>
+                        <tr 
+                          className={rowClassName}
+                          onClick={() => toggleSelectedCode(code)}
+                        >
+                          <td className="font-mono">{code.code}</td>
+                          <td>{getStatusBadge(code.status, code.expires_at)}</td>
+                          <td>{formatDate(code.created_at)}</td>
+                          <td>{formatDate(code.expires_at)}</td>
+                          <td>
+                            {isTestCode(code.code) ? (
+                              <Badge variant="secondary">Testcode</Badge>
+                            ) : (
+                              <Badge>Produktionscode</Badge>
+                            )}
+                          </td>
+                        </tr>
+                        {isSelected && (
+                          <tr key={`details-${code.id}`}>
+                            <td colSpan={5} className="p-0">
+                              <DetailView 
+                                data={code} 
+                                open={true} 
+                                onOpenChange={(open) => !open && setSelectedCode(null)}
+                                isCode={true}
+                              />
+                              {code.status === 'used' && code.registration && (
+                                <div className="p-4 border-t">
+                                  <h3 className="text-sm font-medium mb-4">Registrierungsinformationen</h3>
+                                  <DetailView 
+                                    data={code.registration}
+                                    open={true}
+                                    onOpenChange={() => {}}
+                                    isCode={false}
+                                  />
+                                </div>
+                              )}
+                            </td>
+                          </tr>
                         )}
-                      </td>
-                    </tr>
-                  ))}
+                      </React.Fragment>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -137,13 +194,6 @@ export default function AllCodesPage() {
               Keine Codes gefunden
             </div>
           )}
-
-          <DetailView 
-            data={selectedCode} 
-            open={!!selectedCode} 
-            onOpenChange={(open) => !open && setSelectedCode(null)}
-            isCode={true}
-          />
         </>
       )}
     </div>
