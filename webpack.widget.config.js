@@ -5,7 +5,9 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   mode: 'production',
-  entry: './src/widget.tsx',
+  entry: {
+    widget: './src/widget.tsx'
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'zvv-entdeckungsreise-widget.js',
@@ -15,7 +17,7 @@ module.exports = {
     },
     globalObject: 'this',
     publicPath: 'https://entdeckungsreise-int.zvv.ch/',
-    chunkFilename: 'zvv-entdeckungsreise-widget.[chunkhash].js',
+    chunkFilename: 'chunks/[name].[chunkhash].js',
     clean: true
   },
   resolve: {
@@ -34,8 +36,9 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [
         { 
-          from: 'dist/*.js',
-          to: '../public/[name][ext]'
+          from: 'dist/**/*.js',
+          to: '../public/[path][name][ext]',
+          noErrorOnMissing: true
         }
       ]
     })
@@ -49,7 +52,11 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: [
-              '@babel/preset-env',
+              ['@babel/preset-env', {
+                targets: {
+                  browsers: ['last 2 versions', 'not dead']
+                }
+              }],
               '@babel/preset-react',
               '@babel/preset-typescript',
             ],
@@ -74,27 +81,34 @@ module.exports = {
           drop_console: false,
           passes: 2,
         },
-        mangle: true,
+        mangle: {
+          reserved: ['ZVVEntdeckungsreiseWidget']
+        },
         output: {
           comments: false,
         },
       },
     })],
     splitChunks: {
-      chunks: 'all',
+      chunks: 'async',
+      minSize: 20000,
+      maxSize: 244000,
       cacheGroups: {
-        vendor: {
+        defaultVendors: {
           test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
-          chunks: 'all',
+          priority: -10,
+          reuseExistingChunk: true,
+          name: 'vendors'
         },
         default: {
           minChunks: 2,
           priority: -20,
-          reuseExistingChunk: true
+          reuseExistingChunk: true,
+          name: 'common'
         }
-      },
+      }
     },
+    runtimeChunk: false
   },
   externals: {
     react: {
