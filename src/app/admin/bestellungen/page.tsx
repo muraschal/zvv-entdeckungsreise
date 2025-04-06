@@ -7,7 +7,10 @@ import { de } from 'date-fns/locale';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import DetailView from '@/components/admin/DetailView';
-import { ArrowUp, ArrowDown } from 'lucide-react';
+import { ArrowUp, ArrowDown, Download, CheckCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import ExcelJS from 'exceljs';
+import { useToast } from '@/components/ui/use-toast';
 
 // Typdefinitionen
 interface Registration {
@@ -38,10 +41,104 @@ export default function AllRegistrationsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedRegistration, setSelectedRegistration] = useState<Registration | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
+  const { toast } = useToast();
   
   // State für Sortierung
   const [sortField, setSortField] = useState<SortField>('travel_date');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+
+  // Excel-Export Funktion
+  const exportToExcel = async () => {
+    try {
+      setIsExporting(true);
+      
+      // Erstelle eine neue Excel-Arbeitsmappe
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('Bestellungen');
+      
+      // Definiere die Spalten
+      worksheet.columns = [
+        { header: 'Code', key: 'code', width: 25 },
+        { header: 'Schule', key: 'school', width: 30 },
+        { header: 'Klasse', key: 'class', width: 15 },
+        { header: 'Kontaktperson', key: 'contact_person', width: 25 },
+        { header: 'E-Mail', key: 'email', width: 30 },
+        { header: 'Telefon', key: 'phone_number', width: 20 },
+        { header: 'Schüleranzahl', key: 'student_count', width: 15 },
+        { header: 'Begleitpersonen', key: 'accompanist_count', width: 15 },
+        { header: 'Reisedatum', key: 'travel_date', width: 20 },
+        { header: 'Ankunftszeit', key: 'arrival_time', width: 15 },
+        { header: 'Erstellt am', key: 'created_at', width: 20 },
+        { header: 'Notizen', key: 'additional_notes', width: 50 }
+      ];
+      
+      // Style für die Kopfzeile
+      worksheet.getRow(1).font = { bold: true, color: { argb: '002D77' } }; // ZVV-Blau
+      worksheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'E6EEF8' } };
+      
+      // Daten hinzufügen
+      const registrations = data.registrations || [];
+      
+      registrations.forEach((registration: Registration) => {
+        // Formatiere Daten für Excel
+        const travelDate = registration.travel_date || registration.trip_datetime;
+        
+        worksheet.addRow({
+          code: registration.code || '',
+          school: registration.school || '',
+          class: registration.class || '',
+          contact_person: registration.contact_person || '',
+          email: registration.email || '',
+          phone_number: registration.phone_number || '',
+          student_count: registration.student_count || 0,
+          accompanist_count: registration.accompanist_count || 0,
+          travel_date: travelDate ? format(new Date(travelDate), 'dd.MM.yyyy', { locale: de }) : '',
+          arrival_time: registration.arrival_time || '',
+          created_at: registration.created_at ? format(new Date(registration.created_at), 'dd.MM.yyyy HH:mm', { locale: de }) : '',
+          additional_notes: registration.additional_notes || ''
+        });
+      });
+      
+      // Automatische Filter für die Kopfzeile
+      worksheet.autoFilter = {
+        from: { row: 1, column: 1 },
+        to: { row: 1, column: worksheet.columns.length }
+      };
+      
+      // Excel-Datei generieren und herunterladen
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = URL.createObjectURL(blob);
+      
+      // Erstelle einen Download-Link und klicke darauf
+      const downloadLink = document.createElement('a');
+      const timestamp = format(new Date(), 'yyyy-MM-dd_HH-mm', { locale: de });
+      downloadLink.href = url;
+      downloadLink.download = `ZVV_Entdeckungsreise_Bestellungen_${timestamp}.xlsx`;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+      
+      // Zeige Erfolgsmeldung
+      toast({
+        title: "Export erfolgreich",
+        description: `${registrations.length} Bestellungen wurden als Excel-Datei exportiert.`,
+        duration: 3000
+      });
+      
+    } catch (err) {
+      console.error('Fehler beim Excel-Export:', err);
+      toast({
+        title: "Export fehlgeschlagen",
+        description: "Beim Exportieren der Bestellungen ist ein Fehler aufgetreten.",
+        variant: "destructive",
+        duration: 5000
+      });
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -151,7 +248,27 @@ export default function AllRegistrationsPage() {
   if (loading) {
     return (
       <div className="p-4">
-        <h1 className="text-2xl font-bold mb-4">Alle Bestellungen</h1>
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl font-bold">Alle Bestellungen</h1>
+          
+          <Button 
+            onClick={exportToExcel} 
+            disabled={loading || isExporting || data.registrations?.length === 0}
+            className="bg-zvv-blue hover:bg-zvv-dark-blue text-white font-medium"
+          >
+            {isExporting ? (
+              <>
+                <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
+                Exportiere...
+              </>
+            ) : (
+              <>
+                <Download className="mr-2 h-4 w-4" />
+                Excel-Export
+              </>
+            )}
+          </Button>
+        </div>
         <div className="space-y-4">
           <Skeleton className="h-8 w-48" />
           <Skeleton className="h-64 w-full" />
@@ -226,7 +343,27 @@ export default function AllRegistrationsPage() {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Alle Bestellungen</h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Alle Bestellungen</h1>
+        
+        <Button 
+          onClick={exportToExcel} 
+          disabled={loading || isExporting || data.registrations?.length === 0}
+          className="bg-zvv-blue hover:bg-zvv-dark-blue text-white font-medium"
+        >
+          {isExporting ? (
+            <>
+              <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
+              Exportiere...
+            </>
+          ) : (
+            <>
+              <Download className="mr-2 h-4 w-4" />
+              Excel-Export
+            </>
+          )}
+        </Button>
+      </div>
       
       {error ? (
         <Alert variant="destructive">
