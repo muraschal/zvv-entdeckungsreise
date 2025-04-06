@@ -17,16 +17,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-  SheetClose,
-} from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from 'next/link';
+import DetailView from '@/components/admin/DetailView';
 
 // Typdefinition für eine Registrierung
 interface Registration {
@@ -325,9 +318,19 @@ function AdminContent() {
           <div className="mt-8 space-y-4">
             <h2 className="text-xl font-bold tracking-tight">Admin-Tools</h2>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              <Link href="/admin/testcodes" className="flex items-center p-4 border rounded-md shadow-sm hover:bg-zvv-light-blue hover:border-zvv-blue transition-colors">
+              <Link href="/admin/codes" className="flex items-center p-4 border rounded-md shadow-sm hover:bg-zvv-light-blue hover:border-zvv-blue transition-colors">
                 <div className="mr-4 rounded-md bg-zvv-light-blue p-2">
                   <Key className="h-5 w-5 text-zvv-blue" />
+                </div>
+                <div>
+                  <h3 className="font-semibold">Code-Übersicht</h3>
+                  <p className="text-sm text-muted-foreground">Alle Codes anzeigen</p>
+                </div>
+              </Link>
+              
+              <Link href="/admin/testcodes" className="flex items-center p-4 border rounded-md shadow-sm hover:bg-zvv-light-blue hover:border-zvv-blue transition-colors">
+                <div className="mr-4 rounded-md bg-zvv-light-blue p-2">
+                  <FileSpreadsheet className="h-5 w-5 text-zvv-blue" />
                 </div>
                 <div>
                   <h3 className="font-semibold">Testcode-Management</h3>
@@ -336,102 +339,15 @@ function AdminContent() {
               </Link>
             </div>
           </div>
+          
+          <DetailView 
+            data={selectedRegistration} 
+            open={!!selectedRegistration} 
+            onOpenChange={(open) => !open && setSelectedRegistration(null)}
+            isCode={false}
+          />
         </>
       )}
-      
-      <Sheet open={!!selectedRegistration} onOpenChange={() => setSelectedRegistration(null)}>
-        <SheetContent className="sm:max-w-xl">
-          <SheetHeader>
-            <SheetTitle>Registrierungsdetails</SheetTitle>
-            <SheetDescription>Details zur Anmeldung</SheetDescription>
-          </SheetHeader>
-          {selectedRegistration && (
-            <div className="mt-6 space-y-6">
-              <div className="space-y-1">
-                <h3 className="text-sm font-medium">Grundinformationen</h3>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="text-muted-foreground">Code</p>
-                    <p className="font-medium">{selectedRegistration.code}</p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">Anmeldedatum</p>
-                    <p className="font-medium">
-                      {new Date(selectedRegistration.created_at).toLocaleDateString('de-CH')}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="space-y-1">
-                <h3 className="text-sm font-medium">Schulinformationen</h3>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div className="col-span-2">
-                    <p className="text-muted-foreground">Schule</p>
-                    <p className="font-medium">{selectedRegistration.school}</p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">Klasse</p>
-                    <p className="font-medium">{selectedRegistration.class}</p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">Kontaktperson</p>
-                    <p className="font-medium">{selectedRegistration.contact_person}</p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">E-Mail</p>
-                    <p className="font-medium break-all">{selectedRegistration.email}</p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">Telefon</p>
-                    <p className="font-medium">{selectedRegistration.phone_number}</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="space-y-1">
-                <h3 className="text-sm font-medium">Reiseinformationen</h3>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="text-muted-foreground">Reisedatum</p>
-                    <p className="font-medium">
-                      {new Date(selectedRegistration.travel_date).toLocaleDateString('de-CH')}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">Ankunftszeit</p>
-                    <p className="font-medium">
-                      {selectedRegistration.arrival_time.slice(0, 5)} Uhr
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">Anzahl Schüler</p>
-                    <p className="font-medium">{selectedRegistration.student_count}</p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">Anzahl Begleitpersonen</p>
-                    <p className="font-medium">{selectedRegistration.accompanist_count}</p>
-                  </div>
-                </div>
-              </div>
-              
-              {selectedRegistration.additional_notes && (
-                <div className="space-y-1">
-                  <h3 className="text-sm font-medium">Anmerkungen</h3>
-                  <p className="text-sm border p-3 rounded-md bg-muted/50 whitespace-pre-wrap">
-                    {selectedRegistration.additional_notes}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-          <div className="mt-6">
-            <SheetClose asChild>
-              <Button variant="outline" className="w-full">Schließen</Button>
-            </SheetClose>
-          </div>
-        </SheetContent>
-      </Sheet>
     </div>
   );
 }

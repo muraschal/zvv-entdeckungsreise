@@ -6,11 +6,23 @@ import { Badge } from '@/components/ui/badge';
 import { de } from 'date-fns/locale';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
+import DetailView from '@/components/admin/DetailView';
+
+// Typdefinitionen
+interface Code {
+  id: string;
+  code: string;
+  status: string;
+  created_at: string;
+  expires_at: string;
+  registration?: any;
+}
 
 export default function AllCodesPage() {
   const [data, setData] = useState<any>({ codes: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedCode, setSelectedCode] = useState<Code | null>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -98,8 +110,12 @@ export default function AllCodesPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.codes.map((code: any) => (
-                    <tr key={code.id} className={isTestCode(code.code) ? 'bg-gray-100' : ''}>
+                  {data.codes.map((code: Code) => (
+                    <tr 
+                      key={code.id} 
+                      className={`${isTestCode(code.code) ? 'bg-gray-100' : ''} hover:bg-muted/50 cursor-pointer`}
+                      onClick={() => setSelectedCode(code)}
+                    >
                       <td className="font-mono">{code.code}</td>
                       <td>{getStatusBadge(code.status, code.expires_at)}</td>
                       <td>{formatDate(code.created_at)}</td>
@@ -121,6 +137,13 @@ export default function AllCodesPage() {
               Keine Codes gefunden
             </div>
           )}
+
+          <DetailView 
+            data={selectedCode} 
+            open={!!selectedCode} 
+            onOpenChange={(open) => !open && setSelectedCode(null)}
+            isCode={true}
+          />
         </>
       )}
     </div>
