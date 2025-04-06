@@ -255,7 +255,13 @@ function AdminContent() {
                     <div className="mt-3 flex items-center justify-between text-xs">
                       <span>∅ Klassengröße</span>
                       <span className="font-semibold text-sm">
-                        {(registrations.reduce((sum, reg) => sum + reg.student_count, 0) / registrations.length).toFixed(1)}
+                        {Math.round(registrations.reduce((sum, reg) => sum + reg.student_count, 0) / registrations.length)}
+                      </span>
+                    </div>
+                    <div className="mt-2 flex items-center justify-between text-xs">
+                      <span>∅ Begleiter</span>
+                      <span className="font-semibold text-sm">
+                        {Math.round(registrations.reduce((sum, reg) => sum + reg.accompanist_count, 0) / registrations.length)}
                       </span>
                     </div>
                   </>
