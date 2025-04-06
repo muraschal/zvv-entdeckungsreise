@@ -7,12 +7,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
-import { Download, Search, RefreshCw, ChevronRight, Users, Calendar, School, FileSpreadsheet, Key, ShoppingCart, CheckCircle, Clock, AlertTriangle, PieChart, BarChart } from 'lucide-react';
+import { Download, Search, RefreshCw, ChevronRight, Users, Calendar, School, FileSpreadsheet, Key, ShoppingCart, CheckCircle, Clock, AlertTriangle, PieChart, BarChart, LineChart } from 'lucide-react';
 import ExcelJS from 'exceljs';
 import Link from 'next/link';
 import DetailView from '@/components/admin/DetailView';
 import { Progress } from '@/components/ui/progress';
-import { PieChart as RechartPieChart, Pie, Cell, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart as RechartBarChart, Bar } from 'recharts';
+import { PieChart as RechartPieChart, Pie, Cell, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 // Typdefinition für eine Registrierung
 interface Registration {
@@ -309,13 +309,13 @@ function AdminContent() {
               <h2 className="text-xl font-bold tracking-tight mb-4">Reiseverlauf</h2>
               <Card className="shadow-sm p-4">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Verteilung der Reisen nach Reisedatum</CardTitle>
-                  <BarChart className="h-5 w-5 text-zvv-blue" />
+                  <CardTitle className="text-sm font-medium">Entwicklung der Reisen im Zeitverlauf</CardTitle>
+                  <LineChart className="h-5 w-5 text-zvv-blue" />
                 </CardHeader>
                 <CardContent className="pt-4">
                   <div className="h-80 w-full">
                     <ResponsiveContainer width="100%" height="100%">
-                      <RechartBarChart
+                      <AreaChart
                         data={registrationChartData}
                         margin={{ top: 5, right: 30, left: 20, bottom: 40 }}
                       >
@@ -332,23 +332,28 @@ function AdminContent() {
                         <Tooltip 
                           formatter={(value, name) => [value, name === 'Bestellungen' ? 'Bestellungen' : 'Schüler']}
                           labelFormatter={(label) => `Reisezeitraum: ${label}`}
+                          contentStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', borderRadius: '6px', border: '1px solid #eaeaea' }}
                         />
                         <Legend />
-                        <Bar 
+                        <Area 
                           yAxisId="left" 
+                          type="monotone"
                           dataKey="Bestellungen" 
-                          fill="#3b82f6" 
+                          stroke="#3b82f6" 
+                          fill="#3b82f680" 
                           name="Bestellungen"
-                          radius={[4, 4, 0, 0]} 
+                          activeDot={{ r: 6 }}
                         />
-                        <Bar 
+                        <Area 
                           yAxisId="right" 
+                          type="monotone"
                           dataKey="Schüler" 
-                          fill="#22c55e" 
+                          stroke="#22c55e" 
+                          fill="#22c55e80"
                           name="Anzahl Schüler" 
-                          radius={[4, 4, 0, 0]}
+                          activeDot={{ r: 6 }}
                         />
-                      </RechartBarChart>
+                      </AreaChart>
                     </ResponsiveContainer>
                   </div>
                 </CardContent>
