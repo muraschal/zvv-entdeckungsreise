@@ -243,9 +243,50 @@ function AdminContent() {
                 <div className="text-2xl font-bold text-zvv-blue" data-testid="student-count">
                   {registrations.reduce((sum, reg) => sum + reg.student_count, 0)}
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  Inklusive {registrations.reduce((sum, reg) => sum + reg.accompanist_count, 0)} Begleitpersonen
-                </p>
+                <div className="flex justify-between text-xs mt-1">
+                  <span>Schüler gesamt</span>
+                  <span className="text-sm font-medium">
+                    {registrations.reduce((sum, reg) => sum + reg.accompanist_count, 0)} Begleitpersonen
+                  </span>
+                </div>
+                
+                {registrations.length > 0 && (
+                  <>
+                    <div className="mt-3 flex items-center justify-between text-xs">
+                      <span>∅ Klassengröße</span>
+                      <span className="font-semibold text-sm">
+                        {(registrations.reduce((sum, reg) => sum + reg.student_count, 0) / registrations.length).toFixed(1)}
+                      </span>
+                    </div>
+                    
+                    <div className="mt-1 space-y-1">
+                      <div className="flex justify-between text-xs">
+                        <span>Schüler-Begleiter Verhältnis</span>
+                        <span>
+                          {(registrations.reduce((sum, reg) => sum + reg.student_count, 0) / 
+                           Math.max(1, registrations.reduce((sum, reg) => sum + reg.accompanist_count, 0))).toFixed(1)}:1
+                        </span>
+                      </div>
+                      <Progress 
+                        value={75} 
+                        className="h-1 bg-gray-100"
+                      >
+                        <div 
+                          className="h-full bg-green-500" 
+                          style={{ 
+                            width: `${Math.min(100, (registrations.reduce((sum, reg) => sum + reg.student_count, 0) / 
+                              Math.max(1, registrations.reduce((sum, reg) => sum + reg.accompanist_count, 0) * 25) * 100))}%` 
+                          }}
+                        ></div>
+                      </Progress>
+                      <div className="flex justify-between text-[10px] text-gray-500">
+                        <span>Gut betreut</span>
+                        <span>Empfohlen</span>
+                        <span>Wenig Begleitung</span>
+                      </div>
+                    </div>
+                  </>
+                )}
               </CardContent>
               <CardFooter className="pt-0">
                 <Link href="/admin/bestellungen">
