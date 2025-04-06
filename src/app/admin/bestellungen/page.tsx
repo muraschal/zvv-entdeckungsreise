@@ -33,7 +33,7 @@ interface Registration {
 }
 
 // Sortieroptionen definieren
-type SortField = 'code' | 'school' | 'contact_person' | 'email' | 'class' | 'student_count' | 'accompanist_count' | 'travel_date' | 'additional_notes';
+type SortField = 'code' | 'school' | 'contact_person' | 'email' | 'class' | 'student_count' | 'accompanist_count' | 'travel_date' | 'created_at' | 'additional_notes';
 type SortDirection = 'asc' | 'desc';
 
 export default function AllRegistrationsPage() {
@@ -45,8 +45,8 @@ export default function AllRegistrationsPage() {
   const { toast } = useToast();
   
   // State für Sortierung
-  const [sortField, setSortField] = useState<SortField>('travel_date');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+  const [sortField, setSortField] = useState<SortField>('created_at');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
   // Excel-Export Funktion
   const exportToExcel = async () => {
@@ -323,6 +323,10 @@ export default function AllRegistrationsPage() {
         aValue = aDate ? new Date(aDate).getTime() : 0;
         bValue = bDate ? new Date(bDate).getTime() : 0;
         break;
+      case 'created_at':
+        aValue = a.created_at ? new Date(a.created_at).getTime() : 0;
+        bValue = b.created_at ? new Date(b.created_at).getTime() : 0;
+        break;
       case 'additional_notes':
         aValue = getComparableValue(a.additional_notes);
         bValue = getComparableValue(b.additional_notes);
@@ -429,9 +433,9 @@ export default function AllRegistrationsPage() {
                     </th>
                     <th 
                       className="cursor-pointer hover:bg-gray-200"
-                      onClick={() => toggleSort('travel_date')}
+                      onClick={() => toggleSort('created_at')}
                     >
-                      Reisedatum {getSortIndicator('travel_date')}
+                      Bestelldatum {getSortIndicator('created_at')}
                     </th>
                     <th 
                       className="cursor-pointer hover:bg-gray-200"
@@ -459,7 +463,7 @@ export default function AllRegistrationsPage() {
                           <td>{registration.class || '-'}</td>
                           <td>{registration.student_count || '-'}</td>
                           <td>{registration.accompanist_count || '-'}</td>
-                          <td>{formatDate(registration.travel_date || registration.trip_datetime)}</td>
+                          <td>{formatDate(registration.created_at)}</td>
                           <td className="max-w-xs truncate">{registration.additional_notes || '-'}</td>
                         </tr>
                         {isSelected && (
