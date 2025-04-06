@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createBrowserClient } from '@supabase/ssr';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -77,7 +77,9 @@ export default function AdminLoginPage() {
 
   return (
     <div className="container relative h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
-      <div className="relative hidden h-full flex-col p-10 text-white lg:flex bg-zvv-blue">
+      <div 
+        className={`relative hidden h-full flex-col p-10 text-white lg:flex ${process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' ? 'login-background' : 'integration-overlay'}`}
+      >
         <div className="relative z-20 flex items-center text-lg font-medium">
           ZVV-Entdeckungsreise
         </div>
@@ -273,8 +275,8 @@ export default function AdminLoginPage() {
         </div>
       </div>
       <div className="absolute bottom-4 right-4 text-xs text-muted-foreground">
-        <div>
-          Integration | {new Date().toLocaleDateString('de-CH')}
+        <div className={process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' ? '' : 'text-red-500'}>
+          {process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' ? 'Produktion' : 'Integration'} | {new Date().toLocaleDateString('de-CH')}
         </div>
       </div>
     </div>
