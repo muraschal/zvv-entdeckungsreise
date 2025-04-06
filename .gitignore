@@ -38,4 +38,9 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts 
+next-env.d.ts
+
+# Produktionscode-Generierung
+scripts/generate-production-codes.js
+production-codes.csv
+backups/production-codes-*.csv 
